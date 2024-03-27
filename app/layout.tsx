@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ["vietnamese", "latin"] });
 
 export const metadata: Metadata = {
   title: "Thuc's Lexicon",
-  description: "This app is used to store and manage my vocabulary.",
+  description: "This app is used to store and manage vocabulary.",
   openGraph: {
     images: [
       {
