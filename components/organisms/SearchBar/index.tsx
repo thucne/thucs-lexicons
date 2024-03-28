@@ -60,7 +60,7 @@ const SearchBar = () => {
 
   useEffect(() => {
     setSearch(searchFromUrl || "");
-  }, []);
+  }, [searchFromUrl]);
 
   // DOM manipulation, so we use useLayoutEffect
   useLayoutEffect(() => {
