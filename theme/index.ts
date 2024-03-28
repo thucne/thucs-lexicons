@@ -2,6 +2,7 @@
 import { Roboto } from "next/font/google";
 import { createTheme } from "@mui/material/styles";
 import { PaletteMode } from "@mui/material";
+import components from "./overrides";
 
 const roboto = Roboto({
   weight: ["300", "400", "500", "700"],
@@ -17,17 +18,7 @@ const theme = (mode: PaletteMode) =>
     typography: {
       fontFamily: roboto.style.fontFamily,
     },
-    components: {
-      MuiAlert: {
-        styleOverrides: {
-          root: ({ ownerState }) => ({
-            ...(ownerState.severity === "info" && {
-              backgroundColor: "#60a5fa",
-            }),
-          }),
-        },
-      },
-    },
+    components,
   });
 
 export default theme;
