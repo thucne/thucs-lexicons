@@ -1,11 +1,11 @@
 import { useState, useContext } from "react";
 
-import { IconButton } from "@mui/material";
+import { IconButton, useTheme } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import {
   LightModeIcon,
-  DarkModeRoundedIcon,
+  DarkModeIcon,
   SystemModeIcon,
 } from "@/components/atoms/AppIcons";
 
@@ -23,7 +23,10 @@ const ThemeSelect = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const colorMode = useContext(ColorModeContext);
-  const currentMode = colorMode.mode();
+  const theme = useTheme();
+
+  const selectedMode = colorMode.mode();
+  const transformedMode = theme.palette.mode;
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -34,13 +37,13 @@ const ThemeSelect = () => {
   };
 
   const getButtonIcon = () => {
-    switch (currentMode) {
+    switch (transformedMode) {
       case "light":
         return <LightModeIcon />;
       case "dark":
-        return <DarkModeRoundedIcon />;
-      case "system":
-        return <SystemModeIcon />;
+        return <DarkModeIcon />;
+      default:
+        return null;
     }
   };
 
@@ -48,8 +51,6 @@ const ThemeSelect = () => {
     colorMode.toggleColorMode(mode);
     handleClose();
   };
-
-  console.log(currentMode);
 
   return (
     <div>
@@ -70,21 +71,21 @@ const ThemeSelect = () => {
       >
         <StyledAppMenuItem
           onClick={() => handleChange("light")}
-          selected={currentMode === "light"}
+          selected={selectedMode === "light"}
         >
           <LightModeIcon />
           Light
         </StyledAppMenuItem>
         <StyledAppMenuItem
           onClick={() => handleChange("dark")}
-          selected={currentMode === "dark"}
+          selected={selectedMode === "dark"}
         >
-          <DarkModeRoundedIcon />
+          <DarkModeIcon />
           Dark
         </StyledAppMenuItem>
         <StyledAppMenuItem
           onClick={() => handleChange("system")}
-          selected={currentMode === "system"}
+          selected={selectedMode === "system"}
         >
           <SystemModeIcon />
           System

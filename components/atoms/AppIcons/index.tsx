@@ -8,6 +8,6 @@ const SystemModeIcon = DesktopWindowsRoundedIcon;
 
 export {
     LightModeIcon,
-    DarkModeRoundedIcon,
+    DarkModeIcon,
     SystemModeIcon
 }
