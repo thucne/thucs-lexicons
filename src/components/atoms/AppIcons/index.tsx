@@ -10,10 +10,4 @@ const SystemModeIcon = DesktopWindowsRoundedIcon;
 const SearchIcon = SearchRoundedIcon;
 const CloseIcon = CloseRoundedIcon;
 
-export {
-    LightModeIcon,
-    DarkModeIcon,
-    SystemModeIcon,
-    SearchIcon,
-    CloseIcon
-}
+export { LightModeIcon, DarkModeIcon, SystemModeIcon, SearchIcon, CloseIcon };
