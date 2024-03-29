@@ -1,4 +1,4 @@
-import { SearchResults } from "@/types";
+import { SearchResults } from "@//types";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 import { AppState } from "@/redux/store";

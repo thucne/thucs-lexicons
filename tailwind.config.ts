@@ -2,13 +2,16 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./theme/**/*.{js,ts,jsx,tsx,mdx}",
-    "./utils/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    screens: {
+      sm: "600px",
+      md: "900px",
+      lg: "1200px",
+      xl: "1536px",
+      "2xl": "1920px",
+    },
     extend: {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -20,6 +23,6 @@ const config: Config = {
   plugins: [],
   corePlugins: {
     preflight: false,
-  }
+  },
 };
 export default config;

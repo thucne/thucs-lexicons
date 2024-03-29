@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useLayoutEffect, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 import { TextField } from "@mui/material";
@@ -10,10 +10,6 @@ const BootstrapInput = styled(TextField)(({ theme }) => ({
   width: "100%",
   "label + &": {
     marginTop: theme.spacing(3),
-  },
-  "&.MuiTextField-root": {
-    display: "flex",
-    maxWidth: 400,
   },
   "& .MuiInputBase-input": {
     borderRadius: 4,
@@ -50,9 +46,9 @@ const SearchBar = () => {
   const router = useRouter();
 
   /**
-   * >>> This is an example of destructuring assignment, 
+   * >>> This is an example of destructuring assignment,
    *    it allows you to unpack values from arrays, or properties from objects, into distinct variables.
-   *    in this case, useState returns 
+   *    in this case, useState returns
    */
   const [search, setSearch] = useState("");
 
@@ -62,18 +58,44 @@ const SearchBar = () => {
     setSearch(searchFromUrl || "");
   }, [searchFromUrl]);
 
-  // DOM manipulation, so we use useLayoutEffect
-  useLayoutEffect(() => {
+  useEffect(() => {
     // run on next execution loop, so focus() works
-    setTimeout(() => {
-      if (searchRef.current) {
-        searchRef.current.focus();
-      }
-    }, 0);
+
+    /**
+     * >>> This is not recommended as it manipulates the DOM directly,
+     *       using refs is the recommended way to interact with the DOM in React.
+     */
+    // const searchInputEl = document.getElementById("search-input");
+
+    // if (searchInputEl) {
+    //   setTimeout(() => {
+    //     searchInputEl.focus();
+    //   }, 0);
+    // }
+
+    // This is a better way to focus on an element, however, you may find that it doesn't work in development mode
+    // So, this works on production mode
+    searchRef.current?.focus();
+
+    /**
+     * This way works on development mode, however, consider using the above method for simplicity, readability, and efficiency
+     * - setTimeout with 0ms delay is used to run the function on the next execution loop, so focus() works
+     */
+    // setTimeout(() => {
+    //   if (searchRef.current) {
+    //     searchRef.current.focus();
+    //   }
+    // }, 0);
   }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    /**
+     * >>> This is an example of type assertion, it tells the compiler that the value is of a specific type.
+     *     However, we need to be careful when using type assertions, as it can lead to runtime errors if the type assertion is incorrect.
+     *          In this case, we are asserting that e.target is an HTMLFormElement.
+     *                              and e.target.search is an HTMLInputElement.
+     */
     // const val = e.target as HTMLFormElement;
     // const search = val.search as HTMLInputElement;
     // const searchValue = search.value;
@@ -96,9 +118,9 @@ const SearchBar = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="w-full">
       <BootstrapInput
-        id="search"
+        id="search-input"
         name="search"
         placeholder="Hallucinate"
         value={search}
