@@ -4,8 +4,6 @@ import './globals.css';
 
 // For Material UI integration
 import ThemeProvider from '@/components/organisms/Wrappers/ThemeProvider';
-import StoreProvider from '@/components/organisms/Wrappers/StoreProvider';
-import AppWrapper from '@/components/organisms/Wrappers/AppWrapper';
 
 const inter = Inter({ subsets: ['vietnamese', 'latin'] });
 
@@ -33,11 +31,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={inter.className} suppressHydrationWarning={true}>
-                <StoreProvider>
-                    <ThemeProvider>
-                        <AppWrapper>{children}</AppWrapper>
-                    </ThemeProvider>
-                </StoreProvider>
+                <ThemeProvider>{children}</ThemeProvider>
             </body>
         </html>
     );

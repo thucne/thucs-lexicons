@@ -1,7 +1,10 @@
+import NavigationBar from '@/components/organisms/NavigationBar';
+
 export default function Home() {
     return (
         <div>
-            Hello world! This is the home page.
+            <NavigationBar />
+            <main className="flex min-h-screen flex-col items-center justify-between p-24">Hello world!</main>
         </div>
     );
 }
