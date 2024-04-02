@@ -14,9 +14,9 @@ const BootstrapInput = styled(TextField)(({ theme }) => ({
     '& .MuiInputBase-input': {
         borderRadius: 4,
         position: 'relative',
-        backgroundColor: theme.palette.mode === 'light' ? '#F3F6F9' : '#1A2027',
+        backgroundColor: theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[800],
         border: '1px solid',
-        borderColor: theme.palette.mode === 'light' ? '#E0E3E7' : '#2D3843',
+        borderColor: theme.palette.mode === 'light' ? theme.palette.grey[500] : theme.palette.grey[800],
         fontSize: 16,
         width: '100%',
         padding:  `${theme.spacing(1)} ${theme.spacing(1.5)}`,
@@ -52,7 +52,7 @@ const SearchBar = () => {
      */
     const [search, setSearch] = useState('');
 
-    const searchFromUrl = searchParams.get('q');
+    const searchFromUrl = searchParams.get('word');
 
     useEffect(() => {
         setSearch(searchFromUrl || '');
@@ -83,9 +83,9 @@ const SearchBar = () => {
          *          Line 52
          */
         if (search) {
-            newParams.set('q', search);
+            newParams.set('word', search);
         } else {
-            newParams.delete('q');
+            newParams.delete('word');
         }
 
         router.push(createUrl('/search', newParams));
