@@ -4,11 +4,13 @@ import './globals.css';
 
 // For Material UI integration
 import ThemeProvider from '@/components/organisms/Wrappers/ThemeProvider';
+import StoreProvider from '@/components/organisms/Wrappers/StoreProvider';
+import AppWrapper from '@/components/organisms/Wrappers/AppWrapper';
 
 const inter = Inter({ subsets: ['vietnamese', 'latin'] });
 
 export const metadata: Metadata = {
-    title: "Thuc's Lexicon",
+    title: "My Lexicon",
     description: 'This app is used to store and manage vocabulary.',
     openGraph: {
         images: [
@@ -31,7 +33,11 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={inter.className} suppressHydrationWarning={true}>
-                <ThemeProvider>{children}</ThemeProvider>
+                <StoreProvider>
+                    <ThemeProvider>
+                        <AppWrapper>{children}</AppWrapper>
+                    </ThemeProvider>
+                </StoreProvider>
             </body>
         </html>
     );

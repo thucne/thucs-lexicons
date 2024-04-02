@@ -19,7 +19,7 @@ const BootstrapInput = styled(TextField)(({ theme }) => ({
         borderColor: theme.palette.mode === 'light' ? '#E0E3E7' : '#2D3843',
         fontSize: 16,
         width: '100%',
-        padding: '8px 12px',
+        padding:  `${theme.spacing(1)} ${theme.spacing(1.5)}`,
         // Use the system font instead of the default Roboto font.
         fontFamily: [
             '-apple-system',
@@ -59,33 +59,7 @@ const SearchBar = () => {
     }, [searchFromUrl]);
 
     useEffect(() => {
-        // run on next execution loop, so focus() works
-
-        /**
-         * >>> This is not recommended as it manipulates the DOM directly,
-         *       using refs is the recommended way to interact with the DOM in React.
-         */
-        // const searchInputEl = document.getElementById("search-input");
-
-        // if (searchInputEl) {
-        //   setTimeout(() => {
-        //     searchInputEl.focus();
-        //   }, 0);
-        // }
-
-        // This is a better way to focus on an element, however, you may find that it doesn't work in development mode
-        // So, this works on production mode
         searchRef.current?.focus();
-
-        /**
-         * This way works on development mode, however, consider using the above method for simplicity, readability, and efficiency
-         * - setTimeout with 0ms delay is used to run the function on the next execution loop, so focus() works
-         */
-        // setTimeout(() => {
-        //   if (searchRef.current) {
-        //     searchRef.current.focus();
-        //   }
-        // }, 0);
     }, []);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -114,7 +88,7 @@ const SearchBar = () => {
             newParams.delete('q');
         }
 
-        router.push(createUrl('/', newParams));
+        router.push(createUrl('/search', newParams));
     };
 
     return (
