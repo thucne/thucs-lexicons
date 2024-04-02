@@ -1,16 +1,17 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { useState } from 'react';
 
 import Image from 'next/image';
 
 import Grid from '@/components/atoms/AppGrid';
-import { Box, IconButton, LinearProgress, Typography, useMediaQuery } from '@mui/material';
+import { Box, IconButton, Typography, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 import ThemeSelect from '@/components/molecules/ThemeSelect';
 import SearchBar from '@/components/organisms/NavigationBar/SearchBar';
 import { SearchIcon, CloseIcon } from '@/components/atoms/AppIcons';
+import Link from 'next/link';
 
 const NavigationBar = () => {
     const theme = useTheme();
@@ -34,7 +35,7 @@ const NavigationBar = () => {
             borderBottom={(theme) => `1px solid ${theme.palette.divider}`}
         >
             <Grid container justifyContent="space-between" alignItems="center" spacing={1}>
-                <Grid xs="auto" container alignItems="center">
+                <Grid xs="auto" container alignItems="center" component={Link} href="/">
                     <Grid xs="auto">
                         <Box className="relative h-10 w-10">
                             <Image src="/logo.svg" alt="logo" fill={true} />
@@ -42,16 +43,14 @@ const NavigationBar = () => {
                     </Grid>
                     <Grid xs>
                         <Typography variant="h6" className="text-base md:text-lg lg:text-xl">
-                            My Lexicons
+                            Thuc&apos;s Lexicons
                         </Typography>
                     </Grid>
                 </Grid>
                 <Grid xs display="flex" justifyContent={{ xs: 'flex-end', sm: 'center' }}>
                     <div className="hidden sm:contents">
                         <div className="w-full max-w-[400px]">
-                            <Suspense fallback={<LinearProgress className="w-full" />}>
-                                <SearchBar />
-                            </Suspense>
+                            <SearchBar />
                         </div>
                     </div>
                     <IconButton onClick={toggleSearchInput} className="flex sm:hidden">
