@@ -3,7 +3,7 @@ import React from 'react';
 import { SearchResults } from '@/types';
 
 import { Container, Divider, Typography } from '@mui/material';
-import Grid from '@/components/atoms/AppGrid';
+import MeaningGroup from './MeaningGroup';
 
 type ResultPageProps = {
     word: string;
@@ -19,7 +19,10 @@ const ResultPage = ({ word, results }: ResultPageProps) => {
                 Meaning of <b>{word}</b> in English
             </Typography>
             <Divider className="my-4" />
-            Definition found! Adding more details soon...
+            {results.map((result, index) => [
+                <MeaningGroup key={`${word}-meaning-${index}`} meaning={result} />,
+                <Divider key={`${word}-divider-${index}`} className="my-4" />
+            ])}
         </Container>
     );
 };
