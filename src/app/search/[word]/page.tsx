@@ -1,4 +1,5 @@
-import { FREE_DICTIONARY_API } from "@/constants";
+import ResultPage from '@/components/organisms/ResultPage';
+import { FREE_DICTIONARY_API } from '@/constants';
 
 async function searchWord(query: string) {
     const res = await fetch(`${FREE_DICTIONARY_API}/${query}`);
@@ -11,14 +12,12 @@ async function searchWord(query: string) {
 }
 
 const WordPage = async ({ params }: { params: { word: string } }) => {
+    const { word } = params;
     try {
-        const data = await searchWord(params.word);
-
-        console.log(data);
-
-        return <>Search page</>;
+        const data = await searchWord(word);
+        return <ResultPage word={word} results={data} />;
     } catch (error) {
-        return <>This lexicon could not be found!</>
+        return <p>This lexicon <b>&quot;{word}&quot;</b> could not be found!</p>;
     }
 };
 

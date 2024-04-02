@@ -1,5 +1,5 @@
 import React from 'react';
-import SearchPageBody from '@/components/organisms/SearchPageBody';
+import SearchPageBody from '@/components/organisms/SearchPage';
 
 const SearchPage = () => {
     return <SearchPageBody />;
