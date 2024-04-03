@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ['vietnamese', 'latin'] });
 
 export const metadata: Metadata = {
     title: 'My Lexicon',
-    description: `Search for word's definition, synonyms, antonyms, and more...`,
+    description: `Search for word's definitions, synonyms, antonyms, and more...`,
     openGraph: {
         images: [
             {
