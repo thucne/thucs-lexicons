@@ -11,6 +11,7 @@ import { useTheme } from '@mui/material/styles';
 import ThemeSelect from '@/components/molecules/ThemeSelect';
 import SearchBar from '@/components/organisms/NavigationBar/SearchBar';
 import { SearchIcon, CloseIcon } from '@/components/atoms/AppIcons';
+import Link from 'next/link';
 
 const NavigationBar = () => {
     const theme = useTheme();
@@ -34,7 +35,7 @@ const NavigationBar = () => {
             borderBottom={(theme) => `1px solid ${theme.palette.divider}`}
         >
             <Grid container justifyContent="space-between" alignItems="center" spacing={1}>
-                <Grid xs="auto" container alignItems="center">
+                <Grid xs="auto" container alignItems="center" component={Link} href="/">
                     <Grid xs="auto">
                         <Box className="relative h-10 w-10">
                             <Image src="/logo.svg" alt="logo" fill={true} />

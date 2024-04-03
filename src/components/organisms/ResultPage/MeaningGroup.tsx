@@ -1,19 +1,17 @@
-import React from 'react';
-
 import { SearchResult } from '@/types';
-import { Chip, Divider, Typography } from '@mui/material';
+import { Divider, Typography } from '@mui/material';
 
 import Grid from '@/components/atoms/AppGrid';
 import Audio from '@/components/molecules/Audio';
 import { getLicenseString } from '@/utils';
+import MeaningComponent from '@/components/molecules/Meaning';
 
 type MeaningGroupProps = {
     meaning: SearchResult;
+    id: string;
 };
 
-const MeaningGroup = ({ meaning }: MeaningGroupProps) => {
-    console.log(meaning);
-
+const MeaningGroup = ({ meaning, id }: MeaningGroupProps) => {
     return (
         <Grid container spacing={2}>
             <Grid xs={12}>
@@ -39,17 +37,20 @@ const MeaningGroup = ({ meaning }: MeaningGroupProps) => {
                 })}
             </Grid>
             <Grid xs={12}>
-                <Divider
-                    sx={{
-                        '&.MuiDivider-root::before, &.MuiDivider-root::after': {
-                            borderTopColor: (theme) => theme.palette.warning.main
-                        }
-                    }}
-                    textAlign="right"
-                >
-                    <Chip label="OK" color="warning" clickable />
-                </Divider>
+                <Divider sx={{ borderColor: (theme) => theme.palette.warning.main }} />
             </Grid>
+            {meaning.meanings.map((eachMeaning, eachMeaningIndex) => {
+                return [
+                    <Grid key={`${meaning.word}-meaning-${id}-${eachMeaningIndex}`} xs={12}>
+                        <MeaningComponent meaning={eachMeaning} />
+                    </Grid>,
+                    eachMeaningIndex < meaning.meanings.length - 1 && (
+                        <Grid key={`${meaning.word}-divider-${id}-${eachMeaningIndex}`} xs={12}>
+                            <Divider />
+                        </Grid>
+                    )
+                ];
+            })}
         </Grid>
     );
 };

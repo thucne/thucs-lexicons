@@ -2,7 +2,7 @@ export type Definition = {
     definition: string;
     synonyms?: Array<string>;
     antonyms?: Array<string>;
-    examples?: Array<string>;
+    example?: string;
 };
 
 export type Meaning = {
