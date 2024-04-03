@@ -2,23 +2,29 @@ import React from 'react';
 import { Definition } from '@/types';
 
 import { Box, Typography } from '@mui/material';
+import Thesaurus from './Thesaurus';
 
 type DefinitionProps = {
     definition: Definition;
+    index: number;
+    word: string;
 };
 
-const DefinitionComponent = ({ definition }: DefinitionProps) => {
+const DefinitionComponent = ({ definition, index, word }: DefinitionProps) => {
     return (
         <Box component="li" my={0.5}>
-            <Typography className="font-medium">{definition.definition}</Typography>
-            {!!definition?.example?.length && (
-                <Typography variant="caption" className="italic">
-                    <Box component="span" className="font-bold">
-                        Example:
-                    </Box>{' '}
-                    {definition.example}
-                </Typography>
-            )}
+            <div className="flex flex-col gap-2">
+                <Typography className="font-medium">{definition.definition}</Typography>
+                {!!definition?.example?.length && (
+                    <Typography variant="caption" className="italic">
+                        <Box component="span" className="font-bold">
+                            Example:
+                        </Box>{' '}
+                        {definition.example}
+                    </Typography>
+                )}
+                <Thesaurus word={word} antonyms={definition.antonyms} synonyms={definition.synonyms} autoExpand={index === 0} />
+            </div>
         </Box>
     );
 };

@@ -42,7 +42,7 @@ const MeaningGroup = ({ meaning, id }: MeaningGroupProps) => {
             {meaning.meanings.map((eachMeaning, eachMeaningIndex) => {
                 return [
                     <Grid key={`${meaning.word}-meaning-${id}-${eachMeaningIndex}`} xs={12}>
-                        <MeaningComponent meaning={eachMeaning} />
+                        <MeaningComponent word={meaning.word} meaning={eachMeaning} index={eachMeaningIndex} />
                     </Grid>,
                     eachMeaningIndex < meaning.meanings.length - 1 && (
                         <Grid key={`${meaning.word}-divider-${id}-${eachMeaningIndex}`} xs={12}>

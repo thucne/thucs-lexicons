@@ -32,3 +32,13 @@ export type SearchResult = {
     sourceUrl?: string;
 };
 export type SearchResults = SearchResult[];
+
+export enum ThesaurusType {
+    Antonyms = 'antonyms',
+    Synonyms = 'synonyms'
+}
+
+export enum PromiseStatus {
+    Fulfilled = 'fulfilled',
+    Rejected = 'rejected'
+}

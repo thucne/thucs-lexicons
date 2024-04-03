@@ -1,5 +1,5 @@
 import { FREE_DICTIONARY_API } from '@/constants';
-import { License } from '@/types';
+import { License, SearchResults } from '@/types';
 
 export const createUrl = (url: string, params: URLSearchParams): string => {
     return `${url}?${params.toString()}`;
@@ -42,4 +42,11 @@ export const toggleFavorites = (word: string) => {
 
 export const getFavorites = () => {
     return JSON.parse(localStorage.getItem('favorites') || '[]');
+};
+
+export const getFirstDefinition = (results: SearchResults) => {
+    const firstMeaning = results[0];
+    const meaning = firstMeaning.meanings[0];
+    const definition = meaning?.definitions?.[0]?.definition || '';
+    return definition;
 };
