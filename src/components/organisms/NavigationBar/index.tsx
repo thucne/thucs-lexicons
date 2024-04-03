@@ -21,8 +21,6 @@ const NavigationBar = () => {
 
     const toggleSearchInput = () => setOpenSearchInput((prev) => !prev);
 
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
     useEffect(() => {
         const handleScroll = () => {
             const threshold = 100;
