@@ -11,7 +11,7 @@ type MeaningProps = {
 };
 
 const MeaningComponent = ({ meaning }: MeaningProps) => {
-    console.log(meaning);
+    // console.log(meaning);
 
     return (
         <Grid container spacing={2}>

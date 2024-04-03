@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useRef, useEffect } from 'react';
 
 import Image from 'next/image';
 
@@ -15,11 +15,29 @@ import Link from 'next/link';
 
 const NavigationBar = () => {
     const theme = useTheme();
+
     const [openSearchInput, setOpenSearchInput] = useState(false);
+    const [isSticky, setIsSticky] = useState(false);
 
     const toggleSearchInput = () => setOpenSearchInput((prev) => !prev);
 
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const threshold = 100;
+            if (window.scrollY > threshold) {
+                setIsSticky(true);
+            } else {
+                setIsSticky(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
     return (
         <Box
@@ -33,6 +51,8 @@ const NavigationBar = () => {
              */
             pb={(theme) => `calc(${theme.spacing(1)} + 1px)`}
             borderBottom={(theme) => `1px solid ${theme.palette.divider}`}
+            bgcolor={(theme) => theme.palette.background.paper}
+            className={`sticky top-0 z-50 ${isSticky ? 'shadow-md' : ''}`}
         >
             <Grid container justifyContent="space-between" alignItems="center" spacing={1}>
                 <Grid xs="auto" container alignItems="center" component={Link} href="/">
