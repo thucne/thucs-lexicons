@@ -1,7 +1,6 @@
 import { useState, useContext } from 'react';
 
 import { IconButton, useTheme } from '@mui/material';
-import { styled } from '@mui/material/styles';
 
 import { LightModeIcon, DarkModeIcon, SystemModeIcon } from '@/components/atoms/AppIcons';
 
@@ -12,8 +11,6 @@ const themeMenuId = 'theme-menu-id';
 const themeBtnSelectId = 'theme-btn-select-id';
 
 import { ColorModeContext } from '@/components/organisms/Wrappers/ThemeProvider';
-
-const StyledAppMenuItem = styled(AppMenuItem)(({ theme }) => ({}));
 
 const ThemeSelect = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -60,18 +57,18 @@ const ThemeSelect = () => {
                 {getButtonIcon()}
             </IconButton>
             <AppMenu anchorEl={anchorEl} anchorElId={themeBtnSelectId} menuId={themeMenuId} onClose={handleClose}>
-                <StyledAppMenuItem onClick={() => handleChange('light')} selected={selectedMode === 'light'}>
+                <AppMenuItem onClick={() => handleChange('light')} selected={selectedMode === 'light'}>
                     <LightModeIcon />
                     Light
-                </StyledAppMenuItem>
-                <StyledAppMenuItem onClick={() => handleChange('dark')} selected={selectedMode === 'dark'}>
+                </AppMenuItem>
+                <AppMenuItem onClick={() => handleChange('dark')} selected={selectedMode === 'dark'}>
                     <DarkModeIcon />
                     Dark
-                </StyledAppMenuItem>
-                <StyledAppMenuItem onClick={() => handleChange('system')} selected={selectedMode === 'system'}>
+                </AppMenuItem>
+                <AppMenuItem onClick={() => handleChange('system')} selected={selectedMode === 'system'}>
                     <SystemModeIcon />
                     System
-                </StyledAppMenuItem>
+                </AppMenuItem>
             </AppMenu>
         </div>
     );
