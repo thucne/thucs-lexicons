@@ -9,7 +9,7 @@ type MeaningProps = {
     meaning: Meaning;
 };
 
-const Meaning = ({ meaning }: MeaningProps) => {
+const MeaningComponent = ({ meaning }: MeaningProps) => {
     return (
         <Grid container spacing={2}>
             <Grid>
@@ -21,4 +21,4 @@ const Meaning = ({ meaning }: MeaningProps) => {
     );
 };
 
-export default Meaning;
+export default MeaningComponent;

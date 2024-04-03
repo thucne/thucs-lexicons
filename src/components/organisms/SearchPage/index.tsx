@@ -1,13 +1,13 @@
 'use client';
-import { Suspense } from 'react';
-import { redirect, useSearchParams } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 import { useLexicon } from '@/hooks/use-lexicon';
 
-const Search = () => {
-    const searchParams = useSearchParams();
-    const word = searchParams.get('word') || '';
+type SearchPageProps = {
+    word: string;
+};
 
+const SearchPageBody = ({ word }: SearchPageProps) => {
     const { data, error, isLoading } = useLexicon(word);
 
     if (isLoading) {
@@ -19,18 +19,14 @@ const Search = () => {
     }
 
     if (!Array.isArray(data)) {
-        return <div>Lexicon not found!</div>;
+        return (
+            <div>
+                Lexicon <b>&quot;{word}&quot;</b> not found!
+            </div>
+        );
     }
-    
-    redirect(`/search/${word}`);
-};
 
-const SearchPageBody = () => {
-    return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <Search />
-        </Suspense>
-    );
+    redirect(`/search/${word}`);
 };
 
 export default SearchPageBody;
