@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     openGraph: {
         images: [
             {
-                url: 'https://res.cloudinary.com/katyperrycbt/image/upload/v1711553890/j0qgiav9nyeigteenjie.jpg', // Must be an absolute URL
+                url: 'https://res.cloudinary.com/katyperrycbt/image/upload/v1712247748/n4srlgejymk1hsufxpze.jpg', // Must be an absolute URL
                 width: 2400,
                 height: 1260
             }
