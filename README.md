@@ -1,8 +1,32 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+###  This project is to apply JS, TS and React good practices as I am watching the tutorials on Udemy Courses
+
+* Status: under development (as I am learning and building)
+* The project is aimed to achieve good practices of using TS/JS and React
+* Special thanks to Free Dictionary API, this app cannot be built without a free dictionary API like this!
+* What to expect (when I'm done)
+    * A small app that allows us to search and add to our browser storage favorite words (not too much words as your browser has a very small limit amount of storage)
+    * Applying good practices in both TS/JS and React including proper use of TS types, components splitting (atomic pattern), data fetching/rendering, state management with redux, fetching data with GraphQL (right now I'm using RESTs and SWR for data fetching, just for now!) and more!
+    * SEO friendly with dynamic routes 
+
+* Keywords: Next.js, TypeScript, MUI, Redux, React Hook Form, GraphQL...
+
 ## Getting Started
 
-First, run the development server:
+Install dependencies
+
+```bash
+npm i
+# or
+yarn i
+# or
+pnpm i
+# or
+bun install
+```
+
+Then, run the development server:
 
 ```bash
 npm run dev
@@ -15,22 +39,3 @@ bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
