@@ -6,7 +6,6 @@ import Image from 'next/image';
 
 import Grid from '@/components/atoms/AppGrid';
 import { Box, IconButton, LinearProgress, Typography } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 
 import ThemeSelect from '@/components/molecules/ThemeSelect';
 import SearchBar from '@/components/organisms/NavigationBar/SearchBar';

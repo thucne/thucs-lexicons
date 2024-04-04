@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 
 import { AudioIcon } from '@/components/atoms/AppIcons';
 import { Phonetic } from '@/types';
-import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import {  IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { getLicenseString } from '@/utils';
 
 type AudioProps = {
