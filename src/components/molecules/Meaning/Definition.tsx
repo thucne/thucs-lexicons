@@ -2,15 +2,14 @@ import React from 'react';
 import { Definition } from '@/types';
 
 import { Box, Typography } from '@mui/material';
-import Thesaurus from './Thesaurus';
+import Thesaurus from '../Thesaurus';
 
 type DefinitionProps = {
     definition: Definition;
     index: number;
-    word: string;
 };
 
-const DefinitionComponent = ({ definition, index, word }: DefinitionProps) => {
+const DefinitionComponent = ({ definition, index }: DefinitionProps) => {
     return (
         <Box component="li" my={0.5}>
             <div className="flex flex-col gap-2">
@@ -23,7 +22,11 @@ const DefinitionComponent = ({ definition, index, word }: DefinitionProps) => {
                         {definition.example}
                     </Typography>
                 )}
-                <Thesaurus word={word} antonyms={definition.antonyms} synonyms={definition.synonyms} autoExpand={index === 0} />
+                <Thesaurus
+                    antonyms={definition.antonyms}
+                    synonyms={definition.synonyms}
+                    autoExpand={index === 0}
+                />
             </div>
         </Box>
     );

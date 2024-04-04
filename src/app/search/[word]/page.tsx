@@ -1,9 +1,8 @@
 import ResultPage from '@/components/organisms/ResultPage';
 import { FREE_DICTIONARY_API } from '@/constants';
 import { SearchResults } from '@/types';
-import { createUrl, getFirstDefinition, searchWord } from '@/utils';
+import { getFirstDefinition } from '@/utils';
 import type { Metadata } from 'next';
-import { redirect } from 'next/navigation';
 
 type WordPageProps = {
     params: { word: string };
@@ -35,14 +34,8 @@ export async function generateMetadata({ params }: WordPageProps): Promise<Metad
 
 const WordPage = async ({ params }: WordPageProps) => {
     const { word } = params;
-    try {
-        const data = await searchWord(word);
 
-        return <ResultPage word={word} results={data} />;
-    } catch (error) {
-        // redirect to the search page if the word is not found, maybe to suggest a similar word later.
-        redirect(createUrl('/search', new URLSearchParams({ word })));
-    }
+    return <ResultPage word={word} />;
 };
 
 export default WordPage;

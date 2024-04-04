@@ -3,8 +3,8 @@ import { Divider, Typography } from '@mui/material';
 
 import Grid from '@/components/atoms/AppGrid';
 import Audio from '@/components/molecules/Audio';
-import { getLicenseString } from '@/utils';
 import MeaningComponent from '@/components/molecules/Meaning';
+import { getLicenseString } from '@/utils';
 
 type MeaningGroupProps = {
     meaning: SearchResult;
@@ -42,7 +42,7 @@ const MeaningGroup = ({ meaning, id }: MeaningGroupProps) => {
             {meaning.meanings.map((eachMeaning, eachMeaningIndex) => {
                 return [
                     <Grid key={`${meaning.word}-meaning-${id}-${eachMeaningIndex}`} xs={12}>
-                        <MeaningComponent word={meaning.word} meaning={eachMeaning} index={eachMeaningIndex} />
+                        <MeaningComponent meaning={eachMeaning} index={eachMeaningIndex} />
                     </Grid>,
                     eachMeaningIndex < meaning.meanings.length - 1 && (
                         <Grid key={`${meaning.word}-divider-${id}-${eachMeaningIndex}`} xs={12}>

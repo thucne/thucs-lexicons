@@ -11,6 +11,13 @@ type SearchPageProps = {
 export async function generateMetadata({ searchParams }: SearchPageProps): Promise<Metadata> {
     const { word } = searchParams;
 
+    if (!word) {
+        return {
+            title: 'Search',
+            description: 'Search for a word in the dictionary.'
+        };
+    }
+
     try {
         const result = await searchWord(word);
 

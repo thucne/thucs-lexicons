@@ -1,11 +1,11 @@
 'use client';
 
-import { Suspense, useState, useRef, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 
 import Image from 'next/image';
 
 import Grid from '@/components/atoms/AppGrid';
-import { Box, IconButton, LinearProgress, Typography, useMediaQuery } from '@mui/material';
+import { Box, IconButton, LinearProgress, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
 import ThemeSelect from '@/components/molecules/ThemeSelect';
@@ -14,8 +14,6 @@ import { SearchIcon, CloseIcon } from '@/components/atoms/AppIcons';
 import Link from 'next/link';
 
 const NavigationBar = () => {
-    const theme = useTheme();
-
     const [openSearchInput, setOpenSearchInput] = useState(false);
     const [isSticky, setIsSticky] = useState(false);
 

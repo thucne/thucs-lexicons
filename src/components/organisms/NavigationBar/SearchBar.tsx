@@ -67,7 +67,7 @@ const SearchBar = () => {
     const searchFromPath = /^\/search\/([^/]+)$/.exec(pathname)?.[1];
 
     useEffect(() => {
-        setSearch(searchFromParams || searchFromPath || '');
+        setSearch(decodeURIComponent(searchFromParams || searchFromPath || ''));
     }, [searchFromParams, searchFromPath]);
 
     useEffect(() => {

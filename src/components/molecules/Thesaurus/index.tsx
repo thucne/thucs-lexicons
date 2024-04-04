@@ -1,53 +1,21 @@
 import { useState, useEffect } from 'react';
 
-import { Box, Typography } from '@mui/material';
-import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
-import MuiAccordionSummary from '@mui/material/AccordionSummary';
-import MuiAccordionDetails from '@mui/material/AccordionDetails';
-import { styled } from '@mui/material/styles';
-
+import { Typography } from '@mui/material';
 import { MinusIcon, PlusIcon } from '@/components/atoms/AppIcons';
 import { PromiseStatus, SearchResults, ThesaurusType } from '@/types';
 import { FREE_DICTIONARY_API } from '@/constants';
 import { getFirstDefinition } from '@/utils';
 import ThesaurusList, { ThesaurusItem, ThesaurusTypeProps } from './ThesaurusList';
 
-const Accordion = styled((props: AccordionProps) => <MuiAccordion disableGutters elevation={0} square {...props} />)(
-    ({ theme }) => ({
-        border: `1px solid ${theme.palette.divider}`,
-        '&:not(:last-child)': {
-            borderBottom: 0
-        },
-        '&::before': {
-            display: 'none'
-        }
-    })
-);
-
-const AccordionSummary = styled(MuiAccordionSummary)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, .05)' : 'rgba(0, 0, 0, .03)',
-    flexDirection: 'row-reverse',
-    '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
-        transform: 'rotate(90deg)'
-    },
-    '& .MuiAccordionSummary-content': {
-        marginLeft: theme.spacing(1)
-    }
-}));
-
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-    padding: theme.spacing(2),
-    borderTop: '1px solid rgba(0, 0, 0, .125)'
-}));
+import { StyledAccordion, StyledAccordionDetails, StyledAccordionSummary } from './styles';
 
 type ThesaurusProps = {
     antonyms?: string[];
     synonyms?: string[];
     autoExpand?: boolean;
-    word: string;
 };
 
-const Thesaurus = ({ antonyms = [], synonyms = [], autoExpand = false, word }: ThesaurusProps) => {
+const Thesaurus = ({ antonyms = [], synonyms = [], autoExpand = false }: ThesaurusProps) => {
     const [expanded, setExpanded] = useState(autoExpand);
     const [antonymsList, setAntonymsList] = useState<ThesaurusItem[]>([]);
     const [synonymsList, setSynonymsList] = useState<ThesaurusItem[]>([]);
@@ -57,7 +25,7 @@ const Thesaurus = ({ antonyms = [], synonyms = [], autoExpand = false, word }: T
         const fetchTherausus = async (type: ThesaurusTypeProps['type'], words: string[]) => {
             if (words.length > 0) {
                 const wordsListPromises = words.map(async (word) => {
-                    const response = await fetch(`${FREE_DICTIONARY_API}/${word}`);
+                    const response = await fetch(`${FREE_DICTIONARY_API}/${word}`, { cache: 'force-cache' });
                     return await response.json();
                 });
 
@@ -112,8 +80,8 @@ const Thesaurus = ({ antonyms = [], synonyms = [], autoExpand = false, word }: T
     }
 
     return (
-        <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
-            <AccordionSummary
+        <StyledAccordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
+            <StyledAccordionSummary
                 expandIcon={
                     expanded ? (
                         <MinusIcon sx={{ fontSize: '0.9rem', transform: 'rotate(90deg)' }} />
@@ -125,8 +93,8 @@ const Thesaurus = ({ antonyms = [], synonyms = [], autoExpand = false, word }: T
                 id="panel1d-header"
             >
                 <Typography>Thesaurus: synonyms, antonyms</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
+            </StyledAccordionSummary>
+            <StyledAccordionDetails>
                 <ThesaurusList
                     id={`word-thesaurus-${ThesaurusType.Antonyms}`}
                     type={ThesaurusType.Antonyms}
@@ -137,8 +105,8 @@ const Thesaurus = ({ antonyms = [], synonyms = [], autoExpand = false, word }: T
                     type={ThesaurusType.Synonyms}
                     words={synonymsList}
                 />
-            </AccordionDetails>
-        </Accordion>
+            </StyledAccordionDetails>
+        </StyledAccordion>
     );
 };
 
