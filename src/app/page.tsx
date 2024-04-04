@@ -1,3 +1,5 @@
+import HomePage from '@/components/organisms/HomePage';
+
 export default function Home() {
-    return <div>This is the home page. Try to search for something :D</div>;
+    return <HomePage />;
 }

@@ -29,11 +29,7 @@ const ThesaurusList = ({ type, words, id }: ThesaurusTypeProps) => {
                         <Box key={`${id}-${word.word}-${index}`} component="li">
                             <Typography>
                                 <Tooltip title="Go this word">
-                                    <Typography
-                                        component={Link}
-                                        href={word.url}
-                                        className="underline"
-                                    >
+                                    <Typography component={Link} href={word.url} className="underline">
                                         {word.word}
                                     </Typography>
                                 </Tooltip>{' '}

@@ -8,9 +8,10 @@ import { Chip, Container, Divider, Tooltip, Typography } from '@mui/material';
 import MeaningGroup from './MeaningGroup';
 import { createUrl, isFavorite, toggleFavorites } from '@/utils';
 import { CheckIcon } from '@/components/atoms/AppIcons';
-import { useAppSelector } from '@/redux/store';
+import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { selectSearchResults } from '@/redux/reducers/searchResults';
 import { useLexicon } from '@/hooks/use-lexicon';
+import { toggleFavoriteLexicon } from '@/redux/reducers/favoriteLexicons';
 
 type ResultPageProps = {
     word: string;
@@ -18,6 +19,7 @@ type ResultPageProps = {
 
 const ResultPage = ({ word: rawWord }: ResultPageProps) => {
     const word = decodeURIComponent(rawWord);
+    const dispatch = useAppDispatch();
     const [isFavoriteWord, setIsFavoriteWord] = useState(false);
 
     const resultsFromStore = useAppSelector(selectSearchResults);
@@ -35,6 +37,7 @@ const ResultPage = ({ word: rawWord }: ResultPageProps) => {
     const handleToggleFavorites = () => {
         const currentState = toggleFavorites(word);
         setIsFavoriteWord(currentState);
+        dispatch(toggleFavoriteLexicon(word));
     };
 
     if (isLoading) {
