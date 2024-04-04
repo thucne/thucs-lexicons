@@ -32,8 +32,6 @@ const ThesaurusList = ({ type, words, id }: ThesaurusTypeProps) => {
                                     <Typography
                                         component={Link}
                                         href={word.url}
-                                        target="_blank"
-                                        rel="noreferrer"
                                         className="underline"
                                     >
                                         {word.word}
