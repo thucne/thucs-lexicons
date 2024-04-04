@@ -10,7 +10,7 @@ import AppWrapper from '@/components/organisms/Wrappers/AppWrapper';
 const inter = Inter({ subsets: ['vietnamese', 'latin'] });
 
 export const metadata: Metadata = {
-    title: 'My Lexicon',
+    title: 'My Lexicons',
     description: `Search for word's definitions, synonyms, antonyms, and more...`,
     openGraph: {
         images: [

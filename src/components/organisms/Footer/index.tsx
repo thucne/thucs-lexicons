@@ -48,7 +48,10 @@ const Footer = () => {
                     </Grid>
                 </Grid>
                 <Grid>
-                    <Stack direction="row" spacing={2}>
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                        <Typography variant="body2" color="textSecondary">
+                            Source Code available!
+                        </Typography>
                         <Link href="https://github.com/thucne/thucs-lexicons" target="_blank">
                             <GitHubIcon />
                         </Link>

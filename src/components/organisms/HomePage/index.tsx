@@ -24,7 +24,7 @@ const HomePage = () => {
             <Grid container spacing={2}>
                 <Grid xs={12}>
                     <Typography variant="h4" component="h1">
-                        Welcome to My Lexicon
+                        Welcome to My Lexicons
                     </Typography>
                 </Grid>
                 <Grid xs={12} my={1}>
