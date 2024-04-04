@@ -1,5 +1,4 @@
 'use client';
-import { useEffect } from 'react';
 import { redirect } from 'next/navigation';
 
 import { useLexicon } from '@/hooks/use-lexicon';
@@ -15,7 +14,6 @@ const SearchPageBody = ({ word }: SearchPageProps) => {
 
     const { data, error, isLoading } = useLexicon(word, {
         onSuccess: (data) => {
-            console.log('data', data);
             dispatch(setSearchResults({ word, results: data }));
         }
     });

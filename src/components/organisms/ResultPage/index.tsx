@@ -19,15 +19,14 @@ type ResultPageProps = {
 const ResultPage = ({ word: rawWord }: ResultPageProps) => {
     const word = decodeURIComponent(rawWord);
     const [isFavoriteWord, setIsFavoriteWord] = useState(false);
+
     const resultsFromStore = useAppSelector(selectSearchResults);
     const shouldFetch =
         word && (resultsFromStore.word !== word || (resultsFromStore.word === word && !resultsFromStore.results));
-
+    // if failed to fetch from store, fetch from API
     const { data: resultsFromFetch, isLoading } = useLexicon(shouldFetch ? word : '');
 
     const results: SearchResults = resultsFromFetch || resultsFromStore.results;
-
-    console.log('results', results, resultsFromFetch);
 
     useEffect(() => {
         setIsFavoriteWord(isFavorite(word));
@@ -42,6 +41,12 @@ const ResultPage = ({ word: rawWord }: ResultPageProps) => {
         return <div>Fetching data...</div>;
     }
 
+    // if the word is not found in the API, results would be an object
+    // {
+    //     "title": "No Definitions Found",
+    //     "message": "Sorry pal, we couldn't find definitions for the word you were looking for.",
+    //     "resolution": "You can try the search again at later time or head to the web instead."
+    // }
     if (!Array.isArray(results)) {
         redirect(createUrl('/search', new URLSearchParams({ word })));
     }

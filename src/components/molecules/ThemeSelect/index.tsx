@@ -2,15 +2,13 @@ import { useState, useContext } from 'react';
 
 import { IconButton, useTheme } from '@mui/material';
 
-import { LightModeIcon, DarkModeIcon, SystemModeIcon } from '@/components/atoms/AppIcons';
-
 import AppMenu from '@/components/atoms/AppMenu';
 import AppMenuItem from '@/components/atoms/AppMenu/AppMenuItem';
+import { LightModeIcon, DarkModeIcon, SystemModeIcon } from '@/components/atoms/AppIcons';
+import { ColorModeContext } from '@/components/organisms/Wrappers/ThemeProvider';
 
 const themeMenuId = 'theme-menu-id';
 const themeBtnSelectId = 'theme-btn-select-id';
-
-import { ColorModeContext } from '@/components/organisms/Wrappers/ThemeProvider';
 
 const ThemeSelect = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

@@ -1,11 +1,13 @@
-import React from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+import { Box, Typography } from '@mui/material';
 
 import { Meaning } from '@/types';
 import Grid from '@/components/atoms/AppGrid';
 
-import { Box, Typography } from '@mui/material';
 import Definition from './Definition';
 import Thesaurus from '../Thesaurus';
+import { useIntersectionStatus } from '@/hooks/use-intersection-observer';
 
 type MeaningProps = {
     meaning: Meaning;
@@ -13,8 +15,12 @@ type MeaningProps = {
 };
 
 const MeaningComponent = ({ meaning, index }: MeaningProps) => {
+    const meaningRef = useRef<HTMLDivElement>(null);
+
+    const isIntersecting = useIntersectionStatus(meaningRef, { threshold: 0.5, unobserveOnIntersect: true });
+
     return (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} ref={meaningRef}>
             <Grid xs={12}>
                 <Typography className="font-bold italic">{meaning.partOfSpeech}</Typography>
             </Grid>
@@ -27,15 +33,18 @@ const MeaningComponent = ({ meaning, index }: MeaningProps) => {
                                 key={`${meaning.partOfSpeech}-definition-${definitionIndex}`}
                                 definition={definition}
                                 index={index + definitionIndex}
+                                isIntersecting={isIntersecting}
                             />
                         );
                     })}
                 </Box>
             </Grid>
 
-            <Grid xs={12}>
-                <Thesaurus antonyms={meaning.antonyms} synonyms={meaning.synonyms} autoExpand={index === 0} />
-            </Grid>
+            {isIntersecting && (
+                <Grid xs={12}>
+                    <Thesaurus antonyms={meaning.antonyms} synonyms={meaning.synonyms} autoExpand={index === 0} />
+                </Grid>
+            )}
         </Grid>
     );
 };
