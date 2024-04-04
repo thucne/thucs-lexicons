@@ -25,7 +25,7 @@ const Thesaurus = ({ antonyms = [], synonyms = [], autoExpand = false }: Thesaur
         const fetchTherausus = async (type: ThesaurusTypeProps['type'], words: string[]) => {
             if (words.length > 0) {
                 const wordsListPromises = words.map(async (word) => {
-                    const response = await fetch(`${FREE_DICTIONARY_API}/${word}`, { cache: 'force-cache' });
+                    const response = await fetch(`${FREE_DICTIONARY_API}/${word}`);
                     return await response.json();
                 });
 
