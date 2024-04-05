@@ -44,7 +44,7 @@ const InputEndAdornment = styled(Box)(({ theme }) => ({
     fontSize: 12,
     padding: theme.spacing(0, 1),
     border: `1px solid yellow`,
-    borderRadius: theme.shape.borderRadius
+    borderRadius: 1
 }));
 
 const SearchBar = () => {
