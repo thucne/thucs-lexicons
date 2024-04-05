@@ -6,6 +6,7 @@ import './globals.css';
 import ThemeProvider from '@/components/organisms/Wrappers/ThemeProvider';
 import StoreProvider from '@/components/organisms/Wrappers/StoreProvider';
 import AppWrapper from '@/components/organisms/Wrappers/AppWrapper';
+import { DEFAULT_OG_IMAGE } from '@/constants';
 
 const inter = Inter({ subsets: ['vietnamese', 'latin'] });
 
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
     openGraph: {
         images: [
             {
-                url: 'https://res.cloudinary.com/katyperrycbt/image/upload/v1712247748/n4srlgejymk1hsufxpze.jpg', // Must be an absolute URL
+                url: DEFAULT_OG_IMAGE, // Must be an absolute URL
                 width: 2400,
                 height: 1260
             }

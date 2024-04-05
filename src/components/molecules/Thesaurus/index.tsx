@@ -59,8 +59,8 @@ const Thesaurus = ({ antonyms = [], synonyms = [], autoExpand = false }: Thesaur
             setIsLoading(true);
 
             await Promise.allSettled([
-                fetchTherausus(ThesaurusType.Antonyms, antonyms),
-                fetchTherausus(ThesaurusType.Synonyms, synonyms)
+                fetchTherausus(ThesaurusType.Antonyms, antonyms.slice(0, 5)), // to not overload the API, we only fetch the first 5 words
+                fetchTherausus(ThesaurusType.Synonyms, synonyms.slice(0, 5))
             ]);
 
             setIsLoading(false);
