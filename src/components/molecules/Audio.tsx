@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 
-import { AudioIcon } from '@/components/atoms/AppIcons';
+import { AudioIcon, AudioNotFoundIcon } from '@/components/atoms/AppIcons';
 import { Phonetic } from '@/types';
 import { IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import { getLicenseString } from '@/utils';
@@ -31,8 +31,8 @@ const Audio = ({ phonetic }: AudioProps) => {
         <Stack direction="row" alignItems="center" spacing={1}>
             <Tooltip
                 title={
-                    shouldDisable
-                        ? 'Audio not found'
+                    shouldDisable || !phonetic.audio
+                        ? 'Audio not found or cannot be played.'
                         : `Click to play | ${phonetic.text} | ${getLicenseString(phonetic.license)}`
                 }
             >
@@ -41,10 +41,10 @@ const Audio = ({ phonetic }: AudioProps) => {
                         size="small"
                         component="button"
                         onClick={handlePlay}
-                        disabled={shouldDisable || isPlaying}
+                        disabled={!phonetic.audio || shouldDisable || isPlaying}
                         sx={{ border: 'none' }}
                     >
-                        <AudioIcon />
+                        {phonetic.audio ? <AudioIcon /> : <AudioNotFoundIcon />}
                     </IconButton>
                 </span>
             </Tooltip>
