@@ -29,7 +29,7 @@ export type SearchResult = {
     meanings: Array<Meaning>;
     origin?: string;
     license?: License;
-    sourceUrl?: string;
+    sourceUrls?: string[];
 };
 export type SearchResults = SearchResult[];
 
