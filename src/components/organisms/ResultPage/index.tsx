@@ -1,44 +1,69 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { redirect } from 'next/navigation';
 
-import { SearchResults } from '@/types';
-
 import { Chip, Container, Divider, Tooltip, Typography } from '@mui/material';
-import MeaningGroup from './MeaningGroup';
+import { SearchResults } from '@/types';
 import { createUrl, isFavorite, toggleFavorites } from '@/utils';
-import { CheckIcon } from '@/components/atoms/AppIcons';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
-import { selectSearchResults } from '@/redux/reducers/searchResults';
-import { useLexicon } from '@/hooks/use-lexicon';
+import { SearchResultsState, selectSearchResults } from '@/redux/reducers/searchResults';
 import { toggleFavoriteLexicon } from '@/redux/reducers/favoriteLexicons';
+
+import MeaningGroup from './MeaningGroup';
+import { CheckIcon } from '@/components/atoms/AppIcons';
+import { useLexicon } from '@/hooks/use-lexicon';
+import { persistWordToDatabaseAndStore } from '@/redux/actions/lexicon';
 
 type ResultPageProps = {
     word: string;
+    supabaseLexicon: SearchResults;
 };
 
-const ResultPage = ({ word: rawWord }: ResultPageProps) => {
+type IsAvailableResponse = [boolean, SearchResults | undefined];
+
+const isAvailableFromSupabase = (word: string, supabaseLexicon: SearchResults): IsAvailableResponse => {
+    const isAvailable = word ? word?.length > 0 && supabaseLexicon?.length > 0 : false;
+    return [isAvailable, isAvailable ? supabaseLexicon : undefined];
+};
+
+const isAvailableFromStore = (word: string, store: SearchResultsState): IsAvailableResponse => {
+    const isAvailable = Boolean(store?.word === word && store?.results?.length > 0);
+
+    return [isAvailable, isAvailable ? store.results : undefined];
+};
+
+const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
     const word = decodeURIComponent(rawWord);
+
     const dispatch = useAppDispatch();
+    const searchResultsFromStore = useAppSelector(selectSearchResults);
+
     const [isFavoriteWord, setIsFavoriteWord] = useState(false);
 
-    const resultsFromStore = useAppSelector(selectSearchResults);
-    const shouldFetch =
-        word && (resultsFromStore.word !== word || (resultsFromStore.word === word && !resultsFromStore.results));
+    const [inSupabase, resultsFromSupabase] = isAvailableFromSupabase(word, supabaseLexicon);
+    const [inStore, resultsFromStore] = isAvailableFromStore(word, searchResultsFromStore);
+
     // if failed to fetch from store, fetch from API
+    const shouldFetch = !inSupabase && !inStore;
     const { data: resultsFromFetch, isLoading } = useLexicon(shouldFetch ? word : '');
 
-    const results: SearchResults = resultsFromFetch || resultsFromStore.results;
-
-    useEffect(() => {
-        setIsFavoriteWord(isFavorite(word));
-    }, [word]);
+    const results = (resultsFromFetch || resultsFromStore || resultsFromSupabase) as SearchResults;
 
     const handleToggleFavorites = () => {
         const currentState = toggleFavorites(word);
         setIsFavoriteWord(currentState);
         dispatch(toggleFavoriteLexicon(word));
     };
+
+    useEffect(() => {
+        setIsFavoriteWord(isFavorite(word));
+    }, [word]);
+
+    useEffect(() => {
+        if (resultsFromFetch?.length) {
+            dispatch(persistWordToDatabaseAndStore(word, resultsFromFetch));
+        }
+    }, [resultsFromFetch, word, dispatch]);
 
     if (isLoading) {
         return <div>Fetching data...</div>;

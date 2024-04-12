@@ -2,12 +2,15 @@ import { useState, useEffect } from 'react';
 
 import { Typography } from '@mui/material';
 import { MinusIcon, PlusIcon } from '@/components/atoms/AppIcons';
-import { PromiseStatus, SearchResults, ThesaurusType } from '@/types';
+import { PromiseStatus, SearchResults, SearchResultsSupabase, ThesaurusType } from '@/types';
 import { FREE_DICTIONARY_API } from '@/constants';
 import { getFirstDefinition } from '@/utils';
 import ThesaurusList, { ThesaurusItem, ThesaurusTypeProps } from './ThesaurusList';
 
 import { StyledAccordion, StyledAccordionDetails, StyledAccordionSummary } from './styles';
+import { useAppDispatch } from '@/redux/store';
+import { persistWordToDatabaseAndStore } from '@/redux/actions/lexicon';
+import _ from 'lodash';
 
 type ThesaurusProps = {
     antonyms?: string[];
@@ -16,41 +19,63 @@ type ThesaurusProps = {
 };
 
 const Thesaurus = ({ antonyms = [], synonyms = [], autoExpand = false }: ThesaurusProps) => {
+    const dispatch = useAppDispatch();
     const [expanded, setExpanded] = useState(autoExpand);
     const [antonymsList, setAntonymsList] = useState<ThesaurusItem[]>([]);
     const [synonymsList, setSynonymsList] = useState<ThesaurusItem[]>([]);
+    const [fetched, setFetched] = useState(false);
+
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchTherausus = async (type: ThesaurusTypeProps['type'], words: string[]) => {
             if (words.length > 0) {
-                const wordsListPromises = words.map(async (word) => {
+                const responseFromSupabase = await fetch('/api/freedictionaryapi/get?word=' + words.join(',')).then(
+                    (res) => res.json()
+                );
+
+                const wordsNeedToFetch = words.filter(
+                    (word) => !responseFromSupabase.find((result: SearchResultsSupabase) => result.word === word)
+                );
+
+                const wordsListPromises = wordsNeedToFetch.map(async (word) => {
                     const response = await fetch(`${FREE_DICTIONARY_API}/${word}`);
                     return await response.json();
                 });
 
                 const results = await Promise.allSettled(wordsListPromises);
 
-                const foundWords: ThesaurusItem[] = results
+                const fullfilledResults = results
                     // filter out the rejected promises
                     .filter((result) => result.status === PromiseStatus.Fulfilled)
                     // the remaining promises are fulfilled, thus we can safely cast them to PromiseFulfilledResult that contains the value
                     .map((result) => (result as PromiseFulfilledResult<any>).value)
                     // if the word is not found in the dictionary, the return message would be an object {} instead of an array []
-                    .filter((result: any) => Array.isArray(result))
+                    .filter((result: any) => Array.isArray(result));
+
+                const persistLexicons: SearchResultsSupabase[] = fullfilledResults.map((result: SearchResults) => ({
+                    word: result[0].word,
+                    searchResults: result
+                }));
+
+                dispatch(persistWordToDatabaseAndStore(persistLexicons));
+
+                const concatResults = _.concat(responseFromSupabase, fullfilledResults);
+
+                const mappedWords: ThesaurusItem[] = concatResults
                     // map the results to the ThesaurusItem type
-                    .map((results: SearchResults) => {
+                    .map((lexicon: SearchResultsSupabase) => {
                         return {
-                            word: results[0].word,
-                            definition: getFirstDefinition(results),
-                            url: `/search/${results[0].word}`
+                            word: lexicon.word,
+                            definition: getFirstDefinition(lexicon.searchResults),
+                            url: `/search/${lexicon.word}`
                         };
                     });
 
                 if (type === ThesaurusType.Antonyms) {
-                    setAntonymsList(foundWords);
+                    setAntonymsList(mappedWords);
                 } else {
-                    setSynonymsList(foundWords);
+                    setSynonymsList(mappedWords);
                 }
             }
         };
@@ -66,8 +91,10 @@ const Thesaurus = ({ antonyms = [], synonyms = [], autoExpand = false }: Thesaur
             setIsLoading(false);
         };
 
-        fetchAll();
-    }, [synonyms, antonyms]);
+        if (!isLoading && !fetched) {
+            fetchAll().finally(() => setFetched(true));
+        }
+    }, [synonyms, antonyms, isLoading, fetched, dispatch]);
 
     const shouldShowThesaurs = antonymsList.length > 0 || synonymsList.length > 0;
 

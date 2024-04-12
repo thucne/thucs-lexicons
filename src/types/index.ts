@@ -22,6 +22,7 @@ export type Phonetic = {
     sourceUrl?: string;
     license?: License;
 };
+
 export type SearchResult = {
     word: string;
     phonetic: string;
@@ -31,6 +32,7 @@ export type SearchResult = {
     license?: License;
     sourceUrls?: string[];
 };
+
 export type SearchResults = SearchResult[];
 
 export enum ThesaurusType {
@@ -42,3 +44,8 @@ export enum PromiseStatus {
     Fulfilled = 'fulfilled',
     Rejected = 'rejected'
 }
+
+export type SearchResultsSupabase = {
+    word: string;
+    searchResults: SearchResults;
+};

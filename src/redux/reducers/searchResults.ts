@@ -3,7 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import { AppState } from '@/redux/store';
 
-type SearchResultsState = {
+export type SearchResultsState = {
     word: string;
     results: SearchResults;
 };
@@ -17,7 +17,7 @@ export const searchResultsSlice = createSlice({
     name: 'searchResults',
     initialState: initState,
     reducers: {
-        setSearchResults: (state, action: PayloadAction<SearchResultsState>) => {
+        setSearchResults: (_, action: PayloadAction<SearchResultsState>) => {
             return action.payload;
         },
         clearSearchResults: () => {

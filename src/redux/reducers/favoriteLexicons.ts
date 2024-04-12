@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { AppState } from '../store';
+import { persistWordToDatabaseAndStore as persistWordToDatabaseAndStoreAction } from '../actions/lexicon';
 
 const initState: string[] = [];
 
@@ -23,5 +24,6 @@ export const favoriteLexiconsSlice = createSlice({
 
 export const { toggleFavoriteLexicon, setFavoriteLexicons, clearFavoriteLexicons } = favoriteLexiconsSlice.actions;
 export const selectFavoriteLexicons = (state: AppState) => state.favoriteLexicons;
+export const persistWordToDatabaseAndStore = persistWordToDatabaseAndStoreAction;
 
 export default favoriteLexiconsSlice.reducer;

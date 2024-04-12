@@ -1,5 +1,6 @@
 import ResultPage from '@/components/organisms/ResultPage';
 import { FREE_DICTIONARY_API } from '@/constants';
+import { useSupabaseLexicon } from '@/hooks/use-supabase';
 import { SearchResults } from '@/types';
 import { getFirstDefinition } from '@/utils';
 import type { Metadata } from 'next';
@@ -35,7 +36,11 @@ export async function generateMetadata({ params }: WordPageProps): Promise<Metad
 const WordPage = async ({ params }: WordPageProps) => {
     const { word } = params;
 
-    return <ResultPage word={word} />;
+    const { data } = await useSupabaseLexicon(word);
+
+    const superbaseLexicon = data?.searchResults;
+
+    return <ResultPage word={word} supabaseLexicon={superbaseLexicon} />;
 };
 
 export default WordPage;

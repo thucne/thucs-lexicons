@@ -2,17 +2,20 @@
 import { redirect } from 'next/navigation';
 
 import { useLexicon } from '@/hooks/use-lexicon';
-import { useAppDispatch } from '@/redux/store';
-import { setSearchResults } from '@/redux/reducers/searchResults';
+import { useAppDispatch, useAppSelector } from '@/redux/store';
+import { SearchResultsState, selectSearchResults, setSearchResults } from '@/redux/reducers/searchResults';
 
 type SearchPageProps = {
     word: string;
 };
 
 const SearchPageBody = ({ word }: SearchPageProps) => {
+    const resultsFromStore: SearchResultsState = useAppSelector(selectSearchResults);
     const dispatch = useAppDispatch();
 
-    const { data, error, isLoading } = useLexicon(word, {
+    const existed = resultsFromStore.word === word && resultsFromStore.results;
+
+    const { data, error, isLoading } = useLexicon(!existed ? word : undefined, {
         onSuccess: (data) => {
             dispatch(setSearchResults({ word, results: data }));
         }
@@ -30,7 +33,9 @@ const SearchPageBody = ({ word }: SearchPageProps) => {
         return <div>Try to search for a word!</div>;
     }
 
-    if (!Array.isArray(data)) {
+    const results = data || resultsFromStore.results;
+
+    if (!Array.isArray(results)) {
         return (
             <div>
                 Lexicon <b>&quot;{word}&quot;</b> not found!

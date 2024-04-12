@@ -8,7 +8,11 @@ export const createUrl = (url: string, params: URLSearchParams): string => {
 export const getLicenseString = (license?: License): string =>
     license ? `${license.name} | ${license.url || 'No License URL found'}` : 'No License found';
 
-export const searchWord = async (query: string) => {
+export const searchWord = async (query?: string) => {
+    if (!query) {
+        return [];
+    }
+
     const res = await fetch(`${FREE_DICTIONARY_API}/${query}`);
 
     if (!res.ok) {
