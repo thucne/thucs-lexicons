@@ -13,7 +13,7 @@ export const favoriteLexiconsSlice = createSlice({
             const nextState = state.includes(word) ? state.filter((w) => w !== word) : [word, ...state];
             return nextState;
         },
-        setFavoriteLexicons: (state, action) => {
+        setFavoriteLexicons: (_, action) => {
             return action.payload;
         },
         clearFavoriteLexicons: () => {

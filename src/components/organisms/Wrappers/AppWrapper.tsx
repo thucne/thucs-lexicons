@@ -1,6 +1,7 @@
-import React from 'react';
+import { Suspense } from 'react';
 import NavigationBar from '@/components/organisms/NavigationBar';
 import Footer from '../Footer';
+import LoginMessageDialog from './LoginMessageDialog';
 
 const AppWrapper = ({ children }: React.PropsWithChildren) => {
     return (
@@ -10,6 +11,9 @@ const AppWrapper = ({ children }: React.PropsWithChildren) => {
                 {children}
             </main>
             <Footer />
+            <Suspense>
+                <LoginMessageDialog />
+            </Suspense>
         </div>
     );
 };

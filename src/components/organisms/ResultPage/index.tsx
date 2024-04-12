@@ -13,6 +13,8 @@ import MeaningGroup from './MeaningGroup';
 import { CheckIcon } from '@/components/atoms/AppIcons';
 import { useLexicon } from '@/hooks/use-lexicon';
 import { persistWordToDatabaseAndStore } from '@/redux/actions/lexicon';
+import axios from 'axios';
+import { requestLogin } from '@/redux/reducers/auth';
 
 type ResultPageProps = {
     word: string;
@@ -53,6 +55,15 @@ const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
         const currentState = toggleFavorites(word);
         setIsFavoriteWord(currentState);
         dispatch(toggleFavoriteLexicon(word));
+        axios.post('/api/supabase/lexicon/add-to-favorite', { word }).then((response) => {
+            if (response.data?.url) {
+                return dispatch(requestLogin({
+                    authUrl: response.data.url,
+                    callbackUrl: `/search/${word}?favorite=${currentState ? 'remove' : 'add'}`,
+                }));
+            }
+            console.log('Favorite word added to database!')
+        });
     };
 
     useEffect(() => {

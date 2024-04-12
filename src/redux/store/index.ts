@@ -4,12 +4,14 @@ import type { TypedUseSelectorHook } from 'react-redux';
 
 import searchResultsReducer from '@/redux/reducers/searchResults';
 import favoriteLexiconsReducer from '@/redux/reducers/favoriteLexicons';
+import authReducer from '@/redux/reducers/auth';
 
 export const makeStore = () => {
     return configureStore({
         reducer: {
             searchResults: searchResultsReducer,
-            favoriteLexicons: favoriteLexiconsReducer
+            favoriteLexicons: favoriteLexiconsReducer,
+            auth: authReducer
         }
     });
 };

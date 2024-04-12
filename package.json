@@ -20,6 +20,8 @@
         "@supabase/ssr": "^0.3.0",
         "@supabase/supabase-js": "^2.42.0",
         "axios": "^1.6.8",
+        "google-auth-library": "^9.7.0",
+        "jsonwebtoken": "^9.0.2",
         "lodash": "^4.17.21",
         "next": "14.1.4",
         "react": "^18",
@@ -28,6 +30,7 @@
         "swr": "^2.2.5"
     },
     "devDependencies": {
+        "@types/jsonwebtoken": "^9.0.6",
         "@types/lodash": "^4.17.0",
         "@types/node": "^20",
         "@types/react": "^18",

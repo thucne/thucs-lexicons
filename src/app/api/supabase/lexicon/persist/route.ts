@@ -14,8 +14,9 @@ function validateObj(arg: LexiconBody | LexiconBody[]): boolean {
 }
 
 export async function POST(request: Request) {
+    const supabase = useSupabase();
+
     try {
-        const supabase = useSupabase();
 
         const inputObj = await request.json();
 
@@ -32,6 +33,7 @@ export async function POST(request: Request) {
                 password: process.env.THUCNE_PASS!
             });
         }
+
         // save
         const { data, error } = await supabase.from('Lexicon').upsert(inputObj, { onConflict: 'word' }).select();
 
@@ -46,5 +48,7 @@ export async function POST(request: Request) {
         });
     } catch (error) {
         return new Response('Error persisting data');
+    } finally {
+        await supabase.auth.signOut();
     }
 }

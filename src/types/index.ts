@@ -49,3 +49,8 @@ export type SearchResultsSupabase = {
     word: string;
     searchResults: SearchResults;
 };
+
+export type FavoriteLexiconSupabase = {
+    createdBy: string;
+    lexicons: string;
+}

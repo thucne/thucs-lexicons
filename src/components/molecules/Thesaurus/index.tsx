@@ -30,6 +30,7 @@ const Thesaurus = ({ antonyms = [], synonyms = [], autoExpand = false }: Thesaur
     useEffect(() => {
         const fetchTherausus = async (type: ThesaurusTypeProps['type'], words: string[]) => {
             if (words.length > 0) {
+
                 const responseFromSupabase = await fetch('/api/freedictionaryapi/get?word=' + words.join(',')).then(
                     (res) => res.json()
                 );
@@ -43,6 +44,7 @@ const Thesaurus = ({ antonyms = [], synonyms = [], autoExpand = false }: Thesaur
                     return await response.json();
                 });
 
+                // to speed up the process, we fetch the words in parallel
                 const results = await Promise.allSettled(wordsListPromises);
 
                 const fullfilledResults = results

@@ -44,6 +44,21 @@ export const toggleFavorites = (word: string) => {
     return nextState;
 };
 
+export const toggleAndPersistFavoriteWordToSupabase = async (word: string, currentFavorites: string[]) => {
+    let nextState;
+    const favorites = currentFavorites;
+
+    if (favorites.includes(word)) {
+        favorites.splice(favorites.indexOf(word), 1);
+        nextState = false;
+    } else {
+        favorites.push(word);
+        nextState = true;
+    }
+
+    
+}
+
 export const getFavorites = () => {
     return JSON.parse(localStorage.getItem('favorites') || '[]');
 };
