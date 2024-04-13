@@ -19,7 +19,8 @@
         ],
         "paths": {
             "@/*": ["./src/*"]
-        }
+        },
+        "experimentalDecorators": true,
     },
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "prettier.config.js"],
     "exclude": ["node_modules"]

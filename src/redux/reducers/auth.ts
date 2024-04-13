@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { AppState } from '../store';
+import { validateAndLogin } from '../actions/auth';
 
 type RequestLoginPayload = {
     authUrl: string;
@@ -51,5 +52,6 @@ export const selectLoggedInStatus = (state: AppState) => state.auth.loggedIn;
 export const selectShowLoginDialog = (state: AppState) => state.auth.showLoginDialog;
 export const selectCallbackUrl = (state: AppState) => state.auth.callbackUrl;
 export const selectAuthUrl = (state: AppState) => state.auth.authUrl;
+export const login = validateAndLogin;
 
 export default authSlice.reducer;

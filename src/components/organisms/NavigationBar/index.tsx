@@ -3,6 +3,7 @@
 import { Suspense, useState, useEffect } from 'react';
 
 import Image from 'next/image';
+import Link from 'next/link';
 
 import Grid from '@/components/atoms/AppGrid';
 import { Box, IconButton, LinearProgress, Typography } from '@mui/material';
@@ -10,7 +11,6 @@ import { Box, IconButton, LinearProgress, Typography } from '@mui/material';
 import ThemeSelect from '@/components/molecules/ThemeSelect';
 import SearchBar from '@/components/organisms/NavigationBar/SearchBar';
 import { SearchIcon, CloseIcon } from '@/components/atoms/AppIcons';
-import Link from 'next/link';
 
 const NavigationBar = () => {
     const [openSearchInput, setOpenSearchInput] = useState(false);

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Typography, Button, Box } from '@mui/material';
 import {
     cancelLoginRequest,
+    login,
     resetLogin,
     selectAuthUrl,
     selectCallbackUrl,
@@ -20,6 +21,7 @@ const constructLoginUrl = (callbackUrl: string) => {
     return `/api/auth/login?callbackUrl=${encodeURIComponent(callbackUrl)}`;
 };
 
+declare const window: any;
 declare const google: any;
 
 const LoginMessageDialog = () => {
@@ -35,14 +37,14 @@ const LoginMessageDialog = () => {
     useEffect(() => {
         let tryAgain: ReturnType<typeof setInterval>;
 
-        if (google) {
+        if (window?.google && google) {
             const handleCredentialResponse = async (response: any) => {
                 try {
                     const { credential } = response;
 
                     setIsLoggingIn(true);
 
-                    await axios.post('/api/auth/login/validate', { token: credential }).then((res) => res.data);
+                    await dispatch(login(credential))
 
                     console.log(callbackUrl)
 
