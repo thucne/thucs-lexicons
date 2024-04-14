@@ -8,6 +8,21 @@ export default function useSupabase() {
     return createClient(cookieStore);
 }
 
+export async function useSupbabaseAdmin() {
+    const supabase = useSupabase();
+
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+
+    if (userError || !userData?.user || userData.user.id !== process.env.THUCNE_ID!) {
+        await supabase.auth.signInWithPassword({
+            email: 'trongthuc.bentre@gmail.com',
+            password: process.env.THUCNE_PASS!
+        });
+    }
+
+    return supabase;
+}
+
 type SupabaseLexicon = { searchResults: SearchResults; word: string };
 
 export async function useSupabaseLexicon(word: string): Promise<{ data: SupabaseLexicon; error: any }> {

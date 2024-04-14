@@ -35,7 +35,7 @@ export async function POST(request: Request) {
             expires: new Date(Date.now() + 60 * 60 * 1000 - 1000)
         });
 
-        return new Response('OK', { status: 200 });
+        return new Response(JSON.stringify({ email }), { status: 200 });
     } catch (error) {
         console.log(error);
         return new Response('Internal server error', { status: 500 });

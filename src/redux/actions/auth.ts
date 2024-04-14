@@ -6,20 +6,57 @@ import { resetLogin } from '../reducers/auth';
 type ReturnType = (dispatch: Dispatch) => Promise<void>;
 
 const LOGIN_URL = '/api/auth/login/validate';
+const HANDSHAKE_URL = '/api/auth/login/handshake';
+const LOGOUT_URL = '/api/auth/logout';
 const LOG_PREFIX = 'Auth';
 
-class Login {
+class Auth {
     constructor() {}
 
-    @Logger(LOG_PREFIX)
     login(token: string): ReturnType {
         return async (dispatch: Dispatch) => {
             return axios
                 .post(LOGIN_URL, {
                     token
                 })
-                .then((_) => {
-                    dispatch(resetLogin({ success: true }));
+                .then((response) => {
+                    dispatch(resetLogin({ success: true, email: response.data.email }));
+                })
+                .catch((error) => {
+                    console.error(error);
+                    dispatch(resetLogin({ success: false }));
+                });
+        };
+    }
+
+    handshake(): ReturnType {
+        return async (dispatch: Dispatch) => {
+            return axios
+                .get(HANDSHAKE_URL, { withCredentials: true })
+                .then((response) => {
+                    if (response.data.result === 1) {
+                        dispatch(resetLogin({ success: true, email: response.data.email }));
+                    } else {
+                        dispatch(resetLogin({ success: false }));
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                    dispatch(resetLogin({ success: false }));
+                });
+        };
+    }
+
+    logout(): ReturnType {
+        return async (dispatch: Dispatch) => {
+            return axios
+                .get(LOGOUT_URL, { withCredentials: true })
+                .then((response) => {
+                    if (response.data.result === 1) {
+                        dispatch(resetLogin({ success: false }));
+                    } else {
+                        dispatch(resetLogin({ success: false }));
+                    }
                 })
                 .catch((error) => {
                     console.error(error);
@@ -29,8 +66,10 @@ class Login {
     }
 }
 
-const login = new Login();
+const login = new Auth();
 
 const validateAndLogin = login.login;
+const handshake = login.handshake;
+const logout = login.logout;
 
-export { validateAndLogin };
+export { validateAndLogin, handshake, logout };

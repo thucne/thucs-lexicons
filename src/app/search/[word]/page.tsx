@@ -37,7 +37,7 @@ const WordPage = async ({ params }: WordPageProps) => {
     const { word } = params;
 
     const { data } = await useSupabaseLexicon(word);
-
+    console.log(`data: ${data}`, word);
     const superbaseLexicon = data?.searchResults;
 
     return <ResultPage word={word} supabaseLexicon={superbaseLexicon} />;

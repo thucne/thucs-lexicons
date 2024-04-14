@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { AppState } from '../store';
-import { validateAndLogin } from '../actions/auth';
+import { validateAndLogin, handshake as handshakeAction, logout as logoutAction } from '../actions/auth';
 
 type RequestLoginPayload = {
     callbackUrl: string | null;
@@ -10,12 +10,14 @@ type AuthState = {
     loggedIn: boolean;
     showLoginDialog: boolean;
     callbackUrl: string | null;
+    email: string | null;
 };
 
 const initState: AuthState = {
     loggedIn: false,
     showLoginDialog: false,
-    callbackUrl: null
+    callbackUrl: null,
+    email: null
 };
 
 export const authSlice = createSlice({
@@ -29,10 +31,11 @@ export const authSlice = createSlice({
             state.showLoginDialog = true;
             state.callbackUrl = action.payload.callbackUrl;
         },
-        resetLogin: (state, action: PayloadAction<{ success: boolean }>) => {
+        resetLogin: (state, action: PayloadAction<{ success: boolean; email?: string }>) => {
             state.loggedIn = action.payload.success;
             state.showLoginDialog = false;
             state.callbackUrl = null;
+            state.email = action.payload.email || null;
         },
         cancelLoginRequest: (state) => {
             state.showLoginDialog = false;
@@ -45,6 +48,9 @@ export const { requestLogin, resetLogin, setLoggedInStatus, cancelLoginRequest }
 export const selectLoggedInStatus = (state: AppState) => state.auth.loggedIn;
 export const selectShowLoginDialog = (state: AppState) => state.auth.showLoginDialog;
 export const selectCallbackUrl = (state: AppState) => state.auth.callbackUrl;
+export const selectEmail = (state: AppState) => state.auth.email;
 export const login = validateAndLogin;
+export const handshake = handshakeAction;
+export const logout = logoutAction;
 
 export default authSlice.reducer;

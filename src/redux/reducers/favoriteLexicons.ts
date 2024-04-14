@@ -3,7 +3,8 @@ import { AppState } from '../store';
 import {
     persistWordToDatabaseAndStore as persistWordToDatabaseAndStoreAction,
     toggleAndPersistFavoriteLexicon as toggleAndPersistFavoriteLexiconAction,
-    getFavorites as getFavoritesAction
+    getFavorites as getFavoritesAction,
+    clearFavorites as clearFavoritesAction
 } from '../actions/lexicon';
 
 const initState: string[] = [];
@@ -37,5 +38,6 @@ export const selectFavoriteLexicons = (state: AppState) => state.favoriteLexicon
 export const persistWordToDatabaseAndStore = persistWordToDatabaseAndStoreAction;
 export const toggleAndPersistFavoriteLexicon = toggleAndPersistFavoriteLexiconAction;
 export const getFavorites = getFavoritesAction;
+export const clearFavorites = clearFavoritesAction;
 
 export default favoriteLexiconsSlice.reducer;
