@@ -16,6 +16,20 @@ const Footer = () => {
     const theme = useTheme();
     return [
         <Divider key="footer-div" />,
+        <Container key="footer-nav" component="footer" maxWidth={false} sx={{ p: 2 }}>
+            <Stack direction="row" spacing={2} alignItems="center">
+                <Link href="/terms-of-service" passHref>
+                    <Typography color="textSecondary" className="underline-offset-4 hover:underline">
+                        Terms of Service
+                    </Typography>
+                </Link>
+                <Link href="/privacy-policy" passHref>
+                    <Typography color="textSecondary" className="underline-offset-4 hover:underline">
+                        Privacy Policy
+                    </Typography>
+                </Link>
+            </Stack>
+        </Container>,
         <Container key="footer-main" component="footer" maxWidth={false} sx={{ p: 2 }}>
             <Grid container spacing={2} justifyContent="space-between" alignItems="center">
                 <Grid container direction="column">
@@ -50,7 +64,7 @@ const Footer = () => {
                 <Grid>
                     <Stack direction="row" alignItems="center" spacing={2}>
                         <Typography variant="body2" color="textSecondary">
-                            Source Code available!
+                            Source code available on GitHub
                         </Typography>
                         <Link href="https://github.com/thucne/thucs-lexicons" target="_blank">
                             <GitHubIcon />
