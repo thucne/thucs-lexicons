@@ -1,4 +1,4 @@
-import { cookies } from 'next/headers'
+import { cookies } from 'next/headers';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
 
@@ -7,7 +7,7 @@ const client = new OAuth2Client();
 async function verify(token: string) {
     const ticket = await client.verifyIdToken({
         idToken: token,
-        audience: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+        audience: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
     });
     const payload = ticket.getPayload();
     const email = payload?.email;
@@ -32,12 +32,10 @@ export async function POST(request: Request) {
             secure: true,
             sameSite: 'strict',
             path: '/',
-            expires: new Date(Date.now() + 60 * 60 * 1000 - 1000),
+            expires: new Date(Date.now() + 60 * 60 * 1000 - 1000)
         });
 
-
         return new Response('OK', { status: 200 });
-        
     } catch (error) {
         console.log(error);
         return new Response('Internal server error', { status: 500 });

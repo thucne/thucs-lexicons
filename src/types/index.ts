@@ -53,4 +53,4 @@ export type SearchResultsSupabase = {
 export type FavoriteLexiconSupabase = {
     createdBy: string;
     lexicons: string;
-}
+};

@@ -14,7 +14,7 @@ const AppWrapper = ({ children }: React.PropsWithChildren) => {
             <Suspense>
                 <LoginMessageDialog />
             </Suspense>
-         </div>
+        </div>
     );
 };
 

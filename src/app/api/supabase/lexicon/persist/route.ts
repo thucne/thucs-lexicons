@@ -17,7 +17,6 @@ export async function POST(request: Request) {
     const supabase = useSupabase();
 
     try {
-
         const inputObj = await request.json();
 
         if (!validateObj(inputObj)) {

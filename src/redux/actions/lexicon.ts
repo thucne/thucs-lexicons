@@ -45,33 +45,39 @@ function persistWordToDatabaseAndStore(arg1: unknown, arg2?: unknown): ReturnTyp
             console.log(`${LOG_PREFIX} Skipping...`);
         };
     } catch (error) {
-        return async (_: Dispatch) => { };
+        return async (_: Dispatch) => {};
     }
 }
 
 function toggleAndPersistFavoriteLexicon(word: string): ReturnType {
     return async (dispatch: Dispatch) => {
-        return await axios.post(FAVORITE_URL, { word }, { withCredentials: true }).then((response) => {
-            // if unauthorized, request login
-            if (response.status === 401) {
-                dispatch(requestLogin({ callbackUrl: `/search/${word}?favorite=toggle` }));
-            } else {
-                dispatch(toggleFavoriteLexicon({ word, state: response.data.currentState }));
-            }
-        }).catch((error: AxiosError) => {
-            if (error.response?.status === 401) {
-                dispatch(requestLogin({ callbackUrl: `/search/${word}?favorite=toggle` }));
-            }
-        });
+        return await axios
+            .post(FAVORITE_URL, { word }, { withCredentials: true })
+            .then((response) => {
+                // if unauthorized, request login
+                if (response.status === 401) {
+                    dispatch(requestLogin({ callbackUrl: `/search/${word}?favorite=toggle` }));
+                } else {
+                    dispatch(toggleFavoriteLexicon({ word, state: response.data.currentState }));
+                }
+            })
+            .catch((error: AxiosError) => {
+                if (error.response?.status === 401) {
+                    dispatch(requestLogin({ callbackUrl: `/search/${word}?favorite=toggle` }));
+                }
+            });
     };
 }
 
 function getFavorites(): ReturnType {
     return async (dispatch: Dispatch) => {
-        return await axios.get(GET_FAVORITES_URL, { withCredentials: true }).then((response) => {
-            dispatch(setFavoriteLexicons(response.data?.map((r: { lexicon: string }) => r.lexicon) ?? []));
-        });
-    }
+        return await axios
+            .get(GET_FAVORITES_URL, { withCredentials: true })
+            .then((response) => {
+                dispatch(setFavoriteLexicons(response.data?.map((r: { lexicon: string }) => r.lexicon) ?? []));
+            })
+            .catch((_: AxiosError) => {});
+    };
 }
 
 export { persistWordToDatabaseAndStore, toggleAndPersistFavoriteLexicon, getFavorites };

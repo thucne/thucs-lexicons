@@ -7,7 +7,11 @@ import { SearchResults } from '@/types';
 import { createUrl } from '@/utils';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { SearchResultsState, selectSearchResults } from '@/redux/reducers/searchResults';
-import { selectFavoriteLexicons, toggleAndPersistFavoriteLexicon, toggleFavoriteLexicon } from '@/redux/reducers/favoriteLexicons';
+import {
+    selectFavoriteLexicons,
+    toggleAndPersistFavoriteLexicon,
+    toggleFavoriteLexicon
+} from '@/redux/reducers/favoriteLexicons';
 
 import MeaningGroup from './MeaningGroup';
 import { CheckIcon } from '@/components/atoms/AppIcons';

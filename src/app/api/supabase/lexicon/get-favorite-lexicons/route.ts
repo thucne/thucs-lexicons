@@ -1,4 +1,4 @@
-import { cookies } from 'next/headers'
+import { cookies } from 'next/headers';
 import useSupabase from '@/hooks/use-supabase';
 import jwt from 'jsonwebtoken';
 

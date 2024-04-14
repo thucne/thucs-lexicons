@@ -19,8 +19,9 @@ const PrivacyPolicy = () => {
             </Typography>
 
             <Typography variant="body1" gutterBottom>
-                This privacy policy (&quot;Policy&quot;) describes how My Lexicons (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) handles information when
-                you use our website, located at lexicon-app.at.thucde.dev (the &quot;Website&quot;).
+                This privacy policy (&quot;Policy&quot;) describes how My Lexicons (&quot;we,&quot; &quot;us,&quot; or
+                &quot;our&quot;) handles information when you use our website, located at lexicon-app.at.thucde.dev (the
+                &quot;Website&quot;).
             </Typography>
 
             <Typography variant="h6" component="h3" gutterBottom>

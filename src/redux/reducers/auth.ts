@@ -4,19 +4,19 @@ import { validateAndLogin } from '../actions/auth';
 
 type RequestLoginPayload = {
     callbackUrl: string | null;
-}
+};
 
 type AuthState = {
     loggedIn: boolean;
     showLoginDialog: boolean;
     callbackUrl: string | null;
-}
+};
 
 const initState: AuthState = {
     loggedIn: false,
     showLoginDialog: false,
-    callbackUrl: null,
-}
+    callbackUrl: null
+};
 
 export const authSlice = createSlice({
     name: 'auth',

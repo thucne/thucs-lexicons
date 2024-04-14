@@ -11,19 +11,21 @@ import { Box, IconButton, LinearProgress, Typography } from '@mui/material';
 import ThemeSelect from '@/components/molecules/ThemeSelect';
 import SearchBar from '@/components/organisms/NavigationBar/SearchBar';
 import { SearchIcon, CloseIcon } from '@/components/atoms/AppIcons';
-import { useAppDispatch } from '@/redux/store';
+import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { getFavorites } from '@/redux/reducers/favoriteLexicons';
+import { selectLoggedInStatus } from '@/redux/reducers/auth';
 
 const NavigationBar = () => {
     const dispatch = useAppDispatch();
     const [openSearchInput, setOpenSearchInput] = useState(false);
     const [isSticky, setIsSticky] = useState(false);
+    const loggedIn = useAppSelector(selectLoggedInStatus);
 
     const toggleSearchInput = () => setOpenSearchInput((prev) => !prev);
 
     useEffect(() => {
-        dispatch(getFavorites());
-    }, [dispatch]);
+        if (loggedIn) dispatch(getFavorites());
+    }, [dispatch, loggedIn]);
 
     useEffect(() => {
         const handleScroll = () => {

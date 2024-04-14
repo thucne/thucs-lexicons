@@ -12,9 +12,9 @@ const TermsOfService = () => {
                 Effective Date: 2024-04-14
             </Typography>
             <Typography variant="body1" gutterBottom>
-                These Terms of Service (&quot;Terms&quot;) govern your access to and use of the My Lexicons website, located at
-                lexicon-app.at.thucde.dev (the &quot;Website&quot;). By accessing or using the Website, you agree to be bound by
-                these Terms.
+                These Terms of Service (&quot;Terms&quot;) govern your access to and use of the My Lexicons website,
+                located at lexicon-app.at.thucde.dev (the &quot;Website&quot;). By accessing or using the Website, you
+                agree to be bound by these Terms.
             </Typography>
             <Typography variant="h6" gutterBottom>
                 1. Use of the Website
@@ -23,7 +23,8 @@ const TermsOfService = () => {
                 You must be at least 13 years old to use the Website. You are responsible for maintaining the
                 confidentiality of your Google account information. You agree to use the Website for lawful purposes
                 only and in accordance with these Terms. You agree not to use the Website in any way that could damage,
-                disable, overburden, or impair the Website or interfere with any other user&apos;s enjoyment of the Website.
+                disable, overburden, or impair the Website or interfere with any other user&apos;s enjoyment of the
+                Website.
             </Typography>
             <Typography variant="h6" gutterBottom>
                 2. User Content
@@ -38,7 +39,8 @@ const TermsOfService = () => {
             </Typography>
             <Typography variant="body1" gutterBottom>
                 The Website integrates with Google Sign-In for user authentication and the Free Dictionary API for word
-                definitions. Your use of Google Sign-In is governed by Google&apos;s terms of service and privacy policy.
+                definitions. Your use of Google Sign-In is governed by Google&apos;s terms of service and privacy
+                policy.
             </Typography>
             <Typography variant="h6" gutterBottom>
                 4. Intellectual Property
@@ -53,10 +55,10 @@ const TermsOfService = () => {
                 5. Disclaimers
             </Typography>
             <Typography variant="body1" gutterBottom>
-                The Website is provided &quot;as is&quot; and without warranties of any kind, whether express or implied. We
-                disclaim all warranties, including but not limited to warranties of merchantability, fitness for a
-                particular purpose, and non-infringement. We do not warrant that the Website will be uninterrupted or
-                error-free. We are not responsible for the accuracy of definitions retrieved from the Free Dictionary
+                The Website is provided &quot;as is&quot; and without warranties of any kind, whether express or
+                implied. We disclaim all warranties, including but not limited to warranties of merchantability, fitness
+                for a particular purpose, and non-infringement. We do not warrant that the Website will be uninterrupted
+                or error-free. We are not responsible for the accuracy of definitions retrieved from the Free Dictionary
                 API.
             </Typography>
             <Typography variant="h6" gutterBottom>

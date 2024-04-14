@@ -3,13 +3,7 @@
 import { useState, useEffect } from 'react';
 
 import { Dialog, DialogActions, DialogContent, DialogTitle, Typography, Button, Box } from '@mui/material';
-import {
-    cancelLoginRequest,
-    login,
-    resetLogin,
-    selectCallbackUrl,
-    selectShowLoginDialog
-} from '@/redux/reducers/auth';
+import { cancelLoginRequest, login, resetLogin, selectCallbackUrl, selectShowLoginDialog } from '@/redux/reducers/auth';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
@@ -40,9 +34,9 @@ const LoginMessageDialog = () => {
 
                     setIsLoggingIn(true);
 
-                    await dispatch(login(credential))
+                    await dispatch(login(credential));
 
-                    console.log(callbackUrl)
+                    console.log(callbackUrl);
 
                     if (callbackUrl) {
                         router.push(callbackUrl);
