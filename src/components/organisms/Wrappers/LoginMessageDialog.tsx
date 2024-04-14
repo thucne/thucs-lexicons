@@ -79,7 +79,7 @@ const LoginMessageDialog = () => {
         }
 
         return () => tryAgain && clearInterval(tryAgain);
-    }, [showLoginDialog, callbackUrl, router]);
+    }, [showLoginDialog, callbackUrl, router, dispatch]);
 
     const handleClose = (success: boolean) => {
         dispatch(resetLogin({ success }));
