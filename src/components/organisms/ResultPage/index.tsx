@@ -55,14 +55,17 @@ const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
         const currentState = toggleFavorites(word);
         setIsFavoriteWord(currentState);
         dispatch(toggleFavoriteLexicon(word));
-        axios.post('/api/supabase/lexicon/add-to-favorite', { word }).then((response) => {
+        axios.post('/api/supabase/lexicon/add-to-favorite', { word }, { withCredentials: true }).then((response) => {
             if (response.data?.url) {
-                return dispatch(requestLogin({
-                    authUrl: response.data.url,
-                    callbackUrl: `/search/${word}?favorite=${currentState ? 'remove' : 'add'}`,
-                }));
+                return dispatch(
+                    requestLogin({
+                        authUrl: response.data.url,
+                        callbackUrl: `/search/${word}?favorite=${currentState ? 'remove' : 'add'}`
+                    })
+                );
             }
-            console.log('Favorite word added to database!')
+            console.log(response);
+            console.log('Favorite word added to database!');
         });
     };
 
