@@ -1,6 +1,10 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { AppState } from '../store';
-import { persistWordToDatabaseAndStore as persistWordToDatabaseAndStoreAction } from '../actions/lexicon';
+import {
+    persistWordToDatabaseAndStore as persistWordToDatabaseAndStoreAction,
+    toggleAndPersistFavoriteLexicon as toggleAndPersistFavoriteLexiconAction,
+    getFavorites as getFavoritesAction
+} from '../actions/lexicon';
 
 const initState: string[] = [];
 
@@ -8,8 +12,14 @@ export const favoriteLexiconsSlice = createSlice({
     name: 'favoriteLexicons',
     initialState: initState,
     reducers: {
-        toggleFavoriteLexicon: (state, action) => {
-            const word = action.payload;
+        toggleFavoriteLexicon: (state, action: PayloadAction<{ word: string; state?: boolean }>) => {
+            const word = action.payload.word;
+            const forceState = action.payload.state ?? undefined;
+
+            if (forceState !== undefined) {
+                return forceState ? [...state, word] : state.filter((w) => w !== word);
+            }
+
             const nextState = state.includes(word) ? state.filter((w) => w !== word) : [word, ...state];
             return nextState;
         },
@@ -25,5 +35,7 @@ export const favoriteLexiconsSlice = createSlice({
 export const { toggleFavoriteLexicon, setFavoriteLexicons, clearFavoriteLexicons } = favoriteLexiconsSlice.actions;
 export const selectFavoriteLexicons = (state: AppState) => state.favoriteLexicons;
 export const persistWordToDatabaseAndStore = persistWordToDatabaseAndStoreAction;
+export const toggleAndPersistFavoriteLexicon = toggleAndPersistFavoriteLexiconAction;
+export const getFavorites = getFavoritesAction;
 
 export default favoriteLexiconsSlice.reducer;

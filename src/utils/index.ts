@@ -22,43 +22,6 @@ export const searchWord = async (query?: string) => {
     return res.json();
 };
 
-export const isFavorite = (word: string) => {
-    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    return favorites.includes(word);
-};
-
-export const toggleFavorites = (word: string) => {
-    let nextState;
-
-    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    if (favorites.includes(word)) {
-        favorites.splice(favorites.indexOf(word), 1);
-        nextState = false;
-    } else {
-        favorites.push(word);
-        nextState = true;
-    }
-
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-
-    return nextState;
-};
-
-export const toggleAndPersistFavoriteWordToSupabase = async (word: string, currentFavorites: string[]) => {
-    let nextState;
-    const favorites = currentFavorites;
-
-    if (favorites.includes(word)) {
-        favorites.splice(favorites.indexOf(word), 1);
-        nextState = false;
-    } else {
-        favorites.push(word);
-        nextState = true;
-    }
-
-    
-}
-
 export const getFavorites = () => {
     return JSON.parse(localStorage.getItem('favorites') || '[]');
 };

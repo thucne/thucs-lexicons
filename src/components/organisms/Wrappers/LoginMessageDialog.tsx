@@ -2,14 +2,11 @@
 
 import { useState, useEffect } from 'react';
 
-import Link from 'next/link';
-
 import { Dialog, DialogActions, DialogContent, DialogTitle, Typography, Button, Box } from '@mui/material';
 import {
     cancelLoginRequest,
     login,
     resetLogin,
-    selectAuthUrl,
     selectCallbackUrl,
     selectShowLoginDialog
 } from '@/redux/reducers/auth';
@@ -27,7 +24,6 @@ declare const google: any;
 const LoginMessageDialog = () => {
     const dispatch = useAppDispatch();
     const router = useRouter();
-    const url = useAppSelector(selectAuthUrl);
     const callbackUrl = useAppSelector(selectCallbackUrl);
     const showLoginDialog = useAppSelector(selectShowLoginDialog);
     const searchParams = useSearchParams();
@@ -89,13 +85,6 @@ const LoginMessageDialog = () => {
         <Dialog open={showLoginDialog} maxWidth="xs" onClose={isLoggingIn ? undefined : () => handleClose(false)}>
             <DialogTitle>To continue, please login with Google!</DialogTitle>
             <DialogContent dividers>
-                {!url ? (
-                    <Typography>Failed to initiate login. Please try again.</Typography>
-                ) : (
-                    <Typography>
-                        You will be redirected to the login page. Click the button below to proceed.
-                    </Typography>
-                )}
                 <Typography variant="caption" color="warning.main" className="mt-2">
                     If you don&apos;t have any Google account, you may need to create one first.
                 </Typography>

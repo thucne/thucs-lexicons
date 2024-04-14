@@ -1,23 +1,16 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import Link from 'next/link';
 
 import { Container, Typography, Divider, Chip } from '@mui/material';
 import Grid from '@/components/atoms/AppGrid';
-import { getFavorites } from '@/utils';
-import { useAppDispatch, useAppSelector } from '@/redux/store';
-import { selectFavoriteLexicons, setFavoriteLexicons } from '@/redux/reducers/favoriteLexicons';
+import { useAppSelector } from '@/redux/store';
+import { selectFavoriteLexicons } from '@/redux/reducers/favoriteLexicons';
 
 const HomePage = () => {
     const containerRef = useRef<HTMLDivElement>(null);
-    const dispatch = useAppDispatch();
     const favoriteLexicons = useAppSelector(selectFavoriteLexicons);
-
-    useEffect(() => {
-        const favorites = getFavorites();
-        dispatch(setFavoriteLexicons(Array.isArray(favorites) ? favorites.reverse() : []));
-    }, [dispatch]);
 
     return (
         <Container maxWidth="md" ref={containerRef}>

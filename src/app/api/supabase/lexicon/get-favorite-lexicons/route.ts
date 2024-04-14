@@ -1,17 +1,12 @@
-import { cookies } from 'next/headers';
+import { cookies } from 'next/headers'
 import useSupabase from '@/hooks/use-supabase';
 import jwt from 'jsonwebtoken';
 
-export async function POST(request: Request) {
+export async function GET() {
     try {
         const supabase = useSupabase();
         const cookieStore = cookies();
-        const inputObj = await request.json();
         const lexiconToken = cookieStore.get('lexiconToken');
-
-        if (!inputObj.word) {
-            throw new Error('Invalid input object');
-        }
 
         if (!lexiconToken || !lexiconToken.value) {
             return new Response('Unauthorized', { status: 401 });
@@ -36,27 +31,9 @@ export async function POST(request: Request) {
         }
 
         // find favorite lexicon where createdBy = email and lexicon = inputObj.word
-        const { data: found } = await supabase
-            .from('FavoriteLexicon')
-            .select()
-            .eq('createdBy', email)
-            .eq('lexicon', inputObj.word)
-            .single();
+        const { data } = await supabase.from('FavoriteLexicon').select().eq('createdBy', email);
 
-        if (found) {
-            // remove from favorite
-            await supabase.from('FavoriteLexicon').delete().eq('id', found.id);
-        } else {
-            // save
-            const { data, error } = await supabase
-                .from('FavoriteLexicon')
-                .insert({ lexicon: inputObj.word, createdBy: email });
-            console.log(data, error);
-        }
-
-        const nextState = !Boolean(found);
-
-        return new Response(JSON.stringify({ currentState: nextState }));
+        return new Response(JSON.stringify(data));
     } catch (error) {
         return new Response('Error saving favorite lexicons');
     }

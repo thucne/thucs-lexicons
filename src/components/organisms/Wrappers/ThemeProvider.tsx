@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, createContext, useMemo } from 'react';
+import  { useEffect, useState, createContext, useMemo, ReactNode } from 'react';
 
 import { ThemeProvider } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -14,7 +14,7 @@ export const ColorModeContext = createContext({
 });
 
 interface ThemeProviderComponentProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 const ThemeProviderComponent = ({ children }: ThemeProviderComponentProps) => {

@@ -11,12 +11,19 @@ import { Box, IconButton, LinearProgress, Typography } from '@mui/material';
 import ThemeSelect from '@/components/molecules/ThemeSelect';
 import SearchBar from '@/components/organisms/NavigationBar/SearchBar';
 import { SearchIcon, CloseIcon } from '@/components/atoms/AppIcons';
+import { useAppDispatch } from '@/redux/store';
+import { getFavorites } from '@/redux/reducers/favoriteLexicons';
 
 const NavigationBar = () => {
+    const dispatch = useAppDispatch();
     const [openSearchInput, setOpenSearchInput] = useState(false);
     const [isSticky, setIsSticky] = useState(false);
 
     const toggleSearchInput = () => setOpenSearchInput((prev) => !prev);
+
+    useEffect(() => {
+        dispatch(getFavorites());
+    }, [dispatch]);
 
     useEffect(() => {
         const handleScroll = () => {
