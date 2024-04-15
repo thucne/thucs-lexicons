@@ -1,7 +1,8 @@
 import { Logger } from '@/types/decorators';
 import { Dispatch } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { resetLogin } from '../reducers/auth';
+import { reset, resetLogin } from '../reducers/auth';
+import { clearFavoriteLexicons } from '../reducers/favoriteLexicons';
 
 type ReturnType = (dispatch: Dispatch) => Promise<void>;
 
@@ -53,14 +54,12 @@ class Auth {
                 .get(LOGOUT_URL, { withCredentials: true })
                 .then((response) => {
                     if (response.data.result === 1) {
-                        dispatch(resetLogin({ success: false }));
-                    } else {
-                        dispatch(resetLogin({ success: false }));
+                        dispatch(reset());
+                        dispatch(clearFavoriteLexicons());
                     }
                 })
                 .catch((error) => {
                     console.error(error);
-                    dispatch(resetLogin({ success: false }));
                 });
         };
     }

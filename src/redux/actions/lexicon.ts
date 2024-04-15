@@ -91,14 +91,16 @@ class Lexicon {
 
     clearFavorites(): ReturnType {
         return async (dispatch: Dispatch) => {
-            return await axios.delete(CLEAR_FAVORITES_URL, { withCredentials: true }).then((response) => {
-                console.log(response);
-                dispatch(setFavoriteLexicons([]));
-            }).catch((error: AxiosError) => {
-                console.error(error);
-            });
-        }
-    
+            return await axios
+                .delete(CLEAR_FAVORITES_URL, { withCredentials: true })
+                .then((response) => {
+                    console.log(response);
+                    dispatch(setFavoriteLexicons([]));
+                })
+                .catch((error: AxiosError) => {
+                    console.error(error);
+                });
+        };
     }
 }
 

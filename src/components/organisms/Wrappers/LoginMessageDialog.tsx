@@ -7,6 +7,9 @@ import { cancelLoginRequest, login, resetLogin, selectCallbackUrl, selectShowLog
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { useRouter, useSearchParams } from 'next/navigation';
 import axios from 'axios';
+import { setAuthStatus } from '@/redux/reducers/authStatus';
+import { AuthStatus } from '@/hooks/use-init';
+import { getFavorites } from '@/redux/reducers/favoriteLexicons';
 
 const constructLoginUrl = (callbackUrl: string) => {
     return `/api/auth/login?callbackUrl=${encodeURIComponent(callbackUrl)}`;
@@ -20,8 +23,6 @@ const LoginMessageDialog = () => {
     const router = useRouter();
     const callbackUrl = useAppSelector(selectCallbackUrl);
     const showLoginDialog = useAppSelector(selectShowLoginDialog);
-    const searchParams = useSearchParams();
-    const code = searchParams.get('code');
     const [isLoggingIn, setIsLoggingIn] = useState(false);
 
     useEffect(() => {
@@ -33,10 +34,16 @@ const LoginMessageDialog = () => {
                     const { credential } = response;
 
                     setIsLoggingIn(true);
+                    dispatch(setAuthStatus(AuthStatus.Handshaking));
 
-                    await dispatch(login(credential));
+                    await dispatch(login(credential)).finally(() => {
+                        dispatch(setAuthStatus(AuthStatus.Handshaked));
+                    });
 
-                    console.log(callbackUrl);
+                    dispatch(setAuthStatus(AuthStatus.Loading));
+                    dispatch(getFavorites()).finally(() => {
+                        dispatch(setAuthStatus(AuthStatus.Loaded));
+                    });
 
                     if (callbackUrl) {
                         router.push(callbackUrl);

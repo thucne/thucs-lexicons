@@ -40,11 +40,12 @@ export const authSlice = createSlice({
         cancelLoginRequest: (state) => {
             state.showLoginDialog = false;
             state.callbackUrl = null;
-        }
+        },
+        reset: () => initState
     }
 });
 
-export const { requestLogin, resetLogin, setLoggedInStatus, cancelLoginRequest } = authSlice.actions;
+export const { requestLogin, resetLogin, setLoggedInStatus, cancelLoginRequest, reset } = authSlice.actions;
 export const selectLoggedInStatus = (state: AppState) => state.auth.loggedIn;
 export const selectShowLoginDialog = (state: AppState) => state.auth.showLoginDialog;
 export const selectCallbackUrl = (state: AppState) => state.auth.callbackUrl;

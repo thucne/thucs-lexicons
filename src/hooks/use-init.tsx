@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { getFavorites } from '@/redux/reducers/favoriteLexicons';
 import { handshake, selectLoggedInStatus } from '@/redux/reducers/auth';
 
-enum Status {
+export enum AuthStatus {
     NotRun = 'NotRun',
     Handshaking = 'Handshaking',
     Handshaked = 'Handshaked',
@@ -14,23 +14,27 @@ enum Status {
 }
 
 export const useInit = () => {
-    const [status, setStatus] = useState(Status.NotRun);
+    const [status, setStatus] = useState(AuthStatus.NotRun);
     const dispatch = useAppDispatch();
     const loggedIn = useAppSelector(selectLoggedInStatus);
 
     useEffect(() => {
-        setStatus(Status.Handshaking);
+        setStatus(AuthStatus.Handshaking);
         dispatch(handshake()).finally(() => {
-            setStatus(Status.Handshaked);
+            setStatus(AuthStatus.Handshaked);
         });
     }, [dispatch]);
 
     useEffect(() => {
-        if (status === Status.Handshaked && loggedIn) {
-            setStatus(Status.Loading);
-            dispatch(getFavorites()).finally(() => {
-                setStatus(Status.Loaded);
-            });
+        if (status === AuthStatus.Handshaked) {
+            if (loggedIn) {
+                setStatus(AuthStatus.Loading);
+                dispatch(getFavorites()).finally(() => {
+                    setStatus(AuthStatus.Loaded);
+                });
+            } else {
+                setStatus(AuthStatus.Loaded);
+            }
         }
     }, [dispatch, loggedIn, status]);
 

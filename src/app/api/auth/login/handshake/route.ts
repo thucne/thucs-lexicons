@@ -20,7 +20,6 @@ export async function GET() {
 
         return new Response(JSON.stringify({ result: 1, email }));
     } catch (error) {
-        console.log(error);
         return new Response(JSON.stringify({ result: 0 }));
     }
 }
