@@ -111,9 +111,4 @@ const toggleAndPersistFavoriteLexicon = lexicon.toggleAndPersistFavoriteLexicon;
 const getFavorites = lexicon.getFavorites;
 const clearFavorites = lexicon.clearFavorites;
 
-export {
-    persistWordToDatabaseAndStore,
-    toggleAndPersistFavoriteLexicon,
-    getFavorites,
-    clearFavorites,
-};
+export { persistWordToDatabaseAndStore, toggleAndPersistFavoriteLexicon, getFavorites, clearFavorites };

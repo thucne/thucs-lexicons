@@ -1,6 +1,6 @@
 'use client';
 
-import {  startTransition, useEffect } from 'react';
+import { startTransition, useEffect } from 'react';
 import { Chip, Divider, Tooltip } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { selectFavoriteLexicons, toggleAndPersistFavoriteLexicon } from '@/redux/reducers/favoriteLexicons';
@@ -50,7 +50,7 @@ const ToggleFavorite = ({ word }: { word: string }) => {
                     <Chip
                         size="small"
                         color="warning"
-                        label={isLoading ? 'Loading...': isFavoriteOptimistic ? 'Favorite' : 'Add to favorites'}
+                        label={isLoading ? 'Loading...' : isFavoriteOptimistic ? 'Favorite' : 'Add to favorites'}
                         variant={isFavoriteOptimistic ? 'filled' : 'outlined'}
                         clickable
                         onClick={handleToggleFavorites}

@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import  { useSupbabaseAdmin } from '@/hooks/use-supabase';
+import { useSupbabaseAdmin } from '@/hooks/use-supabase';
 import jwt from 'jsonwebtoken';
 
 export async function GET() {

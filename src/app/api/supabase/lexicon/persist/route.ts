@@ -22,7 +22,7 @@ export async function POST(request: Request) {
         if (!validateObj(inputObj)) {
             throw new Error('Invalid input object');
         }
-        
+
         // save
         const { data, error } = await supabase.from('Lexicon').upsert(inputObj, { onConflict: 'word' }).select();
 
