@@ -1,4 +1,4 @@
-import useSupabase from '@/hooks/use-supabase';
+import { useSupbabaseAdmin } from '@/hooks/use-supabase';
 import { SearchResultsSupabase } from '@/types';
 
 type LexiconBody = SearchResultsSupabase;
@@ -14,7 +14,7 @@ function validateObj(arg: LexiconBody | LexiconBody[]): boolean {
 }
 
 export async function POST(request: Request) {
-    const supabase = useSupabase();
+    const supabase = await useSupbabaseAdmin();
 
     try {
         const inputObj = await request.json();
@@ -22,17 +22,7 @@ export async function POST(request: Request) {
         if (!validateObj(inputObj)) {
             throw new Error('Invalid input object');
         }
-
-        // check if logged in
-        const { data: userData, error: userError } = await supabase.auth.getUser();
-
-        if (userError || !userData?.user || userData.user.id !== process.env.THUCNE_ID!) {
-            await supabase.auth.signInWithPassword({
-                email: 'trongthuc.bentre@gmail.com',
-                password: process.env.THUCNE_PASS!
-            });
-        }
-
+        
         // save
         const { data, error } = await supabase.from('Lexicon').upsert(inputObj, { onConflict: 'word' }).select();
 

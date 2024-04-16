@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken';
 import { useSupbabaseAdmin } from '@/hooks/use-supabase';
 
 export async function DELETE() {
+    const supabase = await useSupbabaseAdmin();
     try {
-        const supabase = await useSupbabaseAdmin();
         const cookieStore = cookies();
         const lexiconToken = cookieStore.get('lexiconToken');
 
@@ -26,5 +26,7 @@ export async function DELETE() {
         return new Response('Favorite lexicons cleared');
     } catch (error) {
         return new Response('Error saving favorite lexicons', { status: 500 });
+    } finally {
+        await supabase.auth.signOut();
     }
 }

@@ -1,22 +1,17 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { redirect } from 'next/navigation';
 
-import { Chip, Container, Divider, Tooltip, Typography } from '@mui/material';
+import { Container, Divider, Typography } from '@mui/material';
 import { SearchResults } from '@/types';
 import { createUrl } from '@/utils';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { SearchResultsState, selectSearchResults } from '@/redux/reducers/searchResults';
-import {
-    selectFavoriteLexicons,
-    toggleAndPersistFavoriteLexicon,
-    toggleFavoriteLexicon
-} from '@/redux/reducers/favoriteLexicons';
 
 import MeaningGroup from './MeaningGroup';
-import { CheckIcon } from '@/components/atoms/AppIcons';
 import { useLexicon } from '@/hooks/use-lexicon';
 import { persistWordToDatabaseAndStore } from '@/redux/actions/lexicon';
+import ToggleFavorite from './ToggleFavorite';
 
 type ResultPageProps = {
     word: string;
@@ -41,9 +36,6 @@ const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
 
     const dispatch = useAppDispatch();
     const searchResultsFromStore = useAppSelector(selectSearchResults);
-    const favoriteLexicons = useAppSelector(selectFavoriteLexicons);
-
-    const [isFavoriteWord, setIsFavoriteWord] = useState(false);
 
     const [inSupabase, resultsFromSupabase] = isAvailableFromSupabase(word, supabaseLexicon);
     const [inStore, resultsFromStore] = isAvailableFromStore(word, searchResultsFromStore);
@@ -53,14 +45,6 @@ const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
     const { data: resultsFromFetch, isLoading } = useLexicon(shouldFetch ? word : '');
 
     const results = (resultsFromFetch || resultsFromStore || resultsFromSupabase) as SearchResults;
-
-    const handleToggleFavorites = () => {
-        dispatch(toggleAndPersistFavoriteLexicon(word));
-    };
-
-    useEffect(() => {
-        setIsFavoriteWord(favoriteLexicons.includes(word));
-    }, [favoriteLexicons, word]);
 
     useEffect(() => {
         if (resultsFromFetch?.length) {
@@ -87,31 +71,7 @@ const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
             <Typography variant="caption" component="h1" gutterBottom className="italic">
                 Meaning of <b>{word}</b> in English
             </Typography>
-            <Divider
-                className="my-4"
-                textAlign="right"
-                sx={{
-                    '::before, ::after': {
-                        borderTopColor: (theme) => theme.palette.warning.main
-                    }
-                }}
-            >
-                <Tooltip title={isFavoriteWord ? 'Remove from favorites' : 'Add to favorites'}>
-                    <span>
-                        <Chip
-                            size="small"
-                            color="warning"
-                            label={isFavoriteWord ? 'Favorite' : 'Add to favorites'}
-                            variant={isFavoriteWord ? 'filled' : 'outlined'}
-                            clickable
-                            onClick={handleToggleFavorites}
-                            deleteIcon={isFavoriteWord ? <CheckIcon /> : undefined}
-                            onDelete={isFavoriteWord ? handleToggleFavorites : undefined}
-                            disabled={word === ''}
-                        />
-                    </span>
-                </Tooltip>
-            </Divider>
+            <ToggleFavorite word={word} />
             {results.map((result, index) => [
                 <MeaningGroup
                     key={`${word}-meaning-${index}`}

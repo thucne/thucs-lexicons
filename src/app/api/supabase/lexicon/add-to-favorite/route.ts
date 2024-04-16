@@ -1,10 +1,10 @@
 import { cookies } from 'next/headers';
-import useSupabase from '@/hooks/use-supabase';
+import { useSupbabaseAdmin } from '@/hooks/use-supabase';
 import jwt from 'jsonwebtoken';
 
 export async function POST(request: Request) {
+    const supabase = await useSupbabaseAdmin();
     try {
-        const supabase = useSupabase();
         const cookieStore = cookies();
         const inputObj = await request.json();
         const lexiconToken = cookieStore.get('lexiconToken');
@@ -24,16 +24,6 @@ export async function POST(request: Request) {
         }
 
         const { email } = jwtToken;
-
-        // check if logged in
-        const { data: userData, error: userError } = await supabase.auth.getUser();
-
-        if (userError || !userData?.user || userData.user.id !== process.env.THUCNE_ID!) {
-            await supabase.auth.signInWithPassword({
-                email: 'trongthuc.bentre@gmail.com',
-                password: process.env.THUCNE_PASS!
-            });
-        }
 
         // find favorite lexicon where createdBy = email and lexicon = inputObj.word
         const { data: found } = await supabase
@@ -59,5 +49,7 @@ export async function POST(request: Request) {
         return new Response(JSON.stringify({ currentState: nextState }));
     } catch (error) {
         return new Response('Error saving favorite lexicons');
+    } finally {
+        await supabase.auth.signOut();
     }
 }

@@ -1,6 +1,6 @@
 import { SearchResults, SearchResultsSupabase } from '@/types';
 import { Dispatch } from '@reduxjs/toolkit';
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { setSearchResults } from '../reducers/searchResults';
 import { setFavoriteLexicons, toggleFavoriteLexicon } from '../reducers/favoriteLexicons';
 import { requestLogin } from '../reducers/auth';
@@ -110,5 +110,11 @@ const persistWordToDatabaseAndStore = lexicon.persistWordToDatabaseAndStore;
 const toggleAndPersistFavoriteLexicon = lexicon.toggleAndPersistFavoriteLexicon;
 const getFavorites = lexicon.getFavorites;
 const clearFavorites = lexicon.clearFavorites;
+const toggleAndPersistFavoriteLexiconAction = lexicon.toggleAndPersistFavoriteLexicon;
 
-export { persistWordToDatabaseAndStore, toggleAndPersistFavoriteLexicon, getFavorites, clearFavorites };
+export {
+    persistWordToDatabaseAndStore,
+    toggleAndPersistFavoriteLexicon,
+    getFavorites,
+    clearFavorites,
+};

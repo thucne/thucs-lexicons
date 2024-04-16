@@ -2,9 +2,9 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { AppState } from '../store';
 import {
     persistWordToDatabaseAndStore as persistWordToDatabaseAndStoreAction,
-    toggleAndPersistFavoriteLexicon as toggleAndPersistFavoriteLexiconAction,
     getFavorites as getFavoritesAction,
-    clearFavorites as clearFavoritesAction
+    clearFavorites as clearFavoritesAction,
+    toggleAndPersistFavoriteLexicon as toggleAndPersistFavoriteLexiconAction
 } from '../actions/lexicon';
 
 const initState: string[] = [];

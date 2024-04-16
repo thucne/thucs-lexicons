@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import Grid from '@/components/atoms/AppGrid';
-import { Chip, Typography } from '@mui/material';
+import { Box, Chip, CircularProgress, Typography } from '@mui/material';
 
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { clearFavorites, selectFavoriteLexicons } from '@/redux/reducers/favoriteLexicons';
@@ -52,11 +52,7 @@ const FavoriteWords = () => {
                     <br />
                     <Typography variant="body2" color="success.main">
                         Logged in as {email}.{' '}
-                        {[AuthStatus.Handshaked, AuthStatus.Loading].includes(authStatus) && loggedIn ? (
-                            <Typography variant="body2" component="span" color="text.primary">
-                                Loading your favorite lexicon...
-                            </Typography>
-                        ) : (
+                        {[AuthStatus.Loaded].includes(authStatus) && loggedIn && (
                             <Typography
                                 variant="body2"
                                 component="span"
@@ -68,6 +64,14 @@ const FavoriteWords = () => {
                             </Typography>
                         )}
                     </Typography>
+                    {[AuthStatus.Handshaked, AuthStatus.Loading].includes(authStatus) && loggedIn && (
+                        <Box className="mt-3 flex items-center gap-2">
+                            <Typography variant="body2" component="span" color="text.primary">
+                                Loading your favorite lexicon
+                            </Typography>
+                            <CircularProgress size={14} />
+                        </Box>
+                    )}
                 </Typography>
             </Grid>
             {authStatus === AuthStatus.Loaded && <FavoriteWordsList favoriteLexicons={favoriteLexicons} />}
