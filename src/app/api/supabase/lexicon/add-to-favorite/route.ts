@@ -3,9 +3,9 @@ import { useSupbabaseAdmin } from '@/hooks/use-supabase';
 import jwt from 'jsonwebtoken';
 
 export async function POST(request: Request) {
+    const cookieStore = cookies();
     const supabase = await useSupbabaseAdmin();
     try {
-        const cookieStore = cookies();
         const inputObj = await request.json();
         const lexiconToken = cookieStore.get('lexiconToken');
 

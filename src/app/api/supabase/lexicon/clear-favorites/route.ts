@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken';
 import { useSupbabaseAdmin } from '@/hooks/use-supabase';
 
 export async function DELETE() {
+    const cookieStore = cookies();
     const supabase = await useSupbabaseAdmin();
     try {
-        const cookieStore = cookies();
         const lexiconToken = cookieStore.get('lexiconToken');
 
         if (!lexiconToken || !lexiconToken.value) {

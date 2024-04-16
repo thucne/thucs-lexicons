@@ -2,13 +2,13 @@
 import { useCallback, useEffect, useRef, useState, useLayoutEffect } from 'react';
 
 export function useOptimistic<T, P>(passthrough: T, reducer: (state: T, payload: P) => T) {
+    const reducerRef = useRef(reducer);
     const [value, setValue] = useState(passthrough);
 
     useEffect(() => {
         setValue(passthrough);
     }, [passthrough]);
 
-    const reducerRef = useRef(reducer);
     useLayoutEffect(() => {
         reducerRef.current = reducer;
     }, [reducer]);

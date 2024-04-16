@@ -16,9 +16,9 @@ async function verify(token: string) {
 
 export async function POST(request: Request) {
     try {
+        const cookieStore = cookies();
         const { token } = await request.json();
         const email = await verify(token);
-        const cookieStore = cookies();
 
         if (!email) {
             return new Response('Invalid token', { status: 400 });
