@@ -110,7 +110,6 @@ const persistWordToDatabaseAndStore = lexicon.persistWordToDatabaseAndStore;
 const toggleAndPersistFavoriteLexicon = lexicon.toggleAndPersistFavoriteLexicon;
 const getFavorites = lexicon.getFavorites;
 const clearFavorites = lexicon.clearFavorites;
-const toggleAndPersistFavoriteLexiconAction = lexicon.toggleAndPersistFavoriteLexicon;
 
 export {
     persistWordToDatabaseAndStore,

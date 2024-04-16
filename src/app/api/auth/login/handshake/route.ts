@@ -18,6 +18,10 @@ export async function GET() {
 
         const { email } = jwtToken;
 
+        // re-issue token with new expiration
+        const newToken = jwt.sign({ email }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+        cookieStore.set('lexiconToken', newToken, { path: '/', maxAge: 3600 });
+
         return new Response(JSON.stringify({ result: 1, email }));
     } catch (error) {
         return new Response(JSON.stringify({ result: 0 }));
