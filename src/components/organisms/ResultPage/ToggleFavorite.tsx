@@ -1,6 +1,6 @@
 'use client';
 
-import { startTransition, useCallback, useEffect } from 'react';
+import { startTransition, useEffect } from 'react';
 import { Chip, Divider, Tooltip } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { selectFavoriteLexicons, toggleAndPersistFavoriteLexicon } from '@/redux/reducers/favoriteLexicons';
@@ -35,9 +35,12 @@ const ToggleFavorite = ({ word }: { word: string }) => {
         });
 
         /**
-         * Toggle the comment below to see the difference between optimistic and non-optimistic behavior.
-         * In this case, the optimistic behavior is to toggle the favorite state immediately and update the UI.
-         * I assume the word is not the current word (so the UI will be updated after the request is done).
+         * Toggle the comment below to see the difference between optimistic 
+         *      and non-optimistic behavior.
+         * In this case, the optimistic behavior is to toggle the favorite state 
+         *      immediately and update the UI.
+         * I assume the word is not the current word (simulate failing to update)
+         *  ( --> so the UI will be updated accordingly after the request is done).
          */
         // await dispatch(toggleAndPersistFavoriteLexicon('sth else'));
         await dispatch(toggleAndPersistFavoriteLexicon(word));
