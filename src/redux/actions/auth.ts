@@ -1,22 +1,23 @@
-import { Logger } from '@/types/decorators';
 import { Dispatch } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { reset, resetLogin } from '../reducers/auth';
 import { clearFavoriteLexicons } from '../reducers/favoriteLexicons';
+import { setAuthStatus } from '../reducers/authStatus';
+import { AuthStatus } from '@/hooks/use-init';
 
 type ReturnType = (dispatch: Dispatch) => Promise<void>;
 
 const LOGIN_URL = '/api/auth/login/validate';
 const HANDSHAKE_URL = '/api/auth/login/handshake';
 const LOGOUT_URL = '/api/auth/logout';
-const LOG_PREFIX = 'Auth';
 
 class Auth {
     constructor() {}
 
     login(token: string): ReturnType {
         return async (dispatch: Dispatch) => {
-            return axios
+            dispatch(setAuthStatus(AuthStatus.Handshaking));
+            return await axios
                 .post(LOGIN_URL, {
                     token
                 })
@@ -26,6 +27,9 @@ class Auth {
                 .catch((error) => {
                     console.error(error);
                     dispatch(resetLogin({ success: false }));
+                })
+                .finally(() => {
+                    dispatch(setAuthStatus(AuthStatus.Handshaked));
                 });
         };
     }

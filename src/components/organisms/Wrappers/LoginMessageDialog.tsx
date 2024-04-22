@@ -5,15 +5,8 @@ import { useState, useEffect } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, Typography, Button, Box } from '@mui/material';
 import { cancelLoginRequest, login, resetLogin, selectCallbackUrl, selectShowLoginDialog } from '@/redux/reducers/auth';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
-import { useRouter, useSearchParams } from 'next/navigation';
-import axios from 'axios';
-import { setAuthStatus } from '@/redux/reducers/authStatus';
-import { AuthStatus } from '@/hooks/use-init';
+import { useRouter } from 'next/navigation';
 import { getFavorites } from '@/redux/reducers/favoriteLexicons';
-
-const constructLoginUrl = (callbackUrl: string) => {
-    return `/api/auth/login?callbackUrl=${encodeURIComponent(callbackUrl)}`;
-};
 
 declare const window: any;
 declare const google: any;
@@ -31,19 +24,13 @@ const LoginMessageDialog = () => {
         if (window?.google && google) {
             const handleCredentialResponse = async (response: any) => {
                 try {
+                    console.log(response);
                     const { credential } = response;
 
                     setIsLoggingIn(true);
-                    dispatch(setAuthStatus(AuthStatus.Handshaking));
 
-                    await dispatch(login(credential)).finally(() => {
-                        dispatch(setAuthStatus(AuthStatus.Handshaked));
-                    });
-
-                    dispatch(setAuthStatus(AuthStatus.Loading));
-                    dispatch(getFavorites()).finally(() => {
-                        dispatch(setAuthStatus(AuthStatus.Loaded));
-                    });
+                    await dispatch(login(credential));
+                    await dispatch(getFavorites());
 
                     if (callbackUrl) {
                         router.push(callbackUrl);

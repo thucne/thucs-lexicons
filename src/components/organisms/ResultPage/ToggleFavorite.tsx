@@ -35,9 +35,9 @@ const ToggleFavorite = ({ word }: { word: string }) => {
         });
 
         /**
-         * Toggle the comment below to see the difference between optimistic 
+         * Toggle the comment below to see the difference between optimistic
          *      and non-optimistic behavior.
-         * In this case, the optimistic behavior is to toggle the favorite state 
+         * In this case, the optimistic behavior is to toggle the favorite state
          *      immediately and update the UI.
          * I assume the word is not the current word (simulate failing to update)
          *  ( --> so the UI will be updated accordingly after the request is done).

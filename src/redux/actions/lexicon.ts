@@ -1,10 +1,12 @@
 import { SearchResults, SearchResultsSupabase } from '@/types';
 import { Dispatch } from '@reduxjs/toolkit';
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { setSearchResults } from '../reducers/searchResults';
 import { setFavoriteLexicons, toggleFavoriteLexicon } from '../reducers/favoriteLexicons';
 import { requestLogin } from '../reducers/auth';
 import { Logger } from '@/types/decorators';
+import { setAuthStatus } from '../reducers/authStatus';
+import { AuthStatus } from '@/hooks/use-init';
 
 type ReturnType = (dispatch: Dispatch) => Promise<void>;
 
@@ -80,12 +82,16 @@ class Lexicon {
     @Logger(LOG_PREFIX)
     getFavorites(): ReturnType {
         return async (dispatch: Dispatch) => {
+            dispatch(setAuthStatus(AuthStatus.Loading));
             return await axios
                 .get(GET_FAVORITES_URL, { withCredentials: true })
                 .then((response) => {
                     dispatch(setFavoriteLexicons(response.data?.map((r: { lexicon: string }) => r.lexicon) ?? []));
                 })
-                .catch((_: AxiosError) => {});
+                .catch((_: AxiosError) => {})
+                .finally(() => {
+                    dispatch(setAuthStatus(AuthStatus.Loaded));
+                });
         };
     }
 
