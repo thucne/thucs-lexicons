@@ -2,14 +2,16 @@ import { useRef, useState } from 'react';
 
 import { AudioIcon, AudioNotFoundIcon } from '@/components/atoms/AppIcons';
 import { Phonetic } from '@/types';
-import { IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { IconButton, IconButtonProps, Stack, StackProps, Tooltip, Typography } from '@mui/material';
 import { getLicenseString } from '@/utils';
 
 type AudioProps = {
     phonetic: Phonetic;
-};
+    showPhonetic?: boolean;
+    buttonSx?: IconButtonProps['sx'];
+} & Partial<StackProps>;
 
-const Audio = ({ phonetic }: AudioProps) => {
+const Audio = ({ phonetic, showPhonetic = true, sx, buttonSx }: AudioProps) => {
     const audioRef = useRef<HTMLAudioElement>(null);
     const [shouldDisable, setShouldDisable] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -28,7 +30,7 @@ const Audio = ({ phonetic }: AudioProps) => {
     const onError = () => setShouldDisable(true);
 
     return (
-        <Stack direction="row" alignItems="center" spacing={1}>
+        <Stack direction="row" alignItems="center" spacing={1} sx={sx}>
             <Tooltip
                 title={
                     shouldDisable || !phonetic.audio
@@ -42,13 +44,13 @@ const Audio = ({ phonetic }: AudioProps) => {
                         component="button"
                         onClick={handlePlay}
                         disabled={!phonetic.audio || shouldDisable || isPlaying}
-                        sx={{ border: 'none' }}
+                        sx={{ border: 'none', ...buttonSx }}
                     >
                         {phonetic.audio ? <AudioIcon /> : <AudioNotFoundIcon />}
                     </IconButton>
                 </span>
             </Tooltip>
-            <Typography variant="body2">{phonetic.text}</Typography>
+            {showPhonetic && <Typography variant="body2">{phonetic.text}</Typography>}
             <audio ref={audioRef} controls={false} className="hidden" onError={onError} onEnded={handleEnded}>
                 <source src={phonetic.audio} type="audio/mpeg" />
                 Your browser does not support the audio element.

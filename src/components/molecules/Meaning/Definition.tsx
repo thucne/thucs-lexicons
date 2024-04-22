@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react';
+import React from 'react';
 import { Definition } from '@/types';
 
 import { Box, Typography } from '@mui/material';

@@ -9,6 +9,14 @@ type HoverOptions = {
     rootElement?: HTMLElement;
 };
 
+type ListenerParams = {
+    eventName: string;
+    callback: (e: Event) => void;
+    element?: HTMLElement | Document;
+    elementSelector?: string;
+    dependencies?: any[];
+};
+
 export const useHoveredText = (options: HoverOptions): [string | null, HTMLElement | null] => {
     const [hoveredText, setHoveredText] = useState<string | null>('');
     const [hoveredTextElement, setHoveredTextElement] = useState<HTMLElement | null>(null);
@@ -45,9 +53,9 @@ export const useHoveredText = (options: HoverOptions): [string | null, HTMLEleme
 
 export const useOnHoveredText = (
     options: HoverOptions
-): [string | null, HTMLElement | null, (text: string | null) => void, (element: HTMLElement | null) => void] => {
-    const [hoveredText, setHoveredText] = useState<string | null>('');
+): [string | null, HTMLElement | null, (element: HTMLElement | null) => void] => {
     const [hoveredTextElement, setHoveredTextElement] = useState<HTMLElement | null>(null);
+    const hoveredText = hoveredTextElement?.innerText || null;
 
     useEffect(() => {
         const onMouseEnter = (e: MouseEvent) => {
@@ -55,7 +63,6 @@ export const useOnHoveredText = (
                 return;
             }
             const target = e.target as HTMLElement;
-            setHoveredText(target.innerText);
             setHoveredTextElement(target);
         };
 
@@ -68,5 +75,25 @@ export const useOnHoveredText = (
         };
     }, [options]);
 
-    return [hoveredText, hoveredTextElement, setHoveredText, setHoveredTextElement] as const;
+    return [hoveredText, hoveredTextElement, setHoveredTextElement] as const;
+};
+
+export const useListener = ({ eventName, callback, dependencies, element, elementSelector }: ListenerParams) => {
+    const [el, setElement] = useState<HTMLElement | Document | null>(null);
+
+    useEffect(() => {
+        if (elementSelector) {
+            setElement(document.querySelector(elementSelector) as HTMLElement);
+        } else {
+            setElement(element || document);
+        }
+    }, [element, elementSelector, dependencies]);
+
+    useEffect(() => {
+        el?.addEventListener(eventName, callback);
+
+        return () => {
+            el?.removeEventListener(eventName, callback);
+        };
+    }, [eventName, callback, el]);
 };

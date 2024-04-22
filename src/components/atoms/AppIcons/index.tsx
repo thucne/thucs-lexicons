@@ -10,6 +10,7 @@ import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import VolumeOffRoundedIcon from '@mui/icons-material/VolumeOffRounded';
 import ClearAllRoundedIcon from '@mui/icons-material/ClearAllRounded';
+import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded';
 
 const LightModeIcon = LightModeRoundedIcon;
 const DarkModeIcon = DarkModeRoundedIcon;
@@ -22,6 +23,7 @@ const PlusIcon = AddRoundedIcon;
 const MinusIcon = RemoveRoundedIcon;
 const AudioNotFoundIcon = VolumeOffRoundedIcon;
 const ClearAllIcon = ClearAllRoundedIcon;
+const RightIcon = ArrowRightAltRoundedIcon;
 
 export {
     LightModeIcon,
@@ -35,5 +37,6 @@ export {
     MinusIcon,
     GitHubIcon,
     AudioNotFoundIcon,
-    ClearAllIcon
+    ClearAllIcon,
+    RightIcon
 };

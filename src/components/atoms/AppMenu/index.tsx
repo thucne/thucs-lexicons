@@ -51,7 +51,7 @@ type AppMenuProps = {
 } & React.PropsWithChildren &
     Partial<MenuProps>;
 
-export default function AppMenu({ menuId, anchorEl, anchorElId, onClose, children, onMouseLeave }: AppMenuProps) {
+export default function AppMenu({ menuId, anchorEl, anchorElId, onClose, children, className }: AppMenuProps) {
     const open = Boolean(anchorEl);
 
     const handleClose = () => {
@@ -61,13 +61,13 @@ export default function AppMenu({ menuId, anchorEl, anchorElId, onClose, childre
     return (
         <StyledMenu
             id={menuId}
+            className={`${className} app-menu`}
             MenuListProps={{
                 'aria-labelledby': anchorElId
             }}
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
-            onMouseLeave={onMouseLeave}
         >
             {children}
         </StyledMenu>
