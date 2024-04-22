@@ -17,7 +17,7 @@ const QuickMeaning = () => {
     const [meaning, setMeaning] = useState<SearchResult | undefined>(undefined);
 
     const [hoveredTextRaw, hoveredTextElement, setHoveredTextElement] = useOnHoveredText({
-        delay: 500,
+        delay: 1000,
         delayOnLeave: true,
         filterClassName: 'lexicon'
     });
