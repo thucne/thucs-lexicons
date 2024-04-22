@@ -48,10 +48,10 @@ type AppMenuProps = {
     anchorEl: HTMLElement | null;
     anchorElId: string;
     onClose: () => void;
-    onMouseLeave: MenuProps['onMouseLeave'];
-} & React.PropsWithChildren;
+} & React.PropsWithChildren &
+    Partial<MenuProps>;
 
-export default function AppMenu({ menuId, anchorEl, anchorElId, onClose, children }: AppMenuProps) {
+export default function AppMenu({ menuId, anchorEl, anchorElId, onClose, children, onMouseLeave }: AppMenuProps) {
     const open = Boolean(anchorEl);
 
     const handleClose = () => {
@@ -67,6 +67,7 @@ export default function AppMenu({ menuId, anchorEl, anchorElId, onClose, childre
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
+            onMouseLeave={onMouseLeave}
         >
             {children}
         </StyledMenu>
