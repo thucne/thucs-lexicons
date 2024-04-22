@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
+import { styled, alpha, SxProps } from '@mui/material/styles';
 import Menu, { MenuProps } from '@mui/material/Menu';
 
 const StyledMenu = styled((props: MenuProps) => (
@@ -23,6 +23,7 @@ const StyledMenu = styled((props: MenuProps) => (
         border: `1px solid ${theme.palette.divider}`,
         marginTop: theme.spacing(1),
         minWidth: 180,
+        maxWidth: 220,
         color: theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
         boxShadow:
             'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
@@ -42,12 +43,13 @@ const StyledMenu = styled((props: MenuProps) => (
     }
 }));
 
-interface AppMenuProps extends React.PropsWithChildren {
+type AppMenuProps = {
     menuId: string;
     anchorEl: HTMLElement | null;
     anchorElId: string;
     onClose: () => void;
-}
+    onMouseLeave: MenuProps['onMouseLeave'];
+} & React.PropsWithChildren;
 
 export default function AppMenu({ menuId, anchorEl, anchorElId, onClose, children }: AppMenuProps) {
     const open = Boolean(anchorEl);
@@ -57,18 +59,16 @@ export default function AppMenu({ menuId, anchorEl, anchorElId, onClose, childre
     };
 
     return (
-        <div>
-            <StyledMenu
-                id={menuId}
-                MenuListProps={{
-                    'aria-labelledby': anchorElId
-                }}
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-            >
-                {children}
-            </StyledMenu>
-        </div>
+        <StyledMenu
+            id={menuId}
+            MenuListProps={{
+                'aria-labelledby': anchorElId
+            }}
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+        >
+            {children}
+        </StyledMenu>
     );
 }

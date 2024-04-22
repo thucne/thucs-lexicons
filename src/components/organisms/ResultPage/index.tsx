@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { redirect } from 'next/navigation';
 
 import { Container, Divider, Typography } from '@mui/material';
@@ -12,6 +12,7 @@ import MeaningGroup from './MeaningGroup';
 import { useLexicon } from '@/hooks/use-lexicon';
 import { persistWordToDatabaseAndStore } from '@/redux/actions/lexicon';
 import ToggleFavorite from './ToggleFavorite';
+import QuickMeaning from './QuickMeaning';
 
 type ResultPageProps = {
     word: string;
@@ -68,6 +69,7 @@ const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
 
     return (
         <Container maxWidth="md">
+            <QuickMeaning />
             <Typography variant="caption" component="h1" gutterBottom className="italic">
                 Meaning of <b>{word}</b> in English
             </Typography>
