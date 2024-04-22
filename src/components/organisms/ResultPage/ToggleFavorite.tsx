@@ -60,9 +60,6 @@ const ToggleFavorite = ({ word }: { word: string }) => {
         }
     }, [shouldToggle, pathname, router, searchParams, dispatch, word]);
 
-    console.log('favoriteLexicons ', favoriteLexicons);
-    console.log('optimistic ', isFavoriteOptimistic);
-
     return (
         <Divider
             className="my-4"
