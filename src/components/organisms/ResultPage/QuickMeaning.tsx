@@ -88,30 +88,46 @@ const QuickMeaning = () => {
                 }}
             >
                 {isLoading && (
-                    <Typography variant="body2" color="info.main" sx={{ maxWidth: 220 }}>
+                    <Typography variant="body2" color="info.main" sx={{ maxWidth: 250 }}>
                         <CircularProgress size={14} className="m-auto mr-2 align-middle" />
-                        Loading... Hang on a sec
+                        Loading... Please wait
                     </Typography>
                 )}
                 {hoveredText && !isLoading && meaning && (
                     <Stack direction="column" spacing={0.5}>
                         <Typography variant="h6">{meaning.word}</Typography>
-                        <Typography variant="caption" component="span" color="textSecondary">
+                        <Typography
+                            variant="caption"
+                            component="span"
+                            color="textSecondary"
+                            className="flex items-center gap-1"
+                        >
                             <Typography variant="caption" component="span" color="text.primary">
                                 {meaning.meanings?.[0]?.partOfSpeech}
-                            </Typography>{' '}
-                            - {meaning.phonetics?.[0]?.text} -
-                            <Audio
-                                phonetic={meaning.phonetics?.[0]}
-                                showPhonetic={false}
-                                sx={{ display: 'inline-block' }}
-                                buttonSx={{
-                                    py: 0,
-                                    ':hover': {
-                                        backgroundColor: 'transparent'
-                                    }
-                                }}
-                            />
+                            </Typography>
+                            {meaning.phonetics?.[0]?.text && (
+                                <Typography variant="caption" component="span">
+                                    - {meaning.phonetics?.[0]?.text}
+                                </Typography>
+                            )}
+                            {meaning.phonetics?.[0] && (
+                                <>
+                                    <Typography variant="caption" component="span">
+                                        -
+                                    </Typography>
+                                    <Audio
+                                        phonetic={meaning.phonetics[0]}
+                                        showPhonetic={false}
+                                        sx={{ display: 'inline-block' }}
+                                        buttonSx={{
+                                            py: 0,
+                                            ':hover': {
+                                                backgroundColor: 'transparent'
+                                            }
+                                        }}
+                                    />
+                                </>
+                            )}
                         </Typography>
                         <Typography variant="body2">{meaning.meanings?.[0]?.definitions?.[0]?.definition}</Typography>
                     </Stack>
