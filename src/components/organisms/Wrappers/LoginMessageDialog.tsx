@@ -113,7 +113,7 @@ const LoginMessageDialog = () => {
 
     return (
         <Dialog open={showLoginDialog} maxWidth="xs" onClose={isLoggingIn ? undefined : () => handleClose(false)}>
-            <DialogTitle>{isLoading ? 'Success' : 'To continue, please login with Google!'}</DialogTitle>
+            <DialogTitle>{isLoading ? 'Please wait' : 'To continue, please login with Google!'}</DialogTitle>
             <DialogContent dividers>
                 {!isLoading && (
                     <>
@@ -126,7 +126,7 @@ const LoginMessageDialog = () => {
                     </>
                 )}
                 {isLoading && (
-                    <Typography className="mt-2">We are setting up your account. Please wait a moment... 😊</Typography>
+                    <Typography className="mt-2">We are setting up your account... 😊</Typography>
                 )}
             </DialogContent>
             <DialogActions>
