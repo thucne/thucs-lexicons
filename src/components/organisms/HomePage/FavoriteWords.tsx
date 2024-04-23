@@ -25,7 +25,12 @@ const FavoriteWords = () => {
     };
 
     if ([AuthStatus.NotRun, AuthStatus.Handshaking].includes(authStatus)) {
-        return <Typography variant="body2">Loading...</Typography>;
+        return (
+            <Typography variant="body2" className="flex items-center gap-2">
+                <CircularProgress size={14} />
+                Verifying...
+            </Typography>
+        );
     }
 
     if ([AuthStatus.Handshaked, AuthStatus.Loaded].includes(authStatus) && !loggedIn) {
@@ -37,9 +42,11 @@ const FavoriteWords = () => {
                     component="span"
                     onClick={handleRequestLogin}
                     className="cursor-pointer italic underline underline-offset-4"
+                    tabIndex={0}
                 >
-                    Click to login.
+                    Click to login
                 </Typography>
+                .
             </Typography>
         );
     }
@@ -53,23 +60,27 @@ const FavoriteWords = () => {
                     <Typography variant="body2" color="success.main">
                         Logged in as {email}.{' '}
                         {[AuthStatus.Loaded].includes(authStatus) && loggedIn && (
-                            <Typography
-                                variant="body2"
-                                component="span"
-                                className="cursor-pointer italic underline underline-offset-4"
-                                onClick={handleLogout}
-                                color="text.primary"
-                            >
-                                Logout.
-                            </Typography>
+                            <>
+                                <Typography
+                                    variant="body2"
+                                    component="span"
+                                    className="cursor-pointer italic underline underline-offset-4"
+                                    onClick={handleLogout}
+                                    color="text.primary"
+                                    tabIndex={0}
+                                >
+                                    Logout
+                                </Typography>
+                                .
+                            </>
                         )}
                     </Typography>
                     {[AuthStatus.Handshaked, AuthStatus.Loading].includes(authStatus) && loggedIn && (
                         <Box className="mt-3 flex items-center gap-2">
-                            <Typography variant="body2" component="span" color="text.primary">
-                                Loading your favorite lexicon
-                            </Typography>
                             <CircularProgress size={14} />
+                            <Typography variant="body2" component="span" color="text.primary">
+                                Loading your favorite lexicon...
+                            </Typography>
                         </Box>
                     )}
                 </Typography>
@@ -90,7 +101,11 @@ const FavoriteWordsList = ({ favoriteLexicons }: { favoriteLexicons: string[] })
         <>
             {favoriteLexicons?.length > 0 && (
                 <Grid xs={12}>
-                    <Typography className="cursor-pointer underline underline-offset-2" onClick={handleClearFavorites}>
+                    <Typography
+                        className="w-fit cursor-pointer underline underline-offset-2"
+                        onClick={handleClearFavorites}
+                        tabIndex={0}
+                    >
                         Clear all
                     </Typography>
                 </Grid>

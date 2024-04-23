@@ -2,7 +2,16 @@
 
 import { useState, useEffect } from 'react';
 
-import { Dialog, DialogActions, DialogContent, DialogTitle, Typography, Button, Box } from '@mui/material';
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Typography,
+    Button,
+    Box,
+    CircularProgress
+} from '@mui/material';
 import { cancelLoginRequest, login, resetLogin, selectCallbackUrl, selectShowLoginDialog } from '@/redux/reducers/auth';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { useRouter } from 'next/navigation';
@@ -86,6 +95,7 @@ const LoginMessageDialog = () => {
                     onClick={() => dispatch(cancelLoginRequest())}
                     sx={{ textTransform: 'none' }}
                     disabled={isLoggingIn}
+                    startIcon={isLoggingIn ? <CircularProgress size={14} /> : undefined}
                 >
                     {isLoggingIn ? 'Logging in...' : 'Cancel'}
                 </Button>
