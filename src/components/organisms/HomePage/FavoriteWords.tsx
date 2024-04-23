@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { clearFavorites, selectFavoriteLexicons } from '@/redux/reducers/favoriteLexicons';
 import { logout, requestLogin, selectEmail, selectLoggedInStatus } from '@/redux/reducers/auth';
 import { selectAuthStatus } from '@/redux/reducers/authStatus';
-import { AuthStatus } from '@/hooks/use-init';
+import { AuthStatus } from '@/types';
 
 const FavoriteWords = () => {
     const dispatch = useAppDispatch();

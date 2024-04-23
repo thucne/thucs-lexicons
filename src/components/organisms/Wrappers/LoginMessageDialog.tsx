@@ -17,7 +17,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { useRouter } from 'next/navigation';
 import { getFavorites } from '@/redux/reducers/favoriteLexicons';
 import { selectAuthStatus } from '@/redux/reducers/authStatus';
-import { AuthStatus } from '@/hooks/use-init';
+import { AuthStatus } from '@/types';
 
 declare const window: any;
 declare const google: any;

@@ -4,14 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { getFavorites } from '@/redux/reducers/favoriteLexicons';
 import { handshake, selectLoggedInStatus } from '@/redux/reducers/auth';
-
-export enum AuthStatus {
-    NotRun = 'NotRun',
-    Handshaking = 'Handshaking',
-    Handshaked = 'Handshaked',
-    Loading = 'Loading',
-    Loaded = 'Loaded'
-}
+import { AuthStatus } from '@/types';
 
 export const useInit = () => {
     const [status, setStatus] = useState(AuthStatus.NotRun);

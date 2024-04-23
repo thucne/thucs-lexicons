@@ -54,3 +54,11 @@ export type FavoriteLexiconSupabase = {
     createdBy: string;
     lexicons: string;
 };
+
+export enum AuthStatus {
+    NotRun = 'NotRun',
+    Handshaking = 'Handshaking',
+    Handshaked = 'Handshaked',
+    Loading = 'Loading',
+    Loaded = 'Loaded'
+}

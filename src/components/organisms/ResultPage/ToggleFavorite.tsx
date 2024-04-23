@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { selectFavoriteLexicons, toggleAndPersistFavoriteLexicon } from '@/redux/reducers/favoriteLexicons';
 import { CheckIcon } from '@/components/atoms/AppIcons';
 import { selectAuthStatus } from '@/redux/reducers/authStatus';
-import { AuthStatus } from '@/hooks/use-init';
+import { AuthStatus } from '@/types';
 import { useOptimistic } from '@/hooks/use-optimistic';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { createUrl } from '@/utils';

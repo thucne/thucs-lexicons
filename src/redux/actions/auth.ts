@@ -3,7 +3,7 @@ import axios from 'axios';
 import { reset, resetLogin } from '../reducers/auth';
 import { clearFavoriteLexicons } from '../reducers/favoriteLexicons';
 import { setAuthStatus } from '../reducers/authStatus';
-import { AuthStatus } from '@/hooks/use-init';
+import { AuthStatus } from '@/types';
 
 type ReturnType = (dispatch: Dispatch) => Promise<void>;
 

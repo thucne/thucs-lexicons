@@ -1,6 +1,6 @@
-import { AuthStatus } from '@/hooks/use-init';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { AppState } from '../store';
+import { AuthStatus } from '@/types';
 
 const initialState = AuthStatus.NotRun;
 

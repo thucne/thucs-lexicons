@@ -6,7 +6,7 @@ import { setFavoriteLexicons, toggleFavoriteLexicon } from '../reducers/favorite
 import { requestLogin } from '../reducers/auth';
 import { Logger } from '@/types/decorators';
 import { setAuthStatus } from '../reducers/authStatus';
-import { AuthStatus } from '@/hooks/use-init';
+import { AuthStatus } from '@/types';
 
 type ReturnType = (dispatch: Dispatch) => Promise<void>;
 
