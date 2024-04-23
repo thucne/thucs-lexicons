@@ -30,18 +30,7 @@ const LoginMessageDialog = () => {
     const authStatus = useAppSelector(selectAuthStatus);
     const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-    useEffect(() => {
-        const ggbtn = document.getElementById('google_btn');
-
-        if (ggbtn) {
-            if (authStatus !== AuthStatus.Loaded) {
-                ggbtn.style.display = 'none';
-            } else {
-                ggbtn.style.display = 'block';
-            }
-        }
-
-    }, [authStatus]);
+    const isLoading = authStatus !== AuthStatus.Loaded;
 
     useEffect(() => {
         let tryAgain: ReturnType<typeof setInterval>;
@@ -97,14 +86,21 @@ const LoginMessageDialog = () => {
 
     return (
         <Dialog open={showLoginDialog} maxWidth="xs" onClose={isLoggingIn ? undefined : () => handleClose(false)}>
-            <DialogTitle>To continue, please login with Google!</DialogTitle>
+            <DialogTitle>{isLoading ? 'Success' : 'To continue, please login with Google!'}</DialogTitle>
             <DialogContent dividers>
-                <Typography variant="caption" color="warning.main" className="mt-2">
-                    If you don&apos;t have any Google account, you may need to create one first.
-                </Typography>
-                <Box className="mt-3">
-                    <div id="google_btn" />
-                </Box>
+                {!isLoading && (
+                    <>
+                        <Typography variant="caption" color="warning.main" className="mt-2">
+                            If you don&apos;t have any Google account, you may need to create one first.
+                        </Typography>
+                        <Box className="mt-3">
+                            <div id="google_btn" />
+                        </Box>
+                    </>
+                )}
+                {isLoading && (
+                    <Typography className="mt-2">We are setting up your account. Please wait a moment... 😊</Typography>
+                )}
             </DialogContent>
             <DialogActions>
                 <Button
