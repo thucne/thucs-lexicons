@@ -29,11 +29,13 @@ const LoginMessageDialog = () => {
     const showLoginDialog = useAppSelector(selectShowLoginDialog);
     const authStatus = useAppSelector(selectAuthStatus);
     const [isLoggingIn, setIsLoggingIn] = useState(false);
+    const [failedToLoad, setFailedToLoad] = useState(false);
 
     const isLoading = authStatus !== AuthStatus.Loaded;
 
     useEffect(() => {
         let tryAgain: ReturnType<typeof setInterval>;
+        let count = 0;
 
         if (window?.google && google) {
             const handleCredentialResponse = async (response: any) => {
@@ -73,6 +75,13 @@ const LoginMessageDialog = () => {
                     });
                     google.accounts.id.prompt();
                     clearInterval(tryAgain);
+                } else {
+                    count += 1;
+
+                    if (count > 20) {
+                        setFailedToLoad(true);
+                        clearInterval(tryAgain);
+                    }
                 }
             }, 250);
         }
@@ -83,6 +92,24 @@ const LoginMessageDialog = () => {
     const handleClose = (success: boolean) => {
         dispatch(resetLogin({ success }));
     };
+
+    if (failedToLoad) {
+        return (
+            <Dialog open={showLoginDialog} onClose={() => handleClose(false)}>
+                <DialogTitle>Failed to load Google Sign-In</DialogTitle>
+                <DialogContent dividers>
+                    <Typography color="error.main" className="mt-2">
+                        We are unable to load Google Sign-In. Please try again later.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button size="small" onClick={() => handleClose(false)} sx={{ textTransform: 'none' }}>
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        );
+    }
 
     return (
         <Dialog open={showLoginDialog} maxWidth="xs" onClose={isLoggingIn ? undefined : () => handleClose(false)}>
