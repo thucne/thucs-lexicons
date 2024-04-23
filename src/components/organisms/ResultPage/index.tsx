@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import { redirect } from 'next/navigation';
 
 import { Container, Divider, Typography } from '@mui/material';

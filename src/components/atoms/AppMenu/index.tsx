@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { styled, alpha, SxProps } from '@mui/material/styles';
+import { styled, alpha } from '@mui/material/styles';
 import Menu, { MenuProps } from '@mui/material/Menu';
 
 const StyledMenu = styled((props: MenuProps) => (
