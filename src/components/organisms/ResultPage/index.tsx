@@ -13,6 +13,7 @@ import { useLexicon } from '@/hooks/use-lexicon';
 import { persistWordToDatabaseAndStore } from '@/redux/actions/lexicon';
 import ToggleFavorite from './ToggleFavorite';
 import QuickMeaning from './QuickMeaning';
+import Link from 'next/link';
 
 type ResultPageProps = {
     word: string;
@@ -71,7 +72,10 @@ const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
         <Container maxWidth="md">
             <QuickMeaning />
             <Typography variant="caption" component="h1" gutterBottom className="italic">
-                Meaning of <b>{word}</b> in English
+                Meaning of <b>{word}</b> in English | Powered by{' '}
+                <Link href="https://dictionaryapi.dev/" target="_blank" rel="noopener noreferrer" className='underline underline-offset-2'>
+                    Free Dictionary API
+                </Link>
             </Typography>
             <ToggleFavorite word={word} />
             {results.map((result, index) => [
