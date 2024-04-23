@@ -16,6 +16,8 @@ import { cancelLoginRequest, login, resetLogin, selectCallbackUrl, selectShowLog
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { useRouter } from 'next/navigation';
 import { getFavorites } from '@/redux/reducers/favoriteLexicons';
+import { selectAuthStatus } from '@/redux/reducers/authStatus';
+import { AuthStatus } from '@/hooks/use-init';
 
 declare const window: any;
 declare const google: any;
@@ -25,7 +27,21 @@ const LoginMessageDialog = () => {
     const router = useRouter();
     const callbackUrl = useAppSelector(selectCallbackUrl);
     const showLoginDialog = useAppSelector(selectShowLoginDialog);
+    const authStatus = useAppSelector(selectAuthStatus);
     const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+    useEffect(() => {
+        const ggbtn = document.getElementById('google_btn');
+
+        if (ggbtn) {
+            if (authStatus !== AuthStatus.Loaded) {
+                ggbtn.style.display = 'none';
+            } else {
+                ggbtn.style.display = 'block';
+            }
+        }
+
+    }, [authStatus]);
 
     useEffect(() => {
         let tryAgain: ReturnType<typeof setInterval>;
@@ -33,7 +49,6 @@ const LoginMessageDialog = () => {
         if (window?.google && google) {
             const handleCredentialResponse = async (response: any) => {
                 try {
-                    console.log(response);
                     const { credential } = response;
 
                     setIsLoggingIn(true);
@@ -54,7 +69,8 @@ const LoginMessageDialog = () => {
             tryAgain = setInterval(() => {
                 google.accounts.id.initialize({
                     client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-                    callback: handleCredentialResponse
+                    callback: handleCredentialResponse,
+                    use_fedcm_for_prompt: true
                 });
                 const parent = document.getElementById('google_btn');
 
@@ -66,6 +82,7 @@ const LoginMessageDialog = () => {
                         logo_alignment: 'left',
                         width: '240'
                     });
+                    google.accounts.id.prompt();
                     clearInterval(tryAgain);
                 }
             }, 250);
