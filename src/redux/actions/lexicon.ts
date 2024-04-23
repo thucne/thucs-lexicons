@@ -59,10 +59,17 @@ class Lexicon {
     }
 
     @Logger(LOG_PREFIX)
-    toggleAndPersistFavoriteLexicon(word: string): ReturnType {
+    toggleAndPersistFavoriteLexicon(word: string, signal?: AbortSignal): ReturnType {
         return async (dispatch: Dispatch) => {
             return await axios
-                .post(FAVORITE_URL, { word }, { withCredentials: true })
+                .post(
+                    FAVORITE_URL,
+                    { word },
+                    {
+                        withCredentials: true,
+                        signal
+                    }
+                )
                 .then((response) => {
                     // if unauthorized, request login
                     if (response.status === 401) {

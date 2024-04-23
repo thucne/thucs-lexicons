@@ -1,6 +1,6 @@
 'use client';
 
-import { startTransition, useEffect } from 'react';
+import { startTransition, useEffect, useMemo, useState } from 'react';
 import { Chip, Divider, Tooltip } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { selectFavoriteLexicons, toggleAndPersistFavoriteLexicon } from '@/redux/reducers/favoriteLexicons';
@@ -10,6 +10,7 @@ import { AuthStatus } from '@/types';
 import { useOptimistic } from '@/hooks/use-optimistic';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { createUrl } from '@/utils';
+import { debounce } from 'lodash';
 
 const ToggleFavorite = ({ word }: { word: string }) => {
     const dispatch = useAppDispatch();
@@ -27,23 +28,41 @@ const ToggleFavorite = ({ word }: { word: string }) => {
         favoriteLexicons.includes(word),
         (_, optimisticValue) => optimisticValue
     );
+    const [controller, setController] = useState<AbortController | null>(null);
 
-    const handleToggleFavorites = async () => {
+    const deboucedDispatchFavorite = useMemo(
+        () =>
+            debounce(async (controller: AbortController) => {
+                /**
+                 * Toggle the comment below to see the difference between optimistic
+                 *      and non-optimistic behavior.
+                 * In this case, the optimistic behavior is to toggle the favorite state
+                 *      immediately and update the UI.
+                 * I assume the word is not the current word (simulate failing to update)
+                 *  ( --> so the UI will be updated accordingly after the request is done).
+                 */
+                // await dispatch(toggleAndPersistFavoriteLexicon('sth else'));
+                await dispatch(toggleAndPersistFavoriteLexicon(word, controller.signal));
+            }, 500),
+        [dispatch, word]
+    );
+
+    const handleToggleFavorites = () => {
+        // if user clicks the button multiple times, abort the previous request
+        if (controller) {
+            controller.abort('Aborted by user');
+        }
+
+        const newController = new AbortController();
+        setController(newController);
+
         const optimistic = !isFavoriteOptimistic;
         startTransition(() => {
             toggleFavoriteOptimistic(optimistic);
         });
 
-        /**
-         * Toggle the comment below to see the difference between optimistic
-         *      and non-optimistic behavior.
-         * In this case, the optimistic behavior is to toggle the favorite state
-         *      immediately and update the UI.
-         * I assume the word is not the current word (simulate failing to update)
-         *  ( --> so the UI will be updated accordingly after the request is done).
-         */
-        // await dispatch(toggleAndPersistFavoriteLexicon('sth else'));
-        await dispatch(toggleAndPersistFavoriteLexicon(word));
+        // debouce the request to avoid multiple requests
+        deboucedDispatchFavorite(newController);
     };
 
     useEffect(() => {

@@ -73,7 +73,12 @@ const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
             <QuickMeaning />
             <Typography variant="caption" component="h1" gutterBottom className="italic">
                 Meaning of <b>{word}</b> in English | Powered by{' '}
-                <Link href="https://dictionaryapi.dev/" target="_blank" rel="noopener noreferrer" className='underline underline-offset-2'>
+                <Link
+                    href="https://dictionaryapi.dev/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline underline-offset-2"
+                >
                     Free Dictionary API
                 </Link>
             </Typography>

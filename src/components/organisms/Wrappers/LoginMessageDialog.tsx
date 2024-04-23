@@ -125,9 +125,7 @@ const LoginMessageDialog = () => {
                         </Box>
                     </>
                 )}
-                {isLoading && (
-                    <Typography className="mt-2">We are setting up your account... 😊</Typography>
-                )}
+                {isLoading && <Typography className="mt-2">We are setting up your account... 😊</Typography>}
             </DialogContent>
             <DialogActions>
                 <Button
