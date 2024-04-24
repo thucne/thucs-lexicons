@@ -79,7 +79,7 @@ const FavoriteWords = () => {
                         <Box className="mt-3 flex items-center gap-2">
                             <CircularProgress size={14} />
                             <Typography variant="body2" component="span" color="text.primary">
-                                Loading your favorite lexicon...
+                                Loading your favorite lexicons...
                             </Typography>
                         </Box>
                     )}

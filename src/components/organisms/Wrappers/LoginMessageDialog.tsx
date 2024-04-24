@@ -77,7 +77,6 @@ const LoginMessageDialog = () => {
                 return true;
             }
         }
-
         return false;
     }, [handleCredentialResponse]);
 
@@ -113,7 +112,6 @@ const LoginMessageDialog = () => {
 
         renderGoogleSignInButton();
     };
-
     return (
         <Dialog open={showLoginDialog} maxWidth="xs" onClose={isLoggingIn ? undefined : () => handleClose(false)}>
             <DialogTitle>{isLoading ? 'Please wait' : 'To continue, please login with Google!'}</DialogTitle>
