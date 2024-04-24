@@ -85,19 +85,21 @@ const LoginMessageDialog = () => {
         let tryAgain: ReturnType<typeof setInterval>;
         let count = 0;
 
-        tryAgain = setInterval(() => {
-            const success = renderGoogleSignInButton();
-
-            if (success) {
-                clearInterval(tryAgain);
-            } else {
-                count += 1;
-                if (count > 20) {
-                    setFailedToLoad(true);
+        if (momoizedShowLoginDialog) {
+            tryAgain = setInterval(() => {
+                const success = renderGoogleSignInButton();
+    
+                if (success) {
                     clearInterval(tryAgain);
+                } else {
+                    count += 1;
+                    if (count > 20) {
+                        setFailedToLoad(true);
+                        clearInterval(tryAgain);
+                    }
                 }
-            }
-        }, 250);
+            }, 250);
+        }
 
         return () => tryAgain && clearInterval(tryAgain);
     }, [momoizedShowLoginDialog, renderGoogleSignInButton]);
