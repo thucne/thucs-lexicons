@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 
 import {
     Dialog,
@@ -32,100 +32,120 @@ const LoginMessageDialog = () => {
     const [failedToLoad, setFailedToLoad] = useState(false);
 
     const isLoading = authStatus !== AuthStatus.Loaded;
+    const momoizedShowLoginDialog = useMemo(() => showLoginDialog, [showLoginDialog]);
+
+    const handleCredentialResponse = useCallback(
+        async (response: any) => {
+            try {
+                const { credential } = response;
+
+                setIsLoggingIn(true);
+
+                await dispatch(login(credential));
+                await dispatch(getFavorites());
+
+                if (callbackUrl) {
+                    router.push(callbackUrl);
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setIsLoggingIn(false);
+            }
+        },
+        [dispatch, router, callbackUrl]
+    );
+
+    const renderGoogleSignInButton = useCallback(() => {
+        if (window?.google && google) {
+            google.accounts.id.initialize({
+                client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+                callback: handleCredentialResponse,
+                use_fedcm_for_prompt: true
+            });
+            const parent = document.getElementById('google_btn');
+
+            if (parent) {
+                google.accounts.id.renderButton(parent, {
+                    theme: 'filled_black',
+                    text: 'login_with',
+                    shape: 'pill',
+                    logo_alignment: 'left',
+                    width: '240'
+                });
+                google.accounts.id.prompt();
+                return true;
+            }
+        }
+
+        return false;
+    }, [handleCredentialResponse]);
 
     useEffect(() => {
         let tryAgain: ReturnType<typeof setInterval>;
         let count = 0;
 
-        if (window?.google && google) {
-            const handleCredentialResponse = async (response: any) => {
-                try {
-                    const { credential } = response;
+        tryAgain = setInterval(() => {
+            const success = renderGoogleSignInButton();
 
-                    setIsLoggingIn(true);
-
-                    await dispatch(login(credential));
-                    await dispatch(getFavorites());
-
-                    if (callbackUrl) {
-                        router.push(callbackUrl);
-                    }
-                } catch (error) {
-                    console.error(error);
-                } finally {
-                    setIsLoggingIn(false);
-                }
-            };
-
-            tryAgain = setInterval(() => {
-                google.accounts.id.initialize({
-                    client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-                    callback: handleCredentialResponse,
-                    use_fedcm_for_prompt: true
-                });
-                const parent = document.getElementById('google_btn');
-
-                if (parent) {
-                    google.accounts.id.renderButton(parent, {
-                        theme: 'filled_black',
-                        text: 'login_with',
-                        shape: 'pill',
-                        logo_alignment: 'left',
-                        width: '240'
-                    });
-                    google.accounts.id.prompt();
+            if (success) {
+                clearInterval(tryAgain);
+            } else {
+                count += 1;
+                if (count > 20) {
+                    setFailedToLoad(true);
                     clearInterval(tryAgain);
-                } else {
-                    count += 1;
-
-                    if (count > 20) {
-                        setFailedToLoad(true);
-                        clearInterval(tryAgain);
-                    }
                 }
-            }, 250);
-        }
+            }
+        }, 250);
 
         return () => tryAgain && clearInterval(tryAgain);
-    }, [showLoginDialog, callbackUrl, router, dispatch]);
+    }, [momoizedShowLoginDialog, renderGoogleSignInButton]);
 
     const handleClose = (success: boolean) => {
         dispatch(resetLogin({ success }));
     };
 
-    if (failedToLoad) {
-        return (
-            <Dialog open={showLoginDialog} onClose={() => handleClose(false)}>
-                <DialogTitle>Failed to load Google Sign-In</DialogTitle>
-                <DialogContent dividers>
-                    <Typography color="error.main" className="mt-2">
-                        We are unable to load Google Sign-In. Please try again later.
-                    </Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button size="small" onClick={() => handleClose(false)} sx={{ textTransform: 'none' }}>
-                        Close
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        );
-    }
+    const handleRetry = () => {
+        setFailedToLoad(false);
+
+        renderGoogleSignInButton();
+    };
 
     return (
         <Dialog open={showLoginDialog} maxWidth="xs" onClose={isLoggingIn ? undefined : () => handleClose(false)}>
             <DialogTitle>{isLoading ? 'Please wait' : 'To continue, please login with Google!'}</DialogTitle>
             <DialogContent dividers>
-                {!isLoading && (
+                {failedToLoad ? (
                     <>
-                        <Typography variant="caption" color="warning.main" className="mt-2">
-                            If you don&apos;t have any Google account, you may need to create one first.
+                        <Typography component="p" color="warning.main" className="mt-2">
+                            We are unable to load Google Sign-In.{' '}
+                            <Typography
+                                component="span"
+                                onClick={handleRetry}
+                                className='cursor-pointer underline underline-offset-2'
+                                color="text.primary"
+                            >
+                                Retry now
+                            </Typography>{' '}
+                            or try again later.
                         </Typography>
-                        <Box className="mt-3">
-                            <div id="google_btn" />
-                        </Box>
+                    </>
+                ) : (
+                    <>
+                        {!isLoading && (
+                            <>
+                                <Typography variant="caption" color="warning.main" className="mt-2">
+                                    If you don&apos;t have any Google account, you may need to create one first.
+                                </Typography>
+                            </>
+                        )}
+                        {isLoading && <Typography className="mt-2">We are setting up your account... 😊</Typography>}
                     </>
                 )}
-                {isLoading && <Typography className="mt-2">We are setting up your account... 😊</Typography>}
+                <Box className="mt-3" sx={{ display: isLoading ? 'none' : 'block' }}>
+                    <div id="google_btn" />
+                </Box>
             </DialogContent>
             <DialogActions>
                 <Button
