@@ -12,7 +12,7 @@ import {
     Box,
     CircularProgress
 } from '@mui/material';
-import { cancelLoginRequest, login, resetLogin, selectCallbackUrl, selectShowLoginDialog } from '@/redux/reducers/auth';
+import { cancelLoginRequest, login, loginV2, resetLogin, selectCallbackUrl, selectShowLoginDialog } from '@/redux/reducers/auth';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { useRouter } from 'next/navigation';
 import { getFavorites } from '@/redux/reducers/favoriteLexicons';

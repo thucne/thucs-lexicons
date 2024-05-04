@@ -1,6 +1,9 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { AppState } from '../store';
 import { validateAndLogin, handshake as handshakeAction, logout as logoutAction } from '../actions/auth';
+import axios from 'axios';
+import { setAuthStatus } from './authStatus';
+import { AuthStatus } from '@/types';
 
 type RequestLoginPayload = {
     callbackUrl: string | null;
@@ -20,6 +23,16 @@ const initState: AuthState = {
     email: null
 };
 
+const LOGIN_URL = '/api/auth/login/validate';
+
+export const loginV2 = createAsyncThunk('auth/validateAndLogin2', async (token: string, { dispatch }) => {
+    dispatch(setAuthStatus(AuthStatus.Handshaking));
+    const response = await axios.post(LOGIN_URL, { token }).finally(() => {
+        dispatch(setAuthStatus(AuthStatus.Handshaked));
+    });
+    return response.data;
+});
+
 export const authSlice = createSlice({
     name: 'auth',
     initialState: initState,
@@ -31,17 +44,32 @@ export const authSlice = createSlice({
             state.showLoginDialog = true;
             state.callbackUrl = action.payload.callbackUrl;
         },
-        resetLogin: (state, action: PayloadAction<{ success: boolean; email?: string }>) => {
-            state.loggedIn = action.payload.success;
+        resetLogin: (state: AuthState, action?: PayloadAction<{ success: boolean; email?: string }>) => {
+            state.loggedIn = action?.payload?.success || false;
             state.showLoginDialog = false;
             state.callbackUrl = null;
-            state.email = action.payload.email || null;
+            state.email = action?.payload?.email || null;
         },
         cancelLoginRequest: (state) => {
             state.showLoginDialog = false;
             state.callbackUrl = null;
         },
         reset: () => initState
+    },
+    extraReducers: (builder) => {
+        builder.addCase(loginV2.pending, () => {});
+        builder.addCase(loginV2.fulfilled, (state, action) => {
+            state.loggedIn = true;
+            state.showLoginDialog = false;
+            state.callbackUrl = null;
+            state.email = action?.payload?.email || null;
+        });
+        builder.addCase(loginV2.rejected, (state) => {
+            state.loggedIn = false;
+            state.showLoginDialog = false;
+            state.callbackUrl = null;
+            state.email = null;
+        });
     }
 });
 
