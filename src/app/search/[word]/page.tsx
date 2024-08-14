@@ -15,11 +15,6 @@ export async function generateMetadata({ params }: WordPageProps): Promise<Metad
     const results: SearchResults = await fetch(`${FREE_DICTIONARY_API}/${word}`).then((res) => res.json());
 
     // If the word is not found in the dictionary, the return message would be an object.
-    // {
-    //     "title": "No Definitions Found",
-    //     "message": "Sorry pal, we couldn't find definitions for the word you were looking for.",
-    //     "resolution": "You can try the search again at later time or head to the web instead."
-    // }
     if (!Array.isArray(results)) {
         return {
             title: 'Lexicon not found',

@@ -18,7 +18,8 @@
             }
         ],
         "paths": {
-            "@/*": ["./src/*"]
+            "@/*": ["./src/*"],
+            "fonts/*": ["./public/fonts/*"],
         },
         "experimentalDecorators": true
     },
