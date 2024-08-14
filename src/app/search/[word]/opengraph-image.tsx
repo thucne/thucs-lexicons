@@ -64,7 +64,8 @@ export default async function OpengraphImage(context: { params: Params }): Image
                         fontWeight: 700,
                         textDecoration: 'underline',
                         backgroundColor: '#59b379',
-                        padding: '0 40px'
+                        padding: '0 40px',
+                        maxWidth: '90%'
                     }}
                 >
                     {word}
