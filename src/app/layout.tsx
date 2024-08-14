@@ -11,6 +11,7 @@ import { DEFAULT_OG_IMAGE } from '@/constants';
 const inter = Inter({ subsets: ['vietnamese', 'latin'] });
 
 export const metadata: Metadata = {
+    metadataBase: new URL('https://lexicon-app.at.thucde.dev'),
     title: 'My Lexicons',
     description: `Search for word's definitions, synonyms, antonyms, and more...`,
     openGraph: {
