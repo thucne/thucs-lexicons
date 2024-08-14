@@ -3,11 +3,6 @@ import { DYNAMIC_OG_BG } from '@/constants';
 
 export const runtime = 'edge';
 
-export const size = {
-    width: 2400,
-    height: 1260
-};
-
 const calculateFontSize = (text = '') => {
     const count = text.length;
 
@@ -36,7 +31,7 @@ const getInter = async () => {
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
 
-    const word = searchParams.get('word') || 'Hello, World!';
+    const word = searchParams.get('word') ?? 'Hello, World!';
 
     return new ImageResponse(
         (
@@ -66,14 +61,15 @@ export async function GET(request: Request) {
             </div>
         ),
         {
-            ...size,
             fonts: [
                 {
                     name: 'Inter',
                     data: await getInter(),
                     weight: 700
                 }
-            ]
+            ],
+            width: 2400,
+            height: 1260
         }
     );
 }
