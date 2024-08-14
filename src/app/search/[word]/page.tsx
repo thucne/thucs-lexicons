@@ -18,13 +18,22 @@ export async function generateMetadata({ params }: WordPageProps): Promise<Metad
     if (!Array.isArray(results)) {
         return {
             title: 'Lexicon not found',
-            description: 'The lexicon could not be found in the dictionary.'
+            description: 'The lexicon could not be found in the dictionary.',
         };
     }
 
     return {
         title: `${word} | Definition in Free Dictionary API`,
-        description: getFirstDefinition(results)
+        description: getFirstDefinition(results),
+        openGraph: {
+            images: [
+                {
+                    url: `/api/og?word=${word}`,
+                    width: 2400,
+                    height: 1260
+                }
+            ]
+        }
     };
 }
 
