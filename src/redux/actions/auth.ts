@@ -22,11 +22,11 @@ class Auth {
                     token
                 })
                 .then((response) => {
-                    dispatch(resetLogin({ success: true, email: response.data.email }));
+                    dispatch(resetLogin({ success: true, email: response.data.email } as any));
                 })
                 .catch((error) => {
                     console.error(error);
-                    dispatch(resetLogin({ success: false }));
+                    dispatch(resetLogin({ success: false } as any));
                 })
                 .finally(() => {
                     dispatch(setAuthStatus(AuthStatus.Handshaked));
@@ -40,14 +40,14 @@ class Auth {
                 .get(HANDSHAKE_URL, { withCredentials: true })
                 .then((response) => {
                     if (response.data.result === 1) {
-                        dispatch(resetLogin({ success: true, email: response.data.email }));
+                        dispatch(resetLogin({ success: true, email: response.data.email } as any));
                     } else {
-                        dispatch(resetLogin({ success: false }));
+                        dispatch(resetLogin({ success: false } as any));
                     }
                 })
                 .catch((error) => {
                     console.error(error);
-                    dispatch(resetLogin({ success: false }));
+                    dispatch(resetLogin({ success: false } as any));
                 });
         };
     }

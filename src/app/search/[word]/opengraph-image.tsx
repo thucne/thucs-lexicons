@@ -1,8 +1,7 @@
-
 import { ImageResponse } from 'next/og';
 import { DYNAMIC_OG_BG } from '@/constants';
 
-export const runtime = 'edge'
+export const runtime = 'edge';
 
 export const size = {
     width: 2400,
@@ -29,58 +28,58 @@ const calculateFontSize = (text = '') => {
 };
 
 const getInter = async () => {
-  const response = await fetch(new URL('fonts/Inter/static/Inter-SemiBold.ttf', import.meta.url));
-  const buffer = await response.arrayBuffer();
+    const response = await fetch(new URL('fonts/Inter/static/Inter-SemiBold.ttf', import.meta.url));
+    const buffer = await response.arrayBuffer();
 
-  return buffer;
+    return buffer;
 };
 
-
 type Params = {
-  word: string;
-}
+    word: string;
+};
 
-export default async function OpengraphImage(context: { params: Params }): ImageResponse {
+export default async function OpengraphImage(context: { params: Params }) {
     const word = context?.params?.word;
+    const data = await getInter();
 
-    console.log('word', word);
-
-    return new ImageResponse(
-        (
-            <div
-                style={{
-                    backgroundImage: `url("${DYNAMIC_OG_BG}")`,
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems:'center'
-                }}
-            >
-                <p
+    return Promise.resolve(
+        new ImageResponse(
+            (
+                <div
                     style={{
-                        fontSize: calculateFontSize(word),
-                        color: '#f4ca44',
-                        fontWeight: 700,
-                        textDecoration: 'underline',
-                        backgroundColor: '#59b379',
-                        padding: '0 40px',
-                        maxWidth: '90%'
+                        backgroundImage: `url("${DYNAMIC_OG_BG}")`,
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
                     }}
                 >
-                    {word}
-                </p>
-            </div>
-        ),
-        {
-            ...size,
-            fonts: [
-              {
-                  name: 'Inter',
-                  data: await getInter(),
-                  weight: 700
-              }
-          ]
-        }
+                    <p
+                        style={{
+                            fontSize: calculateFontSize(word),
+                            color: '#f4ca44',
+                            fontWeight: 700,
+                            textDecoration: 'underline',
+                            backgroundColor: '#59b379',
+                            padding: '0 40px',
+                            maxWidth: '90%'
+                        }}
+                    >
+                        {word}
+                    </p>
+                </div>
+            ),
+            {
+                ...size,
+                fonts: [
+                    {
+                        name: 'Inter',
+                        data,
+                        weight: 700
+                    }
+                ]
+            }
+        )
     );
 }

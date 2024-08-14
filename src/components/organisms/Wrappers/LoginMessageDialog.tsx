@@ -12,7 +12,7 @@ import {
     Box,
     CircularProgress
 } from '@mui/material';
-import { cancelLoginRequest, login, loginV2, resetLogin, selectCallbackUrl, selectShowLoginDialog } from '@/redux/reducers/auth';
+import { cancelLoginRequest, login, resetLogin, selectCallbackUrl, selectShowLoginDialog } from '@/redux/reducers/auth';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { useRouter } from 'next/navigation';
 import { getFavorites } from '@/redux/reducers/favoriteLexicons';
@@ -104,7 +104,7 @@ const LoginMessageDialog = () => {
     }, [momoizedShowLoginDialog, renderGoogleSignInButton]);
 
     const handleClose = (success: boolean) => {
-        dispatch(resetLogin({ success }));
+        dispatch(resetLogin({ success } as any));
     };
 
     const handleRetry = () => {
@@ -117,8 +117,7 @@ const LoginMessageDialog = () => {
             <DialogTitle>{isLoading ? 'Please wait' : 'To continue, please login with Google!'}</DialogTitle>
             <DialogContent dividers>
                 {failedToLoad ? (
-                    <>
-                        <Typography component="p" color="warning.main" className="mt-2">
+                    <Typography component="p" color="warning.main" className="mt-2">
                             We are unable to load Google Sign-In.{' '}
                             <Typography
                                 component="span"
@@ -130,7 +129,6 @@ const LoginMessageDialog = () => {
                             </Typography>{' '}
                             or try again later.
                         </Typography>
-                    </>
                 ) : (
                     <>
                         {!isLoading && (
