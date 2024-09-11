@@ -22,8 +22,10 @@ export async function generateMetadata({ params }: WordPageProps): Promise<Metad
         };
     }
 
+    const decodedWord = decodeURIComponent(word);
+
     return {
-        title: `${word} | Definition in Free Dictionary API`,
+        title: `${decodedWord} | Definition in Free Dictionary API`,
         description: getFirstDefinition(results),
         openGraph: {
             images: [
