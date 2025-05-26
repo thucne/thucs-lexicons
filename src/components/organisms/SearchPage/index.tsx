@@ -44,7 +44,7 @@ const SearchPageBody = ({ word }: SearchPageProps) => {
     if (!Array.isArray(results)) {
         return (
             <div>
-                Word <b>&quot;{word}&quot;</b> not found!
+                <b>&quot;{word}&quot;</b> not found!
             </div>
         );
     }

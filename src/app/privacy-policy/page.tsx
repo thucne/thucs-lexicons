@@ -68,7 +68,7 @@ const PrivacyPolicy = () => {
                     <Typography variant="body1">Browsing activity</Typography>
                 </li>
                 <li>
-                    <Typography variant="body1">Word content (beyond the data you choose to include)</Typography>
+                    <Typography variant="body1">Word&apos;s/Searched term&apos;s content/definitions (beyond the data you choose to include)</Typography>
                 </li>
             </ul>
 
