@@ -7,18 +7,18 @@ const calculateFontSize = (text = '') => {
     const count = text.length;
 
     if (count < 20) {
-        return 200;
+        return 100;
     }
 
     if (count < 40) {
-        return 160;
+        return 80;
     }
 
     if (count < 80) {
-        return 130;
+        return 65;
     }
 
-    return 100;
+    return 50;
 };
 
 const getInter = async () => {
@@ -38,14 +38,17 @@ export async function GET(request: Request) {
         (
             <div
                 style={{
-                    backgroundImage: `url("${DYNAMIC_OG_BG}")`,
+                    backgroundImage: `url("${DYNAMIC_OG_BG}") `,
+                    backgroundSize: '100% 100%',
+                    backgroundPosition: 'center', // Keeps it centered
+                    backgroundRepeat: 'no-repeat',
                     width: '100%',
                     height: '100%',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'flex-start',
                     flexDirection: 'column',
-                    padding: '125px',
+                    padding: '62.5px',
                 }}
             >
                 <p
@@ -54,8 +57,8 @@ export async function GET(request: Request) {
                         color: 'black',
                         fontWeight: 700,
                         backgroundColor: '#ffca28',
-                        padding: '0 40px',
-                        maxWidth: '90%',
+                        padding: '0 20px',
+                        maxWidth: '90%'
                     }}
                 >
                     {word}
@@ -63,14 +66,14 @@ export async function GET(request: Request) {
                 {definition?.length ? (
                     <p
                         style={{
-                            fontSize: 70,
+                            fontSize: 35,
                             color: 'white',
                             fontWeight: 700,
-                            padding: '0 40px',
+                            padding: '0 20px',
                             maxWidth: '90%',
-                            marginTop: '50px',
+                            marginTop: '25px',
                             textShadow: '2px 2px 6px rgba(0, 0, 0, 0.9)',
-                            borderLeft: "10px solid yellow"
+                            borderLeft: '5px solid yellow'
                         }}
                     >
                         {definition}
@@ -86,8 +89,8 @@ export async function GET(request: Request) {
                     weight: 700
                 }
             ],
-            width: 2400,
-            height: 1260
+            width: 1200,
+            height: 630
         }
     );
 }
