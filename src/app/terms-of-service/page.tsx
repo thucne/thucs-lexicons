@@ -1,20 +1,18 @@
-import React from 'react';
-import { Metadata } from 'next';
 import { Container, Typography } from '@mui/material';
 
 const TermsOfService = () => {
     return (
         <Container maxWidth="md" sx={{ pb: 5 }}>
             <Typography variant="h5" component="h2" gutterBottom>
-                Privacy Policy for My Lexicons (lexicon-app.at.thucde.dev)
+                Privacy Policy for thucne dictionary (dictionary.thucde.dev)
             </Typography>
             <Typography variant="body1" gutterBottom>
                 Effective Date: 2024-04-14
             </Typography>
             <Typography variant="body1" gutterBottom>
-                These Terms of Service (&quot;Terms&quot;) govern your access to and use of the My Lexicons website,
-                located at lexicon-app.at.thucde.dev (the &quot;Website&quot;). By accessing or using the Website, you
-                agree to be bound by these Terms.
+                These Terms of Service (&quot;Terms&quot;) govern your access to and use of the thucne dictionary
+                website, located at dictionary.thucde.dev (the &quot;Website&quot;). By accessing or using the Website,
+                you agree to be bound by these Terms.
             </Typography>
             <Typography variant="h6" gutterBottom>
                 1. Use of the Website

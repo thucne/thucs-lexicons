@@ -1,27 +1,26 @@
-import React from 'react';
-import { Metadata } from 'next';
 import { Container, Typography } from '@mui/material';
+import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Privacy Policy | My Lexicons',
+    title: 'Privacy Policy | thucne dictionary',
     description:
-        'Learn how My Lexicons protects your privacy. We only store your email &amp; favorite words (without definitions) for managing your lexicons.'
+        'Learn how thucne dictionary protects your privacy. We only store your email &amp; favorite words (without definitions) for managing your lexicons.'
 };
 
 const PrivacyPolicy = () => {
     return (
         <Container maxWidth="md" sx={{ pb: 5 }}>
             <Typography variant="h5" component="h2" gutterBottom>
-                Privacy Policy for My Lexicons (lexicon-app.at.thucde.dev)
+                Privacy Policy for thucne dictionary (dictionary.thucde.dev)
             </Typography>
             <Typography variant="body1" gutterBottom>
                 Effective Date: 2024-04-14
             </Typography>
 
             <Typography variant="body1" gutterBottom>
-                This privacy policy (&quot;Policy&quot;) describes how My Lexicons (&quot;we,&quot; &quot;us,&quot; or
-                &quot;our&quot;) handles information when you use our website, located at lexicon-app.at.thucde.dev (the
-                &quot;Website&quot;).
+                This privacy policy (&quot;Policy&quot;) describes how thucne dictionary (&quot;we,&quot;
+                &quot;us,&quot; or &quot;our&quot;) handles information when you use our website, located at
+                dictionary.thucde.dev (the &quot;Website&quot;).
             </Typography>
 
             <Typography variant="h6" component="h3" gutterBottom>
@@ -48,8 +47,8 @@ const PrivacyPolicy = () => {
             </Typography>
 
             <Typography variant="body1" gutterBottom>
-                We emphasize that My Lexicons does not collect or store any personal data beyond your email address.
-                This includes:
+                We emphasize that thucne dictionary does not collect or store any personal data beyond your email
+                address. This includes:
             </Typography>
 
             <ul>

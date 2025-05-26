@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: WordPageProps): Promise<Metad
     if (!Array.isArray(results)) {
         return {
             title: 'Lexicon not found',
-            description: 'The lexicon could not be found in the dictionary.',
+            description: 'The word could not be found in the dictionary.',
         };
     }
 
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: WordPageProps): Promise<Metad
         openGraph: {
             images: [
                 {
-                    url: `/api/og?word=${word}`,
+                    url: `/api/og?word=${word}&definition=${getFirstDefinition(results)}`,
                     width: 2400,
                     height: 1260
                 }

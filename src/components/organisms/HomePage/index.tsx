@@ -1,7 +1,7 @@
 'use client';
 
-import { Container, Typography, Divider } from '@mui/material';
 import Grid from '@/components/atoms/AppGrid';
+import { Container, Divider, Typography } from '@mui/material';
 import FavoriteWords from './FavoriteWords';
 
 const HomePage = () => {
@@ -10,7 +10,9 @@ const HomePage = () => {
             <Grid container spacing={2}>
                 <Grid xs={12}>
                     <Typography variant="h4" component="h1">
-                        Welcome to My Lexicons
+                        Welcome to <span className="font-bold  text-yellow-500">
+                            thucne dictionary
+                        </span>
                     </Typography>
                 </Grid>
                 <Grid xs={12} my={1}>

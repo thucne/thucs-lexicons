@@ -32,7 +32,7 @@ export async function generateMetadata({ searchParams }: SearchPageProps): Promi
     } catch (_) {
         return {
             title: `"${word}" | Not Found`,
-            description: `The lexicon "${word}" could not be found in the dictionary.`
+            description: `The word "${word}" could not be found in the dictionary.`
         };
     }
 }

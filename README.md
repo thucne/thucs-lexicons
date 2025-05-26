@@ -7,12 +7,12 @@
 
 ### This project is to apply JS, TS and React good practices as I am watching the tutorials on Udemy Courses
 
--   **Status**: under development 🚧 (as I am learning and building)
+-   **Status**: Implementation completed; Maintaining.
 -   The project is aimed to achieve good practices of using TS/JS and React
 -   What to expect (when I'm done)
 
     -   A small app that allows us to search and add to our browser storage favorite words (not too much words as I'm using a free Supabase plan 🙂)
-    -   Applying good practices in both TS/JS and React including proper use of TS types, components splitting (atomic pattern), data fetching/rendering, state management with redux, fetching data with GraphQL (right now I'm using RESTs and SWR for data fetching, just for now!) and more!
+    -   Applying good practices in both TS/JS and React including proper use of TS types, components splitting (atomic pattern), data fetching/rendering, state management with redux, data fetching with SWR.
     -   SEO friendly with dynamic routes.
 
 -   Keywords: Next.js, TypeScript, MUI, Redux, Advanced DOM manipulation, React Event Listener, React Hooks.

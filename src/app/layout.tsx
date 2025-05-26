@@ -3,16 +3,16 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 
 // For Material UI integration
-import ThemeProvider from '@/components/organisms/Wrappers/ThemeProvider';
-import StoreProvider from '@/components/organisms/Wrappers/StoreProvider';
 import AppWrapper from '@/components/organisms/Wrappers/AppWrapper';
+import StoreProvider from '@/components/organisms/Wrappers/StoreProvider';
+import ThemeProvider from '@/components/organisms/Wrappers/ThemeProvider';
 import { DEFAULT_OG_IMAGE } from '@/constants';
 
 const inter = Inter({ subsets: ['vietnamese', 'latin'] });
 
 export const metadata: Metadata = {
-    metadataBase: new URL('https://lexicon-app.at.thucde.dev'),
-    title: 'My Lexicons',
+    metadataBase: new URL('https://dictionary.thucde.dev'),
+    title: 'thucne dictionary | Free Dictionary',
     description: `Search for word's definitions, synonyms, antonyms, and more...`,
     openGraph: {
         images: [

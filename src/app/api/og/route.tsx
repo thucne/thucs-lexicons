@@ -32,6 +32,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
 
     const word = searchParams.get('word') ?? 'Hello, World!';
+    const definition = searchParams.get('definition');
 
     return new ImageResponse(
         (
@@ -42,22 +43,39 @@ export async function GET(request: Request) {
                     height: '100%',
                     display: 'flex',
                     justifyContent: 'center',
-                    alignItems: 'center'
+                    alignItems: 'flex-start',
+                    flexDirection: 'column',
+                    padding: '125px',
                 }}
             >
                 <p
                     style={{
                         fontSize: calculateFontSize(word),
-                        color: '#f4ca44',
+                        color: 'black',
                         fontWeight: 700,
-                        textDecoration: 'underline',
-                        backgroundColor: '#59b379',
+                        backgroundColor: '#ffca28',
                         padding: '0 40px',
-                        maxWidth: '90%'
+                        maxWidth: '90%',
                     }}
                 >
                     {word}
                 </p>
+                {definition?.length ? (
+                    <p
+                        style={{
+                            fontSize: 70,
+                            color: 'white',
+                            fontWeight: 700,
+                            padding: '0 40px',
+                            maxWidth: '90%',
+                            marginTop: '50px',
+                            textShadow: '2px 2px 6px rgba(0, 0, 0, 0.9)',
+                            borderLeft: "10px solid yellow"
+                        }}
+                    >
+                        {definition}
+                    </p>
+                ) : null}
             </div>
         ),
         {
