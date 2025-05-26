@@ -2,7 +2,7 @@
 
 <a href="https://lnk.thucde.dev/img/3SThy6Fzw5" target="_blank" title="Click to view original">
 
-<img src="https://lnk.thucde.dev/img/3SThy6Fzw5" alt="My Lexicon app demo" height="500" style="border: 2px solid white;"/>
+<img src="https://lnk.thucde.dev/img/3SThy6Fzw5" alt="My Word app demo" height="500" style="border: 2px solid white;"/>
 </a>
 
 ### This project is to apply JS, TS and React good practices as I am watching the tutorials on Udemy Courses

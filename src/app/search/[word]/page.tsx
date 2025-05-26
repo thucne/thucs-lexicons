@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: WordPageProps): Promise<Metad
     // If the word is not found in the dictionary, the return message would be an object.
     if (!Array.isArray(results)) {
         return {
-            title: 'Lexicon not found',
+            title: 'Word not found',
             description: 'The word could not be found in the dictionary.',
         };
     }
