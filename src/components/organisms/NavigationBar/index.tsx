@@ -51,13 +51,8 @@ const NavigationBar = () => {
         >
             <Grid container justifyContent="space-between" alignItems="center" spacing={1}>
                 <Grid xs="auto" container alignItems="center" component={Link} href="/">
-                    <Grid xs="auto">
-                        <Box className="relative h-10 w-10">
-                            <Image src="/logo.svg" alt="logo" fill={true} />
-                        </Box>
-                    </Grid>
                     <Grid xs>
-                        <Typography variant="h6" className="text-base md:text-lg lg:text-xl">
+                        <Typography variant="h6" className="text-base md:text-lg lg:text-xl md:ml-5">
                             thucne dictionary
                         </Typography>
                     </Grid>
