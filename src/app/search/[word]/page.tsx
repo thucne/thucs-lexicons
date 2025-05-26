@@ -31,8 +31,8 @@ export async function generateMetadata({ params }: WordPageProps): Promise<Metad
             images: [
                 {
                     url: `/api/og?word=${word}&definition=${getFirstDefinition(results)}`,
-                    width: 2400,
-                    height: 1260
+                    width: 1200,
+                    height: 630
                 }
             ]
         }
