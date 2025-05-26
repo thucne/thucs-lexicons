@@ -36,7 +36,7 @@ const FavoriteWords = () => {
     if ([AuthStatus.Handshaked, AuthStatus.Loaded].includes(authStatus) && !loggedIn) {
         return (
             <Typography variant="body2">
-                Please login to see your favorite lexicons.{' '}
+                Please login to see your favorite words.{' '}
                 <Typography
                     variant="body2"
                     component="span"
@@ -79,7 +79,7 @@ const FavoriteWords = () => {
                         <Box className="mt-3 flex items-center gap-2">
                             <CircularProgress size={14} />
                             <Typography variant="body2" component="span" color="text.primary">
-                                Loading your favorite lexicons...
+                                Loading your favorite words...
                             </Typography>
                         </Box>
                     )}
@@ -118,7 +118,7 @@ const FavoriteWordsList = ({ favoriteLexicons }: { favoriteLexicons: string[] })
                 ))
             ) : (
                 <Grid xs={12}>
-                    <Typography variant="body2">You have no favorite lexicons.</Typography>
+                    <Typography variant="body2">You have no favorite words.</Typography>
                 </Grid>
             )}
         </>
