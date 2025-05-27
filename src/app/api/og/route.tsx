@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { DYNAMIC_OG_BG } from '@/constants';
+import _ from 'lodash';
 
 export const runtime = 'edge';
 
@@ -28,11 +29,22 @@ const getInter = async () => {
     return buffer;
 };
 
+export const smartTrim = (str = '', n: number, delim = ' ', appendix = '...') => {
+    const trueLength = _.max([0, n - appendix.length]) || 0;
+
+    if (str.length <= trueLength) return str;
+    const trimmedStr = str.slice(0, trueLength + delim.length);
+    const lastDelimIndex = trimmedStr.lastIndexOf(delim);
+    if (lastDelimIndex >= 0) return trimmedStr.slice(0, lastDelimIndex) + appendix;
+    return trimmedStr + appendix;
+};
+
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
 
     const word = searchParams.get('word') ?? 'Hello, World!';
-    const definition = searchParams.get('definition');
+    const definition = searchParams.get('definition') || '';
+    const trimmedDefinition = smartTrim(definition, 150, ' ', '... Learn more.');
 
     return new ImageResponse(
         (
@@ -76,7 +88,7 @@ export async function GET(request: Request) {
                             borderLeft: '5px solid yellow'
                         }}
                     >
-                        {definition}
+                        {trimmedDefinition}
                     </p>
                 ) : null}
             </div>
