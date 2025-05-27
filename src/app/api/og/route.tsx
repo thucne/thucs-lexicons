@@ -29,7 +29,7 @@ const getInter = async () => {
     return buffer;
 };
 
-export const smartTrim = (str = '', n: number, delim = ' ', appendix = '...') => {
+const smartTrim = (str = '', n: number, delim = ' ', appendix = '...') => {
     const trueLength = _.max([0, n - appendix.length]) || 0;
 
     if (str.length <= trueLength) return str;
