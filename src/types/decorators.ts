@@ -3,7 +3,7 @@ function Logger(prefix: string) {
         const originalMethod = descriptor.value;
 
         descriptor.value = function (...args: any[]) {
-            console.log(`[${prefix}] - ${propertyKey} - ${args}`);
+            // console.log(`[${prefix}] - ${propertyKey} - ${args}`);
             return originalMethod.apply(this, args);
         };
 

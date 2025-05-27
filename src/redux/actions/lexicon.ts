@@ -31,7 +31,7 @@ class Lexicon {
                 }
                 return async (_: Dispatch) => {
                     return await axios.post(PERSIST_URL, arg1).then((_) => {
-                        console.log(`${LOG_PREFIX} Persisted!`);
+                        // console.log(`${LOG_PREFIX} Persisted!`);
                     });
                 };
             }
@@ -44,14 +44,14 @@ class Lexicon {
                             searchResults: arg2
                         })
                         .then((_) => {
-                            console.log(`${LOG_PREFIX} Persisted!`);
+                            // console.log(`${LOG_PREFIX} Persisted!`);
                             dispatch(setSearchResults({ word: arg1 as string, results: arg2 as SearchResults }));
                         });
                 };
             }
 
             return async (_: Dispatch) => {
-                console.log(`${LOG_PREFIX} Skipping...`);
+                // console.log(`${LOG_PREFIX} Skipping...`);
             };
         } catch (error) {
             return async (_: Dispatch) => {};
@@ -107,7 +107,7 @@ class Lexicon {
             return await axios
                 .delete(CLEAR_FAVORITES_URL, { withCredentials: true })
                 .then((response) => {
-                    console.log(response);
+                    // console.log(response);
                     dispatch(setFavoriteLexicons([]));
                 })
                 .catch((error: AxiosError) => {
