@@ -20,8 +20,8 @@ const PrivacyPolicy = () => {
             <br />
 
             <Typography variant="body1" gutterBottom>
-                This privacy policy ("Policy") describes how thucne dictionary ("we," "us," or "our") handles
-                information when you use our website, located at dictionary.thucde.dev (the "Website").
+                This privacy policy (&quot;Policy&quot;) describes how thucne dictionary (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;) handles
+                information when you use our website, located at dictionary.thucde.dev (the &quot;Website&quot;).
             </Typography>
             <br />
 
@@ -68,7 +68,7 @@ const PrivacyPolicy = () => {
                 </li>
                 <li>
                     <Typography variant="body1">
-                        Word's/searched term's content/definitions (beyond the data you choose to include)
+                        Word&apos;s/searched term&apos;s content/definitions (beyond the data you choose to include)
                     </Typography>
                 </li>
             </ul>
@@ -92,7 +92,7 @@ const PrivacyPolicy = () => {
                         <strong>OpenAI API:</strong> When a word or phrase is not found in the Free Dictionary API, we
                         use the OpenAI API to generate a definition. We do not store or analyze the search terms or the
                         definitions retrieved from OpenAI. Note: Your query is sent to OpenAI’s servers and subject to
-                        OpenAI's privacy policy.
+                        OpenAI&apos;s privacy policy.
                     </Typography>
                 </li>
             </ul>

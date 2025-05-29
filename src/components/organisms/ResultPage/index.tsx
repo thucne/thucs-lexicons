@@ -77,7 +77,7 @@ const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
                         </linearGradient>
                     </defs>
                 </svg>
-                Let's see if an AI
+                Let&apos;s see if an AI
                 <Box sx={{ m: 1, position: 'relative' }}>
                     <AutoAwesomeIcon sx={{ fill: 'url(#awesomeGradient)' }} />
                     <CircularProgress

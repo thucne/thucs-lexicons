@@ -11,8 +11,8 @@ const TermsOfService = () => {
             </Typography>
             <br /> <br />
             <Typography variant="body1" gutterBottom>
-                These Terms of Service ("Terms") govern your access to and use of the thucne dictionary website, located
-                at dictionary.thucde.dev (the "Website"). By accessing or using the Website, you agree to be bound by
+                These Terms of Service (&quot;Terms&quot;) govern your access to and use of the thucne dictionary website, located
+                at dictionary.thucde.dev (the &quot;Website&quot;). By accessing or using the Website, you agree to be bound by
                 these Terms.
             </Typography>
             <br />
@@ -23,7 +23,7 @@ const TermsOfService = () => {
                 You must be at least 13 years old to use the Website. You are responsible for maintaining the
                 confidentiality of your Google account credentials. You agree to use the Website only for lawful
                 purposes and in accordance with these Terms. You must not use the Website in any manner that could
-                damage, disable, overburden, or impair the Website or interfere with other users' experience.
+                damage, disable, overburden, or impair the Website or interfere with other users&apos; experience.
             </Typography>
             <Typography variant="h6" gutterBottom>
                 2. User Content
@@ -53,7 +53,7 @@ const TermsOfService = () => {
                 5. Disclaimers
             </Typography>
             <Typography variant="body1" gutterBottom>
-                The Website is provided "as is" without warranties of any kind, whether express or implied. We disclaim
+                The Website is provided &quot;as is&quot; without warranties of any kind, whether express or implied. We disclaim
                 all warranties, including but not limited to merchantability, fitness for a particular purpose, and
                 non-infringement. We do not guarantee the accuracy or completeness of information retrieved from
                 third-party APIs.
