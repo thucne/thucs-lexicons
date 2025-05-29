@@ -6,6 +6,13 @@ import { Box, InputAdornment, TextField, useMediaQuery } from '@mui/material';
 import { alpha, styled, useTheme } from '@mui/material/styles';
 import { createUrl } from '@/utils';
 
+// Extend the Navigator interface to include userAgentData
+declare global {
+    interface Navigator {
+        userAgentData?: any;
+    }
+}
+
 const BootstrapInput = styled(TextField)(({ theme }) => ({
     width: '100%',
     'label + &': {
@@ -54,6 +61,7 @@ const SearchBar = () => {
     const router = useRouter();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const [isMac, setIsMac] = useState(false);
 
     /**
      * >>> This is an example of destructuring assignment,
@@ -104,14 +112,16 @@ const SearchBar = () => {
     };
 
     useEffect(() => {
-        // on key Ctrl+K pressed, trigger search button click
+        
         const handleKeyPress = (e: KeyboardEvent) => {
-            if (e.ctrlKey && e.key === 'k') {
+            // depends on the platform, we will use different key combinations
+            const key = isMac ? e.metaKey : e.ctrlKey;
+            if (key && e.key === 'k') {
                 e.preventDefault();
                 e.stopPropagation();
-
                 searchRef.current?.focus();
             }
+            
         };
 
         if (!isMobile) window.addEventListener('keydown', handleKeyPress);
@@ -119,7 +129,15 @@ const SearchBar = () => {
         return () => {
             if (!isMobile) window.removeEventListener('keydown', handleKeyPress);
         };
-    }, [isMobile]);
+    }, [isMobile, isMac]);
+
+    useEffect(() => {
+       const isMac = window.navigator.userAgentData
+            ? window.navigator.userAgentData.platform === 'macOS'
+            : /Mac/i.test(window.navigator.userAgent);
+
+        setIsMac(isMac);
+    }, []);
 
     return (
         <form onSubmit={handleSubmit} className="w-full">
@@ -137,7 +155,9 @@ const SearchBar = () => {
                 InputProps={{
                     endAdornment: !isMobile ? (
                         <InputAdornment position="end">
-                            <InputEndAdornment component="span">Ctrl + K</InputEndAdornment>
+                            <InputEndAdornment component="span">
+                                {isMac ? '⌘' : 'Ctrl'} + K
+                            </InputEndAdornment>
                         </InputAdornment>
                     ) : undefined
                 }}
