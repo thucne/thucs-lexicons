@@ -9,14 +9,31 @@ import { getLicenseString } from '@/utils';
 type MeaningGroupProps = {
     meaning: SearchResult;
     id: string;
+    word: string;
 };
 
-const MeaningGroup = ({ meaning, id }: MeaningGroupProps) => {
+const getWordTitle = (word: string, meaning: SearchResult) => {
+    if (word !== meaning.word) {
+        return [word, meaning.word]
+    }
+
+    if (meaning?.correctedWord) {
+        return [meaning.word, meaning.correctedWord];
+    }
+    return [meaning.word, ''];
+}
+
+const MeaningGroup = ({ meaning, id, word }: MeaningGroupProps) => {
+    const [searchedWord, correctedWord] = getWordTitle(word, meaning);
+
     return (
         <Grid container spacing={2}>
             <Grid xs={12}>
                 <Typography variant="h4" component="h2" title={getLicenseString(meaning.license)}>
-                    {meaning.word}
+                   {searchedWord}
+                </Typography>
+                <Typography variant="body2" component="h3" className='mt-1'>
+                    {correctedWord && `Showing results for: ${correctedWord}`}
                 </Typography>
             </Grid>
             <Grid xs={12} container alignItems="center" spacing={0.5}>

@@ -11,7 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             return [];
         });
 
-    console.log('Generating sitemap...', allIndexedWords?.length, 'words found.');
+      console.log('Generating sitemap...', allIndexedWords?.length, 'words found.');
 
     const dynamicSitemap: MetadataRoute.Sitemap = allIndexedWords.map((word: string) => ({
         url: `${BASE_URL}/search/${word}`,

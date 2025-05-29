@@ -1,7 +1,6 @@
-import React from 'react';
 import SearchPageBody from '@/components/organisms/SearchPage';
+import { hasDefinition } from '@/utils';
 import type { Metadata } from 'next';
-import { searchWord } from '@/utils';
 import { permanentRedirect } from 'next/navigation';
 
 type SearchPageProps = {
@@ -19,7 +18,7 @@ export async function generateMetadata({ searchParams }: SearchPageProps): Promi
     }
 
     try {
-        const result = await searchWord(word);
+        const result = await hasDefinition(word);
 
         if (!Array.isArray(result)) {
             throw new Error('Failed to fetch data');
@@ -43,14 +42,16 @@ async function shouldRedirect(word: string): Promise<boolean> {
     }
 
     try {
-        const result = await searchWord(word);
+        const result = await hasDefinition(word);
 
         if (!Array.isArray(result)) {
+            console.log('No definition found for:', word);
             return true;
         }
 
         return false;
     } catch (_) {
+        console.log('Error checking definition:', _);
         return false;
     }
 }

@@ -1,5 +1,5 @@
 import ResultPage from '@/components/organisms/ResultPage';
-import { FREE_DICTIONARY_API } from '@/constants';
+import { FREE_DICTIONARY_API, OPENAI_MEANING_CHECK_API } from '@/constants';
 import { useSupabaseLexicon } from '@/hooks/use-supabase';
 import { SearchResults } from '@/types';
 import { getFirstDefinition } from '@/utils';
@@ -9,28 +9,45 @@ type WordPageProps = {
     params: { word: string };
 };
 
+type HasMeaningCheck = {
+    value: boolean;
+};
+
+const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN!;
+
 export async function generateMetadata({ params }: WordPageProps): Promise<Metadata> {
     const { word } = params;
 
-    const results: SearchResults = await fetch(`${FREE_DICTIONARY_API}/${word}`).then((res) => res.json());
+    let results: SearchResults | boolean = await fetch(`${FREE_DICTIONARY_API}/${word}`).then((res) => res.json());
 
     // If the word is not found in the dictionary, the return message would be an object.
     if (!Array.isArray(results)) {
-        return {
-            title: 'Not found',
-            description: 'The searched term could not be found. Sorry!',
-        };
+        // retry with openAI search
+        const openAIResults: HasMeaningCheck = await fetch(
+            `${DOMAIN}${OPENAI_MEANING_CHECK_API}?input=${word.slice(0, 100)}`
+        ).then((res) => res.json());
+
+        if (!openAIResults?.value) {
+            return {
+                title: 'Not found',
+                description: 'The searched term could not be found. Sorry!'
+            };
+        }
+
+        results = true;
     }
 
     const decodedWord = decodeURIComponent(word);
 
     return {
         title: `${decodedWord} | Definition in Free Dictionary API`,
-        description: getFirstDefinition(results),
+        description: results === true ? 'Definitions in thucne dictionary' : getFirstDefinition(results),
         openGraph: {
             images: [
                 {
-                    url: `/api/og?word=${word}&definition=${getFirstDefinition(results)}`,
+                    url: `/api/og?word=${word}&definition=${
+                        results === true ? 'Click to see definition!' : encodeURIComponent(getFirstDefinition(results))
+                    }`,
                     width: 1200,
                     height: 630
                 }

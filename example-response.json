@@ -1,0 +1,121 @@
+{
+  "name": "dictionary_definitions",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "definitions": {
+        "type": "array",
+        "description": "An array of found definitions.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "word": {
+              "type": "string",
+              "description": "The word being defined."
+            },
+            "phonetic": {
+              "type": "string",
+              "description": "Phonetic spelling of the word."
+            },
+            "phonetics": {
+              "type": "array",
+              "description": "Phonetic representations of the word.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "description": "Phonetic transcription."
+                  },
+                  "audio": {
+                    "type": "string",
+                    "description": "Audio link for pronunciation.",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "text",
+                  "audio"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "origin": {
+              "type": "string",
+              "description": "The origin of the word."
+            },
+            "meanings": {
+              "type": "array",
+              "description": "Meanings associated with the word.",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "partOfSpeech": {
+                    "type": "string",
+                    "description": "Part of speech for the meaning."
+                  },
+                  "definitions": {
+                    "type": "array",
+                    "description": "Definitions related to the part of speech.",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "definition": {
+                          "type": "string",
+                          "description": "The definition of the word."
+                        },
+                        "example": {
+                          "type": "string",
+                          "description": "Example sentence using the definition."
+                        },
+                        "synonyms": {
+                          "type": "array",
+                          "description": "List of synonyms.",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "antonyms": {
+                          "type": "array",
+                          "description": "List of antonyms.",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "definition",
+                        "example",
+                        "synonyms",
+                        "antonyms"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "partOfSpeech",
+                  "definitions"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "word",
+            "phonetic",
+            "phonetics",
+            "origin",
+            "meanings"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": [
+      "definitions"
+    ],
+    "additionalProperties": false
+  },
+  "strict": true
+}

@@ -28,7 +28,7 @@ type SupabaseLexicon = { searchResults: SearchResults; word: string };
 export async function useSupabaseLexicon(word: string): Promise<{ data: SupabaseLexicon; error: any }> {
     const supabase = useSupabase();
 
-    const { data, error } = await supabase.from('Lexicon').select('*').eq('word', word).single();
+    const { data, error } = await supabase.from('Lexicon').select('*').eq('word', decodeURIComponent(word)).single();
 
     return { data: data! as SupabaseLexicon, error };
 }
@@ -36,7 +36,7 @@ export async function useSupabaseLexicon(word: string): Promise<{ data: Supabase
 export async function useSupabaseLexiconId(word: string) {
     const supabase = useSupabase();
 
-    const { data } = await supabase.from('Lexicon').select('id').eq('word', word);
+    const { data } = await supabase.from('Lexicon').select('id').eq('word', decodeURIComponent(word));
 
     const id = data?.[0]?.id;
 
