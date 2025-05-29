@@ -13,7 +13,7 @@ const inter = Inter({ subsets: ['vietnamese', 'latin'] });
 export const metadata: Metadata = {
     metadataBase: new URL('https://dictionary.thucde.dev'),
     title: 'thucne dictionary | Free Dictionary',
-    description: `Search for word's definitions, synonyms, antonyms, and more...`,
+    description: 'A free dictionary app with a simple and intuitive interface, powered by the Free Dictionary API.',
     openGraph: {
         images: [
             {
