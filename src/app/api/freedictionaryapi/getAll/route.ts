@@ -4,10 +4,9 @@ export async function GET() {
     try {
         const supabase = useSupabase();
 
-
         // select only fields "word" and last modified date
-        const { data, error } = await supabase.from('Lexicon').select('word, created_at').order('word', { ascending: true });
-        const words = data || [];
+        const { data, error } = await supabase.from('Lexicon').select('word').order('word', { ascending: true });
+        const words = data?.map((i) => i.word) || [];
 
         if (error) {
             return new Response('Error fetching data', { status: 500 });

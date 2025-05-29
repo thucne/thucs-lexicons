@@ -3,11 +3,6 @@ import type { MetadataRoute } from 'next';
 export const revalidate = 5;
 const BASE_URL = process.env.NEXT_PUBLIC_DOMAIN!
 
-type IndexedWord = {
-    word: string;
-    created_at: string;
-}
-
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const allIndexedWords = await fetch(`${BASE_URL}/api/freedictionaryapi/getAll`)
         .then((res) => res.json())
@@ -18,10 +13,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     console.log('Generating sitemap...', allIndexedWords?.length, 'words found.');
 
-    const dynamicSitemap: MetadataRoute.Sitemap = allIndexedWords.map((word: IndexedWord) => ({
-        url: `${BASE_URL}/search/${word.word}`,
+    const dynamicSitemap: MetadataRoute.Sitemap = allIndexedWords.map((word: string) => ({
+        url: `${BASE_URL}/search/${word}`,
         changeFrequency: 'weekly',
-        lastModified: new Date(word.created_at),
+        priority: 0.5
     }));
 
     return [
