@@ -1,5 +1,6 @@
 import { SearchResult } from '@/types';
 import { Divider, Typography } from '@mui/material';
+import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 
 import Grid from '@/components/atoms/AppGrid';
 import Audio from '@/components/molecules/Audio';
@@ -14,14 +15,14 @@ type MeaningGroupProps = {
 
 const getWordTitle = (word: string, meaning: SearchResult) => {
     if (word !== meaning.word) {
-        return [word, meaning.word]
+        return [word, meaning.word];
     }
 
     if (meaning?.correctedWord) {
         return [meaning.word, meaning.correctedWord];
     }
     return [meaning.word, ''];
-}
+};
 
 const MeaningGroup = ({ meaning, id, word }: MeaningGroupProps) => {
     const [searchedWord, correctedWord] = getWordTitle(word, meaning);
@@ -30,11 +31,15 @@ const MeaningGroup = ({ meaning, id, word }: MeaningGroupProps) => {
         <Grid container spacing={2}>
             <Grid xs={12}>
                 <Typography variant="h4" component="h2" title={getLicenseString(meaning.license)}>
-                   {searchedWord}
+                    {searchedWord}
                 </Typography>
-                <Typography variant="body2" component="h3" className='mt-1'>
-                    {correctedWord && `Showing results for: ${correctedWord}`}
-                </Typography>
+                {correctedWord && (
+                    <Typography variant="body2" component="h3" className="mt-1">
+                        Did you mean: <span className="font-bold text-yellow-500">» {correctedWord} «</span>
+                        <br/>
+
+                    </Typography>
+                )}
             </Grid>
             <Grid xs={12} container alignItems="center" spacing={0.5}>
                 <Grid xs={12}>

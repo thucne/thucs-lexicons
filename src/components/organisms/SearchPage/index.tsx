@@ -5,7 +5,7 @@ import { useLexicon, useLexiconWithAICheck } from '@/hooks/use-lexicon';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { SearchResultsState, selectSearchResults, setSearchResults } from '@/redux/reducers/searchResults';
 import { Box, CircularProgress, Typography } from '@mui/material';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesomeRounded';
 
 type SearchPageProps = {
     word: string;

@@ -7,7 +7,7 @@ import { SearchResults } from '@/types';
 import { createUrl } from '@/utils';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { SearchResultsState, selectSearchResults } from '@/redux/reducers/searchResults';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesomeRounded';
 
 import MeaningGroup from './MeaningGroup';
 import { useLexicon, useLexiconWithAI } from '@/hooks/use-lexicon';
@@ -15,6 +15,7 @@ import { persistWordToDatabaseAndStore } from '@/redux/actions/lexicon';
 import ToggleFavorite from './ToggleFavorite';
 import QuickMeaning from './QuickMeaning';
 import Link from 'next/link';
+import Grid2 from '@mui/material/Unstable_Grid2';
 
 type ResultPageProps = {
     word: string;
@@ -67,7 +68,7 @@ const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
 
     if (isAILoading) {
         return (
-            <div className="flex items-center justify-center gap-2 ">
+            <Grid2 container alignItems="center" justifyContent="center" spacing={1} className="px-10">
                 <svg width="0" height="0">
                     <defs>
                         <linearGradient id="awesomeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -77,21 +78,25 @@ const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
                         </linearGradient>
                     </defs>
                 </svg>
-                Let&apos;s see if an AI
-                <Box sx={{ m: 1, position: 'relative' }}>
-                    <AutoAwesomeIcon sx={{ fill: 'url(#awesomeGradient)' }} />
-                    <CircularProgress
-                        sx={{
-                            position: 'absolute',
-                            top: -6,
-                            left: -6,
-                            zIndex: 1
-                        }}
-                        color="warning"
-                    />
-                </Box>
-                friend could help us with this...
-            </div>
+                <Grid2><span>Let&apos;s see if the AI friend</span></Grid2>
+                <Grid2>
+                    <Box sx={{ m: 1, position: 'relative' }} className="inline-grid">
+                        <AutoAwesomeIcon sx={{ fill: 'url(#awesomeGradient)' }} />
+                        <CircularProgress
+                            sx={{
+                                position: 'absolute',
+                                top: -6,
+                                left: -6,
+                                zIndex: 1
+                            }}
+                            color="warning"
+                        />
+                    </Box>
+                </Grid2>
+                <Grid2>
+                    <span>could help us with this...</span>
+                </Grid2>
+            </Grid2>
         );
     }
 
@@ -104,7 +109,7 @@ const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
     if (!Array.isArray(results)) {
         redirect(createUrl('/search', new URLSearchParams({ word })));
     }
-    
+
     const isByAI = resultsFromAI?.length > 0 || results?.some((result) => result.openai);
 
     return (
@@ -144,7 +149,8 @@ const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
                 )}
                 {isByAI && (
                     <span className="text-xs text-yellow-500">
-                        {' '} - which may not be accurate or reliable, please use with caution.
+                        {' '}
+                        - which may not be accurate or reliable, please use with caution.
                     </span>
                 )}
             </Typography>
