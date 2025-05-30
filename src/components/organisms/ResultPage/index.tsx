@@ -48,7 +48,14 @@ const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
     const shouldFetch = !inSupabase && !inStore;
     const { data: resultsFromFetch, isLoading } = useLexicon(shouldFetch ? word : '');
     const shouldFetchWithAI = shouldFetch && !resultsFromFetch?.length;
-    const { data: resultsFromAIRaw, isLoading: isAILoading } = useLexiconWithAI(shouldFetchWithAI ? word : '');
+    const shouldRefetchWithAI = resultsFromSupabase && resultsFromSupabase?.some(result => {
+        // if correctedWord is mistakenly filled by AI as phonetic, we should not refetch with AI
+        // something like IPA /ˈɡoʊɪŋ/
+        const isPhoneticRegex = /^[/\[]?[ˈˌa-zA-Zɪʊəɔɛæʌθðŋʃʒɑ̃ɾɫɹɝɜːː̃ʔ. ]+[\/\]]?$/;
+        return result.openai && isPhoneticRegex.test(result.correctedWord || '');
+    })
+
+    const { data: resultsFromAIRaw, isLoading: isAILoading } = useLexiconWithAI(shouldFetchWithAI || shouldRefetchWithAI ? word : '');
 
     const resultsFromAI = resultsFromAIRaw?.definitions;
     const results = (resultsFromAI || resultsFromFetch || resultsFromStore || resultsFromSupabase) as SearchResults;
