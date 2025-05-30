@@ -1,11 +1,11 @@
 import { SearchResult } from '@/types';
 import { Divider, Typography } from '@mui/material';
-import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 
 import Grid from '@/components/atoms/AppGrid';
 import Audio from '@/components/molecules/Audio';
 import MeaningComponent from '@/components/molecules/Meaning';
 import { getLicenseString } from '@/utils';
+import { isPhoneticRegex } from '.';
 
 type MeaningGroupProps = {
     meaning: SearchResult;
@@ -18,14 +18,15 @@ const getWordTitle = (word: string, meaning: SearchResult) => {
         return [word, meaning.word];
     }
 
-    if (meaning?.correctedWord) {
-        return [meaning.word, meaning.correctedWord];
+    if (meaning?.didYouMean) {
+        return [meaning.word, meaning.didYouMean];
     }
     return [meaning.word, ''];
 };
 
 const MeaningGroup = ({ meaning, id, word }: MeaningGroupProps) => {
-    const [searchedWord, correctedWord] = getWordTitle(word, meaning);
+    const [searchedWord, didYouMean] = getWordTitle(word, meaning);
+    const isPhonetic = isPhoneticRegex.test(didYouMean ?? '');
 
     return (
         <Grid container spacing={2}>
@@ -33,11 +34,10 @@ const MeaningGroup = ({ meaning, id, word }: MeaningGroupProps) => {
                 <Typography variant="h4" component="h2" title={getLicenseString(meaning.license)}>
                     {searchedWord}
                 </Typography>
-                {correctedWord && (
+                {didYouMean && !isPhonetic && (
                     <Typography variant="body2" component="h3" className="mt-1">
-                        Did you mean: <span className="font-bold text-yellow-500">» {correctedWord} «</span>
-                        <br/>
-
+                        Did you mean: <span className="font-bold text-yellow-500">» {didYouMean} «</span>
+                        <br />
                     </Typography>
                 )}
             </Grid>

@@ -31,7 +31,7 @@ export type SearchResult = {
     origin?: string;
     license?: License;
     sourceUrls?: string[];
-    correctedWord?: string;
+    didYouMean?: string;
     openai?: boolean;
 };
 

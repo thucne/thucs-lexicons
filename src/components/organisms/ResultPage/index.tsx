@@ -1,21 +1,21 @@
 'use client';
-import { useEffect } from 'react';
 import { redirect } from 'next/navigation';
+import { useEffect } from 'react';
 
-import { Box, CircularProgress, Container, Divider, Typography } from '@mui/material';
+import { SearchResultsState, selectSearchResults } from '@/redux/reducers/searchResults';
+import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { SearchResults } from '@/types';
 import { createUrl } from '@/utils';
-import { useAppDispatch, useAppSelector } from '@/redux/store';
-import { SearchResultsState, selectSearchResults } from '@/redux/reducers/searchResults';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesomeRounded';
+import { Box, CircularProgress, Container, Divider, Typography } from '@mui/material';
 
-import MeaningGroup from './MeaningGroup';
 import { useLexicon, useLexiconWithAI } from '@/hooks/use-lexicon';
 import { persistWordToDatabaseAndStore } from '@/redux/actions/lexicon';
-import ToggleFavorite from './ToggleFavorite';
-import QuickMeaning from './QuickMeaning';
-import Link from 'next/link';
 import Grid2 from '@mui/material/Unstable_Grid2';
+import Link from 'next/link';
+import MeaningGroup from './MeaningGroup';
+import QuickMeaning from './QuickMeaning';
+import ToggleFavorite from './ToggleFavorite';
 
 type ResultPageProps = {
     word: string;
@@ -35,6 +35,8 @@ const isAvailableFromStore = (word: string, store: SearchResultsState): IsAvaila
     return [isAvailable, isAvailable ? store.results : undefined];
 };
 
+export const isPhoneticRegex = /^[/\[]?[ˈˌa-zA-Zɪʊəɔɛæʌθðŋʃʒɑ̃ɾɫɹɝɜːː̃ʔ. ]+[\/\]]?$/;
+
 const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
     const word = decodeURIComponent(rawWord);
 
@@ -48,14 +50,15 @@ const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
     const shouldFetch = !inSupabase && !inStore;
     const { data: resultsFromFetch, isLoading } = useLexicon(shouldFetch ? word : '');
     const shouldFetchWithAI = shouldFetch && !resultsFromFetch?.length;
-    const shouldRefetchWithAI = resultsFromSupabase && resultsFromSupabase?.some(result => {
-        // if correctedWord is mistakenly filled by AI as phonetic, we should not refetch with AI
-        // something like IPA /ˈɡoʊɪŋ/
-        const isPhoneticRegex = /^[/\[]?[ˈˌa-zA-Zɪʊəɔɛæʌθðŋʃʒɑ̃ɾɫɹɝɜːː̃ʔ. ]+[\/\]]?$/;
-        return result.openai && isPhoneticRegex.test(result.correctedWord || '');
-    })
+    const shouldRefetchWithAI =
+        resultsFromSupabase &&
+        resultsFromSupabase?.some((result) => {
+            return result.openai && isPhoneticRegex.test(result.didYouMean || '');
+        });
 
-    const { data: resultsFromAIRaw, isLoading: isAILoading } = useLexiconWithAI(shouldFetchWithAI || shouldRefetchWithAI ? word : '');
+    const { data: resultsFromAIRaw, isLoading: isAILoading } = useLexiconWithAI(
+        shouldFetchWithAI || shouldRefetchWithAI ? word : ''
+    );
 
     const resultsFromAI = resultsFromAIRaw?.definitions;
     const results = (resultsFromAI || resultsFromFetch || resultsFromStore || resultsFromSupabase) as SearchResults;
@@ -85,7 +88,9 @@ const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
                         </linearGradient>
                     </defs>
                 </svg>
-                <Grid2><span>Let&apos;s see if the AI friend</span></Grid2>
+                <Grid2>
+                    <span>Let&apos;s see if the AI friend</span>
+                </Grid2>
                 <Grid2>
                     <Box sx={{ m: 1, position: 'relative' }} className="inline-grid">
                         <AutoAwesomeIcon sx={{ fill: 'url(#awesomeGradient)' }} />

@@ -13,17 +13,22 @@ const prompt = (input: string) => `
   You are an AI assistant that helps to give definitions and explanations of words and phrases.
  
   Please ensure that your response is informative and easy to understand. Try to provide as much definition as possible, but keep it concise.
-
-  Try to produce the IPA phonetic transcription of the word or phrase, if available. 
-  Also try to give as much as possible information about the word or phrase, such as its origin, part of speech, synonyms, antonyms, and example sentences.
-
-  If there is not valid definition for the input, tell that the input may not be a valid word or phrase, or that it is not in the dictionary.
-
-  The user may misspell the word or phrase, so if you think the input is a misspelled word, try to correct it, put the corrected word or phrase under "correctedWord" field 
-  and provide the corrected version in the response.
+  The input could be a word, phrase, or even a misspelled word/phrase. 
+  
+  For each word or phrase, provide the following fields:
+    - "word": The original input word or phrase.
+    - "didYouMean": If the input was misspelled, provide the corrected spelling of the word. If not, this field should be null.
+    - "phonetic": The phonetic spelling of the word, if available.
+    - "phonetics": An array of phonetic representations of the word, each with a "text" field for the phonetic transcription and an "audio" field for the audio link of the pronunciation.
+    - "origin": The origin of the word, if available.
+    - "meanings": An array of meanings associated with the word, each with a "partOfSpeech" field and a "definitions" field.
+      The "definitions" field should be an array of objects, each containing:
+        - "definition": The definition of the word.
+        - "example": An example sentence using the definition.
+        - "synonyms": An array of synonyms for the word.
+        - "antonyms": An array of antonyms for the word.
 
   Note that the phonetic should inside the slashes, like this: /ˈfɪlɪŋ/ for "filling".
-  If the input is misspelled, "correctedWord" should be the corrected version of the input, not the phonetic, and "word" should be the original input.
     
   Now provide the definition for "${input}"
 `;
@@ -44,7 +49,7 @@ const search = async (input: string) => {
                 }
             ],
             max_completion_tokens: 1000,
-            temperature: 0.7,
+            temperature: 0.5,
             response_format: {
                 type: 'json_schema',
                 json_schema: {
@@ -65,11 +70,11 @@ const search = async (input: string) => {
                                         },
                                         word: {
                                             type: 'string',
-                                            description: 'The word being defined.'
+                                            description: 'The original input word or phrase.',
                                         },
-                                        correctedWord: {
+                                        didYouMean: {
                                             type: 'string',
-                                            description: 'The corrected word/phrase if the input was misspelled.',
+                                            description: 'If the input was misspelled, this field contains the corrected spelling of the word.',
                                             nullable: true
                                         },
                                         phonetic: {
@@ -157,7 +162,7 @@ const search = async (input: string) => {
                                         'phonetics',
                                         'origin',
                                         'meanings',
-                                        'correctedWord'
+                                        'didYouMean'
                                     ],
                                     additionalProperties: false
                                 }
