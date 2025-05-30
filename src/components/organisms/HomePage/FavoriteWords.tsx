@@ -36,7 +36,7 @@ const FavoriteWords = () => {
     if ([AuthStatus.Handshaked, AuthStatus.Loaded].includes(authStatus) && !loggedIn) {
         return (
             <Typography variant="body2">
-                Please login to see your favorite words.{' '}
+                Logged-in user can view and add favorite words/phrases.{' '}
                 <Typography
                     variant="body2"
                     component="span"
@@ -44,7 +44,7 @@ const FavoriteWords = () => {
                     className="cursor-pointer italic underline underline-offset-4"
                     tabIndex={0}
                 >
-                    Click to login
+                    Login
                 </Typography>
                 .
             </Typography>
@@ -55,7 +55,7 @@ const FavoriteWords = () => {
         <Grid container spacing={2}>
             <Grid xs={12}>
                 <Typography variant="h6" component="h2">
-                    Favorite Words
+                    Favorite Words/Phrases
                     <br />
                     <Typography variant="body2" color="success.main">
                         Logged in as {email}.{' '}
@@ -79,7 +79,7 @@ const FavoriteWords = () => {
                         <Box className="mt-3 flex items-center gap-2">
                             <CircularProgress size={14} />
                             <Typography variant="body2" component="span" color="text.primary">
-                                Loading your favorite words...
+                                Loading your favorite words/phrases...
                             </Typography>
                         </Box>
                     )}
@@ -118,7 +118,7 @@ const FavoriteWordsList = ({ favoriteLexicons }: { favoriteLexicons: string[] })
                 ))
             ) : (
                 <Grid xs={12}>
-                    <Typography variant="body2">You have no favorite words.</Typography>
+                    <Typography variant="body2">You have no favorite words/phrases.</Typography>
                 </Grid>
             )}
         </>

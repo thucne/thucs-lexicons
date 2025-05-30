@@ -19,7 +19,9 @@ const HomePage = () => {
                     <Divider />
                 </Grid>
                 <Grid xs={12}>
-                    <Typography className="italic">Try to seach for a word in the search bar above!</Typography>
+                    <Typography className="italic">
+                        Powered by Free Dictionary API and OpenAI.
+                    </Typography>
                 </Grid>
                 <Grid xs={12}>
                     <FavoriteWords />
