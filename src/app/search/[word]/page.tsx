@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: WordPageProps): Promise<Metad
     const decodedWord = decodeURIComponent(word);
 
     return {
-        title: `${decodedWord} | Definition in Free Dictionary API`,
+        title: `${decodedWord} | English Definition & Meaning - thucne dictionary`,
         description: results === true ? 'Definitions in thucne dictionary' : getFirstDefinition(results),
         openGraph: {
             images: [
