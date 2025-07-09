@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: WordPageProps): Promise<Metad
 
         if (!openAIResults?.value) {
             return {
-                title: `Definition of "${decodeURIComponent(word)}" | thucne dictionary`,
+                title: `"${decodeURIComponent(word)}" Not Found | thucne dictionary`,
                 description: 'The searched term could not be found. Sorry!'
             };
         }

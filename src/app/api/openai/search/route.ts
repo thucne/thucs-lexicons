@@ -10,27 +10,29 @@ const openAI = new OpenAI({
 });
 
 const prompt = (input: string) => `
-  You are an AI assistant that helps to give definitions and explanations of words and phrases.
- 
-  Please ensure that your response is informative and easy to understand. Try to provide as much definition as possible, but keep it concise.
-  The input could be a word, phrase, or even a misspelled word/phrase. 
-  
-  For each word or phrase, provide the following fields:
-    - "word": The original input word or phrase.
-    - "didYouMean": If the input was misspelled, provide the corrected spelling of the word. If not, this field should be null.
-    - "phonetic": The phonetic spelling of the word, if available.
-    - "phonetics": An array of phonetic representations of the word, each with a "text" field for the phonetic transcription and an "audio" field for the audio link of the pronunciation.
-    - "origin": The origin of the word, if available.
-    - "meanings": An array of meanings associated with the word, each with a "partOfSpeech" field and a "definitions" field.
-      The "definitions" field should be an array of objects, each containing:
-        - "definition": The definition of the word.
-        - "example": An example sentence using the definition.
-        - "synonyms": An array of synonyms for the word.
-        - "antonyms": An array of antonyms for the word.
+You are an AI assistant specialized in providing accurate definitions and explanations of words and phrases.
 
-  Note that the phonetic should inside the slashes, like this: /ˈfɪlɪŋ/ for "filling".
-    
-  Now provide the definition for "${input}"
+For the given input, your primary goal is to provide a comprehensive and easy-to-understand definition. However, if the input is clearly a **misspelling** or **does not correspond to any known word or phrase**, it is crucial to indicate this rather than attempting to define something nonsensical.
+
+If you are **certain** the input is a valid word or phrase (even if a common misspelling that you can correct), please provide the definition in the following JSON format. If you are **uncertain** or if the input is **gibberish/meaningless**, return an empty JSON object {}.
+
+For each word or phrase, provide the following fields in the JSON response:
+  - "word": The original input word or phrase.
+  - "didYouMean": If the input was a common misspelling, provide the corrected spelling of the word. If the input was spelled correctly or is not a known misspelling, this field should be null.
+  - "phonetic": The primary phonetic spelling of the word, enclosed in slashes (e.g., "/ˈfɪlɪŋ/"). This should be a single string.
+  - "phonetics": An array of objects, each representing a phonetic representation. Each object should have:
+      - "text": The phonetic transcription (e.g., "/ˈfɪlɪlɪŋ/").
+      - "audio": A URL to an audio pronunciation of the word, if available. If not available, provide null.
+  - "origin": The etymology or origin of the word, if available. If not, provide null.
+  - "meanings": An array of objects, each representing a distinct meaning of the word. Each meaning object should contain:
+      - "partOfSpeech": The part of speech (e.g., "noun", "verb", "adjective").
+      - "definitions": An array of objects, each containing:
+          - "definition": The specific definition of the word.
+          - "example": An example sentence using this definition. If not available, provide null.
+          - "synonyms": An array of synonyms for this specific definition. If none, provide an empty array [].
+          - "antonyms": An array of antonyms for this specific definition. If none, provide an empty array [].
+
+Now, provide the definition for "${input}" in the specified JSON format.
 `;
 
 const search = async (input: string) => {
@@ -49,7 +51,7 @@ const search = async (input: string) => {
                 }
             ],
             max_completion_tokens: 1000,
-            temperature: 0.5,
+            temperature: 0.2,
             response_format: {
                 type: 'json_schema',
                 json_schema: {
@@ -70,11 +72,12 @@ const search = async (input: string) => {
                                         },
                                         word: {
                                             type: 'string',
-                                            description: 'The original input word or phrase.',
+                                            description: 'The original input word or phrase.'
                                         },
                                         didYouMean: {
                                             type: 'string',
-                                            description: 'If the input was misspelled, this field contains the corrected spelling of the word.',
+                                            description:
+                                                'If the input was misspelled, this field contains the corrected spelling of the word.',
                                             nullable: true
                                         },
                                         phonetic: {

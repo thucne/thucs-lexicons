@@ -13,7 +13,9 @@ const prompt = (input: string) => `
   You are an AI assistant that will tell the website if the word/phrase has a definition or not.
   The word/phrase could be misspelled/mistyped by the user, so you should be able to recognize it and try to find a definition for the corrected version.
 
-  If you think we could have any definition for the word/phrase, return true, otherwise return false.
+  If you think we could have any definition for the word/phrase, return true, otherwise return false. 
+  If you are not sure about the input, return false, don't assume that the word/phrase has a definition.
+  
   Now, analyze this: ${input}
 `;
 
@@ -24,8 +26,7 @@ const search = async (input: string) => {
             messages: [
                 {
                     role: 'system',
-                    content:
-                        'You are a helpful assistant that determines if a word or phrase has a definition.'
+                    content: 'You are a helpful assistant that determines if a word or phrase has a definition.'
                 },
                 {
                     role: 'user',

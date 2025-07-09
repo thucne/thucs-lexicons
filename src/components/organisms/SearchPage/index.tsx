@@ -75,7 +75,7 @@ const SearchPageBody = ({ word }: SearchPageProps) => {
 
     const results = data || resultsFromStore.results;
 
-    if (!hasAIData && !Array.isArray(results)) {
+    if (!hasAIData && !Array.isArray(results) || results.length === 0) {
         return (
             <div>
                 <b>&quot;{word}&quot;</b> not found!

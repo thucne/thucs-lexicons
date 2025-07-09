@@ -112,14 +112,13 @@ const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
         );
     }
 
-    // if the word is not found in the API, results would be an object
-    // {
-    //     "title": "No Definitions Found",
-    //     "message": "Sorry pal, we couldn't find definitions for the word you were looking for.",
-    //     "resolution": "You can try the search again at later time or head to the web instead."
-    // }
-    if (!Array.isArray(results)) {
-        redirect(createUrl('/search', new URLSearchParams({ word })));
+    
+    if (!Array.isArray(results) || results.length === 0) {
+        return (
+            <div>
+                <b>&quot;{word}&quot;</b> not found!
+            </div>
+        );
     }
 
     const isByAI = resultsFromAI?.length > 0 || results?.some((result) => result.openai);
