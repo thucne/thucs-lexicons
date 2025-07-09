@@ -1,13 +1,11 @@
 'use client';
-import { redirect } from 'next/navigation';
 import { useEffect } from 'react';
 
 import { SearchResultsState, selectSearchResults } from '@/redux/reducers/searchResults';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { SearchResults } from '@/types';
-import { createUrl } from '@/utils';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesomeRounded';
-import { Box, CircularProgress, Container, Divider, Typography } from '@mui/material';
+import { Container, Divider, Typography } from '@mui/material';
 
 import { useLexicon, useLexiconWithAI } from '@/hooks/use-lexicon';
 import { persistWordToDatabaseAndStore } from '@/redux/actions/lexicon';
@@ -89,30 +87,13 @@ const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
                     </defs>
                 </svg>
                 <Grid2>
-                    <span>Let&apos;s see if the AI friend</span>
-                </Grid2>
-                <Grid2>
-                    <Box sx={{ m: 1, position: 'relative' }} className="inline-grid">
-                        <AutoAwesomeIcon sx={{ fill: 'url(#awesomeGradient)' }} />
-                        <CircularProgress
-                            sx={{
-                                position: 'absolute',
-                                top: -6,
-                                left: -6,
-                                zIndex: 1
-                            }}
-                            color="warning"
-                        />
-                    </Box>
-                </Grid2>
-                <Grid2>
-                    <span>could help us with this...</span>
+                    <span>Let&apos;s see...</span>
                 </Grid2>
             </Grid2>
         );
     }
 
-    
+
     if (!Array.isArray(results) || results.length === 0) {
         return (
             <div>
