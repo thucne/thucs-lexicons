@@ -46,21 +46,3 @@ export enum PromiseStatus {
     Fulfilled = 'fulfilled',
     Rejected = 'rejected'
 }
-
-export type SearchResultsSupabase = {
-    word: string;
-    searchResults: SearchResults;
-};
-
-export type FavoriteLexiconSupabase = {
-    createdBy: string;
-    lexicons: string;
-};
-
-export enum AuthStatus {
-    NotRun = 'NotRun',
-    Handshaking = 'Handshaking',
-    Handshaked = 'Handshaked',
-    Loading = 'Loading',
-    Loaded = 'Loaded'
-}

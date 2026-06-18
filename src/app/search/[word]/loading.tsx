@@ -1,14 +1,11 @@
-import React from 'react';
-import { CircularProgress, Stack, Typography } from '@mui/material';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const LoadingLexicon = () => {
     return (
-        <Stack direction="row" alignItems="center" spacing={1}>
-            <Typography>
-                Anytime now...
-            </Typography>
-            <CircularProgress size={20} />
-        </Stack>
+        <div className="flex items-center gap-2 px-4 py-6 text-sm text-muted-foreground">
+            <Skeleton className="size-5 rounded-full" />
+            Exploring this entry…
+        </div>
     );
 };
 

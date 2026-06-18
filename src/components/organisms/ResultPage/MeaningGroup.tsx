@@ -1,16 +1,15 @@
 import { SearchResult } from '@/types';
-import { Divider, Typography } from '@mui/material';
-
-import Grid from '@/components/atoms/AppGrid';
+import { Separator } from '@/components/ui/separator';
 import Audio from '@/components/molecules/Audio';
 import MeaningComponent from '@/components/molecules/Meaning';
 import { getLicenseString } from '@/utils';
-import { isPhoneticRegex } from '.';
+import { isPhoneticRegex } from '@/utils/regex';
 
 type MeaningGroupProps = {
     meaning: SearchResult;
     id: string;
     word: string;
+    compactHeader?: boolean;
 };
 
 const getWordTitle = (word: string, meaning: SearchResult) => {
@@ -24,56 +23,42 @@ const getWordTitle = (word: string, meaning: SearchResult) => {
     return [meaning.word, ''];
 };
 
-const MeaningGroup = ({ meaning, id, word }: MeaningGroupProps) => {
+const MeaningGroup = ({ meaning, id, word, compactHeader = false }: MeaningGroupProps) => {
     const [searchedWord, didYouMean] = getWordTitle(word, meaning);
     const isPhonetic = isPhoneticRegex.test(didYouMean ?? '');
 
     return (
-        <Grid container spacing={2}>
-            <Grid xs={12}>
-                <Typography variant="h4" component="h2" title={getLicenseString(meaning.license)}>
-                    {searchedWord}
-                </Typography>
-                {didYouMean && !isPhonetic && (
-                    <Typography variant="body2" component="h3" className="mt-1">
-                        Did you mean: <span className="font-bold text-yellow-500">» {didYouMean} «</span>
-                        <br />
-                    </Typography>
-                )}
-            </Grid>
-            <Grid xs={12} container alignItems="center" spacing={0.5}>
-                <Grid xs={12}>
-                    <Typography variant="h6" component="h3">
-                        {meaning.phonetic}
-                    </Typography>
-                </Grid>
-                <Grid>
-                    <Typography>Phonetics</Typography>
-                </Grid>
-                {meaning.phonetics?.map((phonetic, phoneticIndex) => {
-                    return (
-                        <Grid key={`${meaning.word}-phonetic-${phoneticIndex}`}>
-                            <Audio phonetic={phonetic} />
-                        </Grid>
-                    );
-                })}
-            </Grid>
-            <Grid xs={12}>
-                <Divider sx={{ borderColor: (theme) => theme.palette.warning.main }} />
-            </Grid>
-            {meaning.meanings.map((eachMeaning, eachMeaningIndex) => {
-                return [
-                    <Grid key={`${meaning.word}-meaning-${id}-${eachMeaningIndex}`} xs={12}>
-                        <MeaningComponent meaning={eachMeaning} index={eachMeaningIndex} />
-                    </Grid>,
-                    eachMeaningIndex < meaning.meanings.length - 1 && (
-                        <Grid key={`${meaning.word}-divider-${id}-${eachMeaningIndex}`} xs={12}>
-                            <Divider />
-                        </Grid>
-                    )
-                ];
-            })}
-        </Grid>
+        <div className="grid gap-4">
+            {!compactHeader && (
+                <>
+                    <div>
+                        <h2 className="text-2xl font-semibold" title={getLicenseString(meaning.license)}>
+                            {searchedWord}
+                        </h2>
+                        {didYouMean && !isPhonetic && (
+                            <p className="mt-1 text-sm">
+                                Did you mean <span className="font-semibold">{didYouMean}</span>?
+                            </p>
+                        )}
+                    </div>
+                    <div className="space-y-2">
+                        <h3 className="text-lg font-medium">{meaning.phonetic}</h3>
+                        <div className="flex flex-wrap gap-2">
+                            {meaning.phonetics?.map((phonetic, phoneticIndex) => (
+                                <Audio key={`${meaning.word}-phonetic-${phoneticIndex}`} phonetic={phonetic} />
+                            ))}
+                        </div>
+                    </div>
+                </>
+            )}
+            <Separator />
+            {meaning.meanings.map((eachMeaning, eachMeaningIndex) => (
+                <div key={`${meaning.word}-meaning-${id}-${eachMeaningIndex}`}>
+                    <MeaningComponent meaning={eachMeaning} index={eachMeaningIndex} />
+                    {eachMeaningIndex < meaning.meanings.length - 1 && <Separator className="mt-4" />}
+                </div>
+            ))}
+        </div>
     );
 };
 

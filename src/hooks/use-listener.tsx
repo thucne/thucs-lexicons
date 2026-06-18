@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { debounce } from 'lodash';
+import { debounce, type DebouncedFunc } from 'lodash';
 
 type HoverOptions = {
     delay?: number;
@@ -14,7 +14,13 @@ type ListenerParams = {
     callback: (e: Event) => void;
     element?: HTMLElement | Document;
     elementSelector?: string;
-    dependencies?: any[];
+    dependencies?: unknown[];
+};
+
+const cancelDebounced = (fn: DebouncedFunc<(...args: never[]) => void> | ((...args: never[]) => void)) => {
+    if ('cancel' in fn && typeof fn.cancel === 'function') {
+        fn.cancel();
+    }
 };
 
 export const useHoveredText = (options: HoverOptions): [string | null, HTMLElement | null] => {
@@ -36,15 +42,20 @@ export const useHoveredText = (options: HoverOptions): [string | null, HTMLEleme
             setHoveredTextElement(null);
         };
 
-        const enterFunc = options.delay ? debounce(onMouseEnter, options.delay) : onMouseEnter;
-        const leaveFunc = options.delayOnLeave && options.delay ? debounce(onMouseLeave, options.delay) : onMouseLeave;
+        const enterFunc: DebouncedFunc<(e: MouseEvent) => void> | ((e: MouseEvent) => void) = options.delay
+            ? debounce(onMouseEnter, options.delay)
+            : onMouseEnter;
+        const leaveFunc: DebouncedFunc<() => void> | (() => void) =
+            options.delayOnLeave && options.delay ? debounce(onMouseLeave, options.delay) : onMouseLeave;
 
         document.addEventListener('mouseover', enterFunc);
         document.addEventListener('mouseout', leaveFunc);
 
         return () => {
-            document.removeEventListener('mouseover', onMouseEnter);
-            document.removeEventListener('mouseout', onMouseLeave);
+            document.removeEventListener('mouseover', enterFunc);
+            document.removeEventListener('mouseout', leaveFunc);
+            cancelDebounced(enterFunc);
+            cancelDebounced(leaveFunc);
         };
     }, [options]);
 
@@ -54,26 +65,30 @@ export const useHoveredText = (options: HoverOptions): [string | null, HTMLEleme
 export const useOnHoveredText = (
     options: HoverOptions
 ): [string | null, HTMLElement | null, (element: HTMLElement | null) => void] => {
+    const { delay, filterClassName } = options;
     const [hoveredTextElement, setHoveredTextElement] = useState<HTMLElement | null>(null);
     const hoveredText = hoveredTextElement?.innerText || null;
 
     useEffect(() => {
         const onMouseEnter = (e: MouseEvent) => {
-            if (options.filterClassName && !(e.target as HTMLElement).classList.contains(options.filterClassName)) {
+            if (filterClassName && !(e.target as HTMLElement).classList.contains(filterClassName)) {
                 return;
             }
             const target = e.target as HTMLElement;
             setHoveredTextElement(target);
         };
 
-        const enterFunc = options.delay ? debounce(onMouseEnter, options.delay) : onMouseEnter;
+        const enterFunc: DebouncedFunc<(e: MouseEvent) => void> | ((e: MouseEvent) => void) = delay
+            ? debounce(onMouseEnter, delay)
+            : onMouseEnter;
 
         document.addEventListener('mouseover', enterFunc);
 
         return () => {
-            document.removeEventListener('mouseover', onMouseEnter);
+            document.removeEventListener('mouseover', enterFunc);
+            cancelDebounced(enterFunc);
         };
-    }, [options]);
+    }, [delay, filterClassName]);
 
     return [hoveredText, hoveredTextElement, setHoveredTextElement] as const;
 };

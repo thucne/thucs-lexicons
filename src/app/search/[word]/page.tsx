@@ -1,52 +1,35 @@
 import ResultPage from '@/components/organisms/ResultPage';
-import { FREE_DICTIONARY_API, OPENAI_MEANING_CHECK_API } from '@/constants';
-import { useSupabaseLexicon } from '@/hooks/use-supabase';
+import { FREE_DICTIONARY_API } from '@/constants';
 import { SearchResults } from '@/types';
 import { getFirstDefinition } from '@/utils';
 import type { Metadata } from 'next';
 
 type WordPageProps = {
-    params: { word: string };
+    params: Promise<{ word: string }>;
 };
-
-type HasMeaningCheck = {
-    value: boolean;
-};
-
-const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN!;
 
 export async function generateMetadata({ params }: WordPageProps): Promise<Metadata> {
-    const { word } = params;
-
-    let results: SearchResults | boolean = await fetch(`${FREE_DICTIONARY_API}/${word}`).then((res) => res.json());
-
-    // If the word is not found in the dictionary, the return message would be an object.
-    if (!Array.isArray(results)) {
-        // retry with openAI search
-        const openAIResults: HasMeaningCheck = await fetch(
-            `${DOMAIN}${OPENAI_MEANING_CHECK_API}?input=${word.slice(0, 100)}`
-        ).then((res) => res.json());
-
-        if (!openAIResults?.value) {
-            return {
-                title: `"${decodeURIComponent(word)}" Not Found | thucne dictionary`,
-                description: 'The searched term could not be found. Sorry!'
-            };
-        }
-
-        results = true;
-    }
-
+    const { word } = await params;
     const decodedWord = decodeURIComponent(word);
 
+    const results: SearchResults | unknown = await fetch(`${FREE_DICTIONARY_API}/${encodeURIComponent(decodedWord)}`)
+        .then((res) => res.json())
+        .catch(() => undefined);
+
+    const hasDictionaryResult = Array.isArray(results);
+
     return {
-        title: `${decodedWord} | English Definition & Meaning - thucne dictionary`,
-        description: results === true ? 'Definitions in thucne dictionary' : getFirstDefinition(results),
+        title: `${decodedWord} | Meaning Explorer - Lexicons`,
+        description: hasDictionaryResult
+            ? getFirstDefinition(results)
+            : `Explore meanings, phrases, examples, and related words for "${decodedWord}".`,
         openGraph: {
             images: [
                 {
                     url: `/api/og?word=${word}&definition=${
-                        results === true ? 'Click to see definition!' : encodeURIComponent(getFirstDefinition(results))
+                        hasDictionaryResult
+                            ? encodeURIComponent(getFirstDefinition(results))
+                            : 'Open Lexicons to explore this entry'
                     }`,
                     width: 1200,
                     height: 630
@@ -57,13 +40,9 @@ export async function generateMetadata({ params }: WordPageProps): Promise<Metad
 }
 
 const WordPage = async ({ params }: WordPageProps) => {
-    const { word } = params;
+    const { word } = await params;
 
-    const { data } = await useSupabaseLexicon(word);
-
-    const superbaseLexicon = data?.searchResults;
-
-    return <ResultPage word={word} supabaseLexicon={superbaseLexicon} />;
+    return <ResultPage word={word} />;
 };
 
 export default WordPage;

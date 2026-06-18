@@ -1,22 +1,16 @@
-import { Suspense } from 'react';
 import NavigationBar from '@/components/organisms/NavigationBar';
+import { CommandSearchProvider } from '@/components/providers/command-search-provider';
 import Footer from '../Footer';
-import LoginMessageDialog from './LoginMessageDialog';
-import Init from './Init';
 
 const AppWrapper = ({ children }: React.PropsWithChildren) => {
     return (
-        <div>
-            <Init />
-            <NavigationBar />
-            <main className="flex min-h-screen flex-col items-center justify-between pt-16 sm:pt-20 md:pt-24">
-                {children}
-            </main>
-            <Footer />
-            <Suspense>
-                <LoginMessageDialog />
-            </Suspense>
-        </div>
+        <CommandSearchProvider>
+            <div>
+                <NavigationBar />
+                <main className="min-h-screen pt-14">{children}</main>
+                <Footer />
+            </div>
+        </CommandSearchProvider>
     );
 };
 

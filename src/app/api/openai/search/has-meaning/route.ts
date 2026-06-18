@@ -1,7 +1,4 @@
 import OpenAI from 'openai';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const API_KEY = process.env.OPENAI_API_KEY;
 
@@ -22,7 +19,7 @@ const prompt = (input: string) => `
 const search = async (input: string) => {
     try {
         const response = await openAI.chat.completions.create({
-            model: 'gpt-4.1-nano',
+            model: 'gpt-5-nano',
             messages: [
                 {
                     role: 'system',

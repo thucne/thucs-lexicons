@@ -1,16 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { Typography } from '@mui/material';
-import { MinusIcon, PlusIcon } from '@/components/atoms/AppIcons';
-import { PromiseStatus, SearchResults, SearchResultsSupabase, ThesaurusType } from '@/types';
-import { FREE_DICTIONARY_API } from '@/constants';
-import { getFirstDefinition } from '@/utils';
+import { ThesaurusType } from '@/types';
+import { getFirstDefinition, getFreeDictionaryLexicons } from '@/utils';
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger
+} from '@/components/ui/accordion';
+import { Skeleton } from '@/components/ui/skeleton';
 import ThesaurusList, { ThesaurusItem, ThesaurusTypeProps } from './ThesaurusList';
-
-import { StyledAccordion, StyledAccordionDetails, StyledAccordionSummary } from './styles';
-import { useAppDispatch } from '@/redux/store';
-import { persistWordToDatabaseAndStore } from '@/redux/actions/lexicon';
-import _ from 'lodash';
 
 type ThesaurusProps = {
     antonyms?: string[];
@@ -18,123 +17,80 @@ type ThesaurusProps = {
     autoExpand?: boolean;
 };
 
+const toThesaurusItems = async (words: string[]) => {
+    const results = await getFreeDictionaryLexicons(words.slice(0, 5));
+
+    return results.map(
+        (result): ThesaurusItem => ({
+            word: result[0].word,
+            definition: getFirstDefinition(result),
+            url: `/search/${encodeURIComponent(result[0].word)}`
+        })
+    );
+};
+
 const Thesaurus = ({ antonyms = [], synonyms = [], autoExpand = false }: ThesaurusProps) => {
-    const dispatch = useAppDispatch();
-    const [expanded, setExpanded] = useState(autoExpand);
+    const [expanded, setExpanded] = useState(autoExpand ? ['thesaurus'] : []);
     const [antonymsList, setAntonymsList] = useState<ThesaurusItem[]>([]);
     const [synonymsList, setSynonymsList] = useState<ThesaurusItem[]>([]);
     const [fetched, setFetched] = useState(false);
-
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        const fetchTherausus = async (type: ThesaurusTypeProps['type'], words: string[]) => {
-            if (words.length > 0) {
-                const responseFromSupabase = await fetch('/api/freedictionaryapi/get?word=' + words.join(',')).then(
-                    (res) => res.json()
-                );
-
-                const wordsNeedToFetch = words.filter(
-                    (word) => !responseFromSupabase.find((result: SearchResultsSupabase) => result.word === word)
-                );
-
-                const wordsListPromises = wordsNeedToFetch.map(async (word) => {
-                    const response = await fetch(`${FREE_DICTIONARY_API}/${word}`);
-                    return await response.json();
-                });
-
-                // to speed up the process, we fetch the words in parallel
-                const results = await Promise.allSettled(wordsListPromises);
-
-                const fullfilledResults = results
-                    // filter out the rejected promises
-                    .filter((result) => result.status === PromiseStatus.Fulfilled)
-                    // the remaining promises are fulfilled, thus we can safely cast them to PromiseFulfilledResult that contains the value
-                    .map((result) => (result as PromiseFulfilledResult<any>).value)
-                    // if the word is not found in the dictionary, the return message would be an object {} instead of an array []
-                    .filter((result: any) => Array.isArray(result));
-
-                const persistLexicons: SearchResultsSupabase[] = fullfilledResults.map((result: SearchResults) => ({
-                    word: result[0].word,
-                    searchResults: result
-                }));
-
-                dispatch(persistWordToDatabaseAndStore(persistLexicons));
-
-                const concatResults = _.concat(responseFromSupabase, fullfilledResults);
-
-                const mappedWords: ThesaurusItem[] = concatResults
-                    // map the results to the ThesaurusItem type
-                    .map((lexicon: SearchResultsSupabase) => {
-                        return {
-                            word: lexicon.word,
-                            definition: getFirstDefinition(lexicon.searchResults),
-                            url: `/search/${lexicon.word}`
-                        };
-                    });
-
-                if (type === ThesaurusType.Antonyms) {
-                    setAntonymsList(mappedWords);
-                } else {
-                    setSynonymsList(mappedWords);
-                }
-            }
-        };
-
         const fetchAll = async () => {
             setIsLoading(true);
 
-            await Promise.allSettled([
-                fetchTherausus(ThesaurusType.Antonyms, antonyms.slice(0, 5)), // to not overload the API, we only fetch the first 5 words
-                fetchTherausus(ThesaurusType.Synonyms, synonyms.slice(0, 5))
+            const [nextAntonyms, nextSynonyms] = await Promise.all([
+                toThesaurusItems(antonyms),
+                toThesaurusItems(synonyms)
             ]);
 
+            setAntonymsList(nextAntonyms);
+            setSynonymsList(nextSynonyms);
             setIsLoading(false);
+            setFetched(true);
         };
 
-        if (!isLoading && !fetched) {
-            fetchAll().finally(() => setFetched(true));
+        if (!isLoading && !fetched && (antonyms.length > 0 || synonyms.length > 0)) {
+            fetchAll();
         }
-    }, [synonyms, antonyms, isLoading, fetched, dispatch]);
+    }, [synonyms, antonyms, isLoading, fetched]);
 
-    const shouldShowThesaurs = antonymsList.length > 0 || synonymsList.length > 0;
+    const shouldShowThesaurus = antonymsList.length > 0 || synonymsList.length > 0;
 
     if (isLoading) {
-        return <Typography>Loading thesaurus...</Typography>;
+        return (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Skeleton className="size-3.5 rounded-full" />
+                Loading related words…
+            </div>
+        );
     }
 
-    if (!shouldShowThesaurs) {
+    if (!shouldShowThesaurus) {
         return null;
     }
 
     return (
-        <StyledAccordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
-            <StyledAccordionSummary
-                expandIcon={
-                    expanded ? (
-                        <MinusIcon sx={{ fontSize: '0.9rem', transform: 'rotate(90deg)' }} />
-                    ) : (
-                        <PlusIcon sx={{ fontSize: '0.9rem' }} />
-                    )
-                }
-                aria-controls="panel1d-content"
-                id="panel1d-header"
-            >
-                <Typography>Thesaurus: synonyms, antonyms</Typography>
-            </StyledAccordionSummary>
-            <StyledAccordionDetails>
-                <ThesaurusList
-                    id={`word-thesaurus-${ThesaurusType.Antonyms}`}
-                    type={ThesaurusType.Antonyms}
-                    words={antonymsList}
-                />
-                <ThesaurusList
-                    id={`word-thesaurus-${ThesaurusType.Synonyms}`}
-                    type={ThesaurusType.Synonyms}
-                    words={synonymsList}
-                />
-            </StyledAccordionDetails>
-        </StyledAccordion>
+        <Accordion value={expanded} onValueChange={setExpanded} className="rounded-lg border">
+            <AccordionItem value="thesaurus">
+                <AccordionTrigger aria-controls="word-thesaurus-content" id="word-thesaurus-header">
+                    Related words
+                </AccordionTrigger>
+                <AccordionContent id="word-thesaurus-content" className="px-4 pb-4">
+                    <ThesaurusList
+                        id={`word-thesaurus-${ThesaurusType.Antonyms}`}
+                        type={ThesaurusType.Antonyms as ThesaurusTypeProps['type']}
+                        words={antonymsList}
+                    />
+                    <ThesaurusList
+                        id={`word-thesaurus-${ThesaurusType.Synonyms}`}
+                        type={ThesaurusType.Synonyms as ThesaurusTypeProps['type']}
+                        words={synonymsList}
+                    />
+                </AccordionContent>
+            </AccordionItem>
+        </Accordion>
     );
 };
 

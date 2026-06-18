@@ -1,162 +1,197 @@
 'use client';
+
 import { useEffect } from 'react';
-
-import { SearchResultsState, selectSearchResults } from '@/redux/reducers/searchResults';
-import { useAppDispatch, useAppSelector } from '@/redux/store';
-import { SearchResults } from '@/types';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesomeRounded';
-import { Container, Divider, Typography } from '@mui/material';
-
-import { useLexicon, useLexiconWithAI } from '@/hooks/use-lexicon';
-import { persistWordToDatabaseAndStore } from '@/redux/actions/lexicon';
-import Grid2 from '@mui/material/Unstable_Grid2';
 import Link from 'next/link';
-import MeaningGroup from './MeaningGroup';
+import { Sparkles } from 'lucide-react';
+
+import MeaningComponent from '@/components/molecules/Meaning';
+import PronunciationList from '@/components/molecules/PronunciationList';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger
+} from '@/components/ui/accordion';
+import { PageShell } from '@/components/ui/page-shell';
+import { Separator } from '@/components/ui/separator';
+import { SourceBadge } from '@/components/ui/source-badge';
+import { useLexicon, useLexiconWithAI } from '@/hooks/use-lexicon';
+import { selectSearchResults, setSearchResults } from '@/redux/reducers/searchResults';
+import { useAppDispatch, useAppSelector } from '@/redux/store';
+import { Meaning, SearchResult, SearchResults } from '@/types';
+import { HERO_MAX_PRONUNCIATION_VARIANTS } from '@/utils/phonetics';
+import { isPhoneticRegex } from '@/utils/regex';
+
 import QuickMeaning from './QuickMeaning';
-import ToggleFavorite from './ToggleFavorite';
+import { ResultEmptyState, ResultLoadingState } from './result-states';
+import { ResultSidebar } from './result-sidebar';
 
 type ResultPageProps = {
     word: string;
-    supabaseLexicon: SearchResults;
 };
 
-type IsAvailableResponse = [boolean, SearchResults | undefined];
+const getPartOfSpeechList = (entry: SearchResult) =>
+    Array.from(new Set(entry.meanings.map((meaning) => meaning.partOfSpeech).filter(Boolean)));
 
-const isAvailableFromSupabase = (word: string, supabaseLexicon: SearchResults): IsAvailableResponse => {
-    const isAvailable = word ? word?.length > 0 && supabaseLexicon?.length > 0 : false;
-    return [isAvailable, isAvailable ? supabaseLexicon : undefined];
-};
+const ResultHero = ({
+    word,
+    entry,
+    isByAI
+}: {
+    word: string;
+    entry: SearchResult;
+    isByAI: boolean;
+}) => {
+    const partOfSpeechList = getPartOfSpeechList(entry);
 
-const isAvailableFromStore = (word: string, store: SearchResultsState): IsAvailableResponse => {
-    const isAvailable = Boolean(store?.word === word && store?.results?.length > 0);
+    return (
+        <header className="space-y-4 border-b pb-6">
+            <div className="flex flex-wrap items-center gap-2">
+                <SourceBadge variant={isByAI ? 'ai' : 'dictionary'} />
+                {partOfSpeechList.map((pos) => (
+                    <Badge key={pos} variant="secondary" className="rounded-full text-xs font-medium uppercase tracking-wide">
+                        {pos}
+                    </Badge>
+                ))}
+            </div>
 
-    return [isAvailable, isAvailable ? store.results : undefined];
-};
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
+                <h1 className="text-4xl font-semibold tracking-tight leading-tight md:text-5xl">
+                    {entry.word || word}
+                </h1>
+                <PronunciationList entry={entry} maxVariants={HERO_MAX_PRONUNCIATION_VARIANTS} />
+            </div>
 
-export const isPhoneticRegex = /^[/\[]?[ˈˌa-zA-Zɪʊəɔɛæʌθðŋʃʒɑ̃ɾɫɹɝɜːː̃ʔ. ]+[\/\]]?$/;
+            {entry.didYouMean && !isPhoneticRegex.test(entry.didYouMean) && (
+                <p className="text-muted-foreground">
+                    Did you mean{' '}
+                    <Link
+                        href={`/search/${encodeURIComponent(entry.didYouMean)}`}
+                        className="underline underline-offset-4"
+                    >
+                        {entry.didYouMean}
+                    </Link>
+                    ?
+                </p>
+            )}
 
-const ResultPage = ({ word: rawWord, supabaseLexicon }: ResultPageProps) => {
-    const word = decodeURIComponent(rawWord);
-
-    const dispatch = useAppDispatch();
-    const searchResultsFromStore = useAppSelector(selectSearchResults);
-
-    const [inSupabase, resultsFromSupabase] = isAvailableFromSupabase(word, supabaseLexicon);
-    const [inStore, resultsFromStore] = isAvailableFromStore(word, searchResultsFromStore);
-
-    // if failed to fetch from store, fetch from API
-    const shouldFetch = !inSupabase && !inStore;
-    const { data: resultsFromFetch, isLoading } = useLexicon(shouldFetch ? word : '');
-    const shouldFetchWithAI = shouldFetch && !resultsFromFetch?.length;
-    const shouldRefetchWithAI =
-        resultsFromSupabase &&
-        resultsFromSupabase?.some((result) => {
-            return result.openai && isPhoneticRegex.test(result.didYouMean || '');
-        });
-
-    const { data: resultsFromAIRaw, isLoading: isAILoading } = useLexiconWithAI(
-        shouldFetchWithAI || shouldRefetchWithAI ? word : ''
+            {isByAI && (
+                <Alert className="border-status-ai/40 bg-status-ai/30">
+                    <Sparkles className="size-4 text-status-ai-foreground" />
+                    <AlertDescription className="text-status-ai-foreground">
+                        AI generated this entry because the dictionary source did not cover the query. Check wording
+                        before relying on it.
+                    </AlertDescription>
+                </Alert>
+            )}
+        </header>
     );
+};
 
-    const resultsFromAI = resultsFromAIRaw?.definitions;
-    const results = (resultsFromAI || resultsFromFetch || resultsFromStore || resultsFromSupabase) as SearchResults;
+const ResultDefinitions = ({ entry, word }: { entry: SearchResult; word: string }) => {
+    const posGroups = entry.meanings.reduce<Record<string, Meaning[]>>((acc, meaning) => {
+        const key = meaning.partOfSpeech || 'Other';
+        acc[key] = acc[key] ? [...acc[key], meaning] : [meaning];
+        return acc;
+    }, {});
 
-    useEffect(() => {
-        if (resultsFromFetch?.length) {
-            dispatch(persistWordToDatabaseAndStore(word, resultsFromFetch));
-        }
-        if (resultsFromAI?.length) {
-            dispatch(persistWordToDatabaseAndStore(word, resultsFromAI));
-        }
-    }, [resultsFromFetch, resultsFromAI, word, dispatch]);
+    const posEntries = Object.entries(posGroups);
 
-    if (isLoading) {
-        return <div>Fetching data...</div>;
-    }
-
-    if (isAILoading) {
+    if (posEntries.length === 1) {
+        const [, meanings] = posEntries[0];
         return (
-            <Grid2 container alignItems="center" justifyContent="center" spacing={1} className="px-10">
-                <svg width="0" height="0">
-                    <defs>
-                        <linearGradient id="awesomeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stopColor="#ff0800" /> {/* violet-700 */}
-                            <stop offset="50%" stopColor="#fcb900" /> {/* lime-300 */}
-                            <stop offset="100%" stopColor="#abbe00" />
-                        </linearGradient>
-                    </defs>
-                </svg>
-                <Grid2>
-                    <span>Let&apos;s see...</span>
-                </Grid2>
-            </Grid2>
-        );
-    }
-
-
-    if (!Array.isArray(results) || results.length === 0) {
-        return (
-            <div>
-                <b>&quot;{word}&quot;</b> not found!
+            <div className="max-w-prose space-y-6">
+                {meanings.map((meaning, index) => (
+                    <MeaningComponent key={`${word}-${meaning.partOfSpeech}-${index}`} meaning={meaning} index={index} />
+                ))}
             </div>
         );
     }
 
-    const isByAI = resultsFromAI?.length > 0 || results?.some((result) => result.openai);
+    return (
+        <Accordion multiple defaultValue={posEntries.map(([pos]) => pos)} className="max-w-prose">
+            {posEntries.map(([pos, meanings]) => (
+                <AccordionItem key={pos} value={pos}>
+                    <AccordionTrigger className="text-xs font-medium uppercase tracking-wide text-muted-foreground hover:no-underline">
+                        {pos}
+                    </AccordionTrigger>
+                    <AccordionContent className="space-y-6 pt-2">
+                        {meanings.map((meaning, index) => (
+                            <MeaningComponent
+                                key={`${word}-${pos}-${index}`}
+                                meaning={meaning}
+                                index={index}
+                                hidePosLabel
+                            />
+                        ))}
+                    </AccordionContent>
+                </AccordionItem>
+            ))}
+        </Accordion>
+    );
+};
+
+const ResultPage = ({ word: rawWord }: ResultPageProps) => {
+    const word = decodeURIComponent(rawWord);
+    const dispatch = useAppDispatch();
+    const searchResultsFromStore = useAppSelector(selectSearchResults);
+    const resultsFromStore =
+        searchResultsFromStore.word.toLowerCase() === word.toLowerCase() ? searchResultsFromStore.results : undefined;
+
+    const shouldFetchDictionary = !resultsFromStore?.length;
+    const { data: resultsFromFetchRaw, isLoading } = useLexicon(shouldFetchDictionary ? word : undefined);
+    const resultsFromFetch = Array.isArray(resultsFromFetchRaw) ? resultsFromFetchRaw : undefined;
+    const shouldFetchWithAI = shouldFetchDictionary && !isLoading && !resultsFromFetch?.length;
+    const { data: resultsFromAIRaw, isLoading: isAILoading } = useLexiconWithAI(shouldFetchWithAI ? word : undefined);
+    const resultsFromAI = Array.isArray(resultsFromAIRaw?.definitions) ? resultsFromAIRaw.definitions : undefined;
+    const results = (resultsFromStore || resultsFromFetch || resultsFromAI) as SearchResults | undefined;
+
+    useEffect(() => {
+        const nextResults = resultsFromFetch || resultsFromAI;
+
+        if (nextResults?.length) {
+            dispatch(setSearchResults({ word, results: nextResults }));
+        }
+    }, [dispatch, resultsFromAI, resultsFromFetch, word]);
+
+    if (isLoading || isAILoading) {
+        return <ResultLoadingState word={word} />;
+    }
+
+    if (!results?.length) {
+        return <ResultEmptyState word={word} />;
+    }
+
+    const primaryEntry = results[0];
+    const isByAI = Boolean(resultsFromAI?.length || results.some((result) => result.openai));
 
     return (
-        <Container maxWidth="md">
+        <PageShell>
             <QuickMeaning />
-            <Typography variant="caption" component="h1" gutterBottom className="italic">
-                Meaning of <b>{word}</b> in English | Powered by{' '}
-                {isByAI ? (
-                    <Link
-                        href="https://platform.openai.com/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="underline underline-offset-2"
-                        style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }} // gap adds spacing
-                    >
-                        OpenAI
-                        <svg width="0" height="0">
-                            <defs>
-                                <linearGradient id="awesomeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stopColor="#ff0800" />
-                                    <stop offset="50%" stopColor="#fcb900" />
-                                    <stop offset="100%" stopColor="#abbe00" />
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                        <AutoAwesomeIcon sx={{ fill: 'url(#awesomeGradient)' }} fontSize="small" />
-                    </Link>
-                ) : (
-                    <Link
-                        href="https://dictionaryapi.dev/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="underline underline-offset-2"
-                    >
-                        Free Dictionary API
-                    </Link>
-                )}
-                {isByAI && (
-                    <span className="text-xs text-yellow-500">
-                        {' '}
-                        - which may not be accurate or reliable, please use with caution.
-                    </span>
-                )}
-            </Typography>
-            <ToggleFavorite word={word} />
-            {results.map((result, index) => [
-                <MeaningGroup
-                    key={`${word}-meaning-${index}`}
-                    id={`${word}-meaning-group-${index}`}
-                    meaning={result}
-                    word={word}
-                />,
-                <Divider key={`${word}-divider-${index}`} className="my-4" />
-            ])}
-        </Container>
+            <div className="grid gap-8 md:grid-cols-12">
+                <div className="space-y-8 md:col-span-8">
+                    <ResultHero word={word} entry={primaryEntry} isByAI={isByAI} />
+                    {results.map((result, index) => (
+                        <div key={`${word}-result-${index}`}>
+                            {index > 0 && (
+                                <>
+                                    <Separator className="mb-6" />
+                                    <h2 className="mb-4 text-2xl font-semibold tracking-tight">{result.word}</h2>
+                                </>
+                            )}
+                            <ResultDefinitions entry={result} word={word} />
+                        </div>
+                    ))}
+                </div>
+                <aside className="md:col-span-4">
+                    <div className="md:sticky md:top-16">
+                        <ResultSidebar word={word} entry={primaryEntry} results={results} />
+                    </div>
+                </aside>
+            </div>
+        </PageShell>
     );
 };
 

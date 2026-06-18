@@ -2,7 +2,7 @@
 import React from 'react';
 
 const ErrorSearch = () => {
-    return <div>This word could not be found in the dictionary.</div>;
+    return <div>This entry could not be loaded. Try a different spelling or phrase.</div>;
 };
 
 export default ErrorSearch;

@@ -1,74 +1,65 @@
-import { useState, useContext } from 'react';
+'use client';
 
-import { IconButton, useTheme } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Monitor, Moon, Sun } from 'lucide-react';
+import { useTheme } from 'next-themes';
 
-import AppMenu from '@/components/atoms/AppMenu';
-import AppMenuItem from '@/components/atoms/AppMenu/AppMenuItem';
-import { LightModeIcon, DarkModeIcon, SystemModeIcon } from '@/components/atoms/AppIcons';
-import { ColorModeContext } from '@/components/organisms/Wrappers/ThemeProvider';
-
-const themeMenuId = 'theme-menu-id';
-const themeBtnSelectId = 'theme-btn-select-id';
+import { Button } from '@/components/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
 
 const ThemeSelect = () => {
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
-    const colorMode = useContext(ColorModeContext);
-    const theme = useTheme();
+    const { theme, setTheme, resolvedTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
 
-    const selectedMode = colorMode.mode();
-    const transformedMode = theme.palette.mode;
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
+    const handleChange = (mode: string) => {
+        setTheme(mode);
     };
 
     const getButtonIcon = () => {
-        switch (transformedMode) {
-            case 'light':
-                return <LightModeIcon />;
-            case 'dark':
-                return <DarkModeIcon />;
-            default:
-                return null;
+        if (!mounted) {
+            return <span className="size-4" aria-hidden />;
         }
-    };
 
-    const handleChange = (mode: string) => {
-        colorMode.toggleColorMode(mode);
-        handleClose();
+        if (theme === 'system') {
+            return <Monitor className="size-4" />;
+        }
+
+        if (resolvedTheme === 'dark') {
+            return <Moon className="size-4" />;
+        }
+
+        return <Sun className="size-4" />;
     };
 
     return (
-        <div>
-            <IconButton
-                id={themeBtnSelectId}
-                aria-controls={open ? themeMenuId : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? 'true' : undefined}
-                onClick={handleClick}
-            >
+        <DropdownMenu>
+            <DropdownMenuTrigger render={<Button variant="ghost" size="icon" aria-label="Toggle theme" />}>
                 {getButtonIcon()}
-            </IconButton>
-            <AppMenu anchorEl={anchorEl} anchorElId={themeBtnSelectId} menuId={themeMenuId} onClose={handleClose}>
-                <AppMenuItem onClick={() => handleChange('light')} selected={selectedMode === 'light'}>
-                    <LightModeIcon />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => handleChange('light')} data-selected={theme === 'light'}>
+                    <Sun className="size-4" />
                     Light
-                </AppMenuItem>
-                <AppMenuItem onClick={() => handleChange('dark')} selected={selectedMode === 'dark'}>
-                    <DarkModeIcon />
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleChange('dark')} data-selected={theme === 'dark'}>
+                    <Moon className="size-4" />
                     Dark
-                </AppMenuItem>
-                <AppMenuItem onClick={() => handleChange('system')} selected={selectedMode === 'system'}>
-                    <SystemModeIcon />
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleChange('system')} data-selected={theme === 'system'}>
+                    <Monitor className="size-4" />
                     System
-                </AppMenuItem>
-            </AppMenu>
-        </div>
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+        </DropdownMenu>
     );
 };
 

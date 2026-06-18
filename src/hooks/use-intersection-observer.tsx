@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 
 export const useIntersectionStatus = (
-    ref: React.RefObject<HTMLElement>,
+    ref: React.RefObject<HTMLElement | null>,
     options: IntersectionObserverInit & {
         unobserveOnIntersect?: boolean;
     }

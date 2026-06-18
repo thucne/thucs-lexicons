@@ -1,21 +1,129 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "tw-animate-css";
 
+@custom-variant dark (&:is(.dark *));
 
-html,
-body {
-    padding: 0;
-    margin: 0;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans,
-        Droid Sans, Helvetica Neue, sans-serif;
+@theme inline {
+    --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+    --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+    --font-heading: var(--font-sans);
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-status-dictionary: var(--status-dictionary);
+    --color-status-dictionary-foreground: var(--status-dictionary-foreground);
+    --color-status-ai: var(--status-ai);
+    --color-status-ai-foreground: var(--status-ai-foreground);
+
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+    --radius-4xl: 2rem;
+
+    --breakpoint-sm: 600px;
+    --breakpoint-md: 900px;
+    --breakpoint-lg: 1200px;
+    --breakpoint-xl: 1536px;
+    --breakpoint-2xl: 1920px;
 }
 
-body {
-    min-height: 100vh;
+:root {
+    --background: #ffffff;
+    --foreground: #171717;
+    --card: #ffffff;
+    --card-foreground: #171717;
+    --popover: #ffffff;
+    --popover-foreground: #171717;
+    --primary: #006bff;
+    --primary-foreground: #ffffff;
+    --secondary: #f2f2f2;
+    --secondary-foreground: #171717;
+    --muted: #f2f2f2;
+    --muted-foreground: #4d4d4d;
+    --accent: #f2f2f2;
+    --accent-foreground: #171717;
+    --destructive: #ea001d;
+    --destructive-foreground: #ffffff;
+    --border: #0000001a;
+    --input: #0000001a;
+    --ring: #006bff;
+    --radius: 0.625rem;
+    --status-dictionary: #ecfdec;
+    --status-dictionary-foreground: #107d32;
+    --status-ai: #fff6de;
+    --status-ai-foreground: #aa4d00;
 }
 
-a {
-    color: inherit;
-    text-decoration: none;
+.dark {
+    --background: #000000;
+    --foreground: #ededed;
+    --card: #0a0a0a;
+    --card-foreground: #ededed;
+    --popover: #0a0a0a;
+    --popover-foreground: #ededed;
+    --primary: #006bff;
+    --primary-foreground: #ffffff;
+    --secondary: #1a1a1a;
+    --secondary-foreground: #ededed;
+    --muted: #1a1a1a;
+    --muted-foreground: #a1a1a1;
+    --accent: #1a1a1a;
+    --accent-foreground: #ededed;
+    --destructive: #ea001d;
+    --destructive-foreground: #ffffff;
+    --border: #ffffff24;
+    --input: #ffffff24;
+    --ring: #006bff;
+    --status-dictionary: #0d2a14;
+    --status-dictionary-foreground: #6ee7a0;
+    --status-ai: #2a1f0a;
+    --status-ai-foreground: #fbbf24;
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    html {
+        @apply font-sans;
+    }
+
+    body {
+        @apply min-h-screen bg-background text-foreground;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+        font: inherit;
+    }
+
+    ::selection {
+        background: color-mix(in oklch, var(--primary) 15%, transparent);
+    }
 }

@@ -1,23 +1,25 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { GeistSans } from 'geist/font/sans';
+import { GeistMono } from 'geist/font/mono';
 import './globals.css';
 
-// For Material UI integration
 import AppWrapper from '@/components/organisms/Wrappers/AppWrapper';
 import StoreProvider from '@/components/organisms/Wrappers/StoreProvider';
-import ThemeProvider from '@/components/organisms/Wrappers/ThemeProvider';
+import { AppProviders } from '@/components/providers/app-providers';
 import { DEFAULT_OG_IMAGE } from '@/constants';
 
-const inter = Inter({ subsets: ['vietnamese', 'latin'] });
+const geistSans = GeistSans;
+const geistMono = GeistMono;
 
 export const metadata: Metadata = {
     metadataBase: new URL('https://dictionary.thucde.dev'),
-    title: 'thucne dictionary | a free dictionary app',
-    description: 'A free dictionary app with a simple and intuitive interface, powered by the Free Dictionary API and OpenAI.',
+    title: 'Lexicons | Stateless AI Dictionary',
+    description:
+        'A fast, no-account dictionary for meanings, phrases, pronunciation, nuance, and related-word discovery.',
     openGraph: {
         images: [
             {
-                url: DEFAULT_OG_IMAGE, // Must be an absolute URL
+                url: DEFAULT_OG_IMAGE,
                 width: 2400,
                 height: 1260
             }
@@ -33,13 +35,12 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
-            <script src="https://accounts.google.com/gsi/client" async></script>
-            <body className={inter.className} suppressHydrationWarning={true}>
+        <html lang="en" suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} ${geistSans.className}`}>
+            <body>
                 <StoreProvider>
-                    <ThemeProvider>
+                    <AppProviders>
                         <AppWrapper>{children}</AppWrapper>
-                    </ThemeProvider>
+                    </AppProviders>
                 </StoreProvider>
             </body>
         </html>

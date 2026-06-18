@@ -1,22 +1,15 @@
-**Last updated: 24.04.2024**
+# Lexicons
 
-<a href="https://lnk.thucde.dev/img/3SThy6Fzw5" target="_blank" title="Click to view original">
+**Last updated: 18.06.2026**
 
-<img src="https://lnk.thucde.dev/img/3SThy6Fzw5" alt="My Word app demo" height="500" style="border: 2px solid white;"/>
-</a>
+Lexicons is a stateless AI dictionary for fast word, phrase, comparison, pronunciation, and related-word exploration.
 
-### This project is to apply JS, TS and React good practices as I am watching the tutorials on Udemy Courses
+-   No login, account, Supabase persistence, saved words, or favorites.
+-   Free Dictionary API is the primary source for canonical English dictionary entries.
+-   OpenAI is used only as a clearly labeled fallback for phrases, slang, misspellings, idioms, and unsupported terms.
+-   The UI follows a Vercel Geist-inspired light design system with compact controls, source badges, and precise states.
 
--   **Status**: Implementation completed; Maintaining.
--   The project is aimed to achieve good practices of using TS/JS and React
--   What to expect (when I'm done)
-
-    -   A small app that allows us to search and add to our browser storage favorite words (not too much words as I'm using a free Supabase plan 🙂)
-    -   Applying good practices in both TS/JS and React including proper use of TS types, components splitting (atomic pattern), data fetching/rendering, state management with redux, data fetching with SWR.
-    -   SEO friendly with dynamic routes.
-
--   Keywords: Next.js, TypeScript, MUI, Redux, Advanced DOM manipulation, React Event Listener, React Hooks.
--   ***Special thanks to Free Dictionary API*** 📗, this app cannot be built without a free dictionary API like this!
+Keywords: Next.js, TypeScript, MUI, Redux, SWR, Free Dictionary API, OpenAI.
 
 ## Getting Started
 

@@ -2,7 +2,7 @@
 import React from 'react';
 
 const ErrorSearch = () => {
-    return <div>Failed to fetch data, please try again later.</div>;
+    return <div>Search failed. Try a shorter word or phrase.</div>;
 };
 
 export default ErrorSearch;

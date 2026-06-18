@@ -1,167 +1,99 @@
 'use client';
-import { useState, useRef, useEffect } from 'react';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
-import { Box, InputAdornment, TextField, useMediaQuery } from '@mui/material';
-import { alpha, styled, useTheme } from '@mui/material/styles';
-import { createUrl } from '@/utils';
+import { useEffect, useRef } from 'react';
+import { Search } from 'lucide-react';
 
-// Extend the Navigator interface to include userAgentData
-declare global {
-    interface Navigator {
-        userAgentData?: any;
-    }
-}
+import { Button } from '@/components/ui/button';
+import {
+    InputGroup,
+    InputGroupAddon,
+    InputGroupButton,
+    InputGroupInput
+} from '@/components/ui/input-group';
+import { KbdHint } from '@/components/ui/kbd-hint';
+import { useSearchNavigation } from '@/hooks/use-search-navigation';
+import { cn } from '@/lib/utils';
 
-const BootstrapInput = styled(TextField)(({ theme }) => ({
-    width: '100%',
-    'label + &': {
-        marginTop: theme.spacing(3)
-    },
-    '& .MuiInputBase-root': {
-        paddingRight: theme.spacing(1),
-        '*': {
-            borderColor: theme.palette.mode === 'light' ? theme.palette.grey[500] : theme.palette.grey[800]
-        }
-    },
-    '& .MuiInputBase-input': {
-        borderRadius: 4,
-        position: 'relative',
-        fontSize: 16,
-        width: '100%',
-        padding: `${theme.spacing(1)} ${theme.spacing(1.5)}`,
-        // Use the system font instead of the default Roboto font.
-        fontFamily: [
-            '-apple-system',
-            'BlinkMacSystemFont',
-            '"Segoe UI"',
-            'Roboto',
-            '"Helvetica Neue"',
-            'Arial',
-            'sans-serif',
-            '"Apple Color Emoji"',
-            '"Segoe UI Emoji"',
-            '"Segoe UI Symbol"'
-        ].join(',')
-    }
-}));
+type SearchBarProps = {
+    autoFocus?: boolean;
+    defaultValue?: string;
+    size?: 'medium' | 'large';
+    onOpenCommand?: () => void;
+    onSubmitted?: () => void;
+    commandFirst?: boolean;
+    editable?: boolean;
+};
 
-const InputEndAdornment = styled(Box)(({ theme }) => ({
-    color: alpha(theme.palette.text.primary, 0.5),
-    fontSize: 12,
-    padding: theme.spacing(0, 1),
-    border: `1px solid yellow`,
-    borderRadius: 1
-}));
-
-const SearchBar = () => {
+const SearchBar = ({
+    autoFocus = false,
+    defaultValue = '',
+    size = 'medium',
+    onOpenCommand,
+    onSubmitted,
+    commandFirst = false,
+    editable = false
+}: SearchBarProps) => {
     const searchRef = useRef<HTMLInputElement>(null);
-    const searchParams = useSearchParams();
-    const pathname = usePathname();
-    const router = useRouter();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const [isMac, setIsMac] = useState(false);
-
-    /**
-     * >>> This is an example of destructuring assignment,
-     *    it allows you to unpack values from arrays, or properties from objects, into distinct variables.
-     *    in this case, useState returns
-     */
-    const [search, setSearch] = useState('');
-
-    const searchFromParams = searchParams.get('word');
-    // or the word is from /search/<word>
-    const searchFromPath = /^\/search\/([^/]+)$/.exec(pathname)?.[1];
+    const { search, setSearch, submitSearch } = useSearchNavigation(defaultValue);
+    const isCommandLauncher = Boolean(onOpenCommand && commandFirst && !editable);
+    const isReadOnly = isCommandLauncher && !autoFocus;
 
     useEffect(() => {
-        setSearch(decodeURIComponent(searchFromParams || searchFromPath || ''));
-    }, [searchFromParams, searchFromPath]);
-
-    useEffect(() => {
-        searchRef.current?.focus();
-    }, []);
+        if (autoFocus) {
+            searchRef.current?.focus();
+        }
+    }, [autoFocus]);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        /**
-         * >>> This is an example of type assertion, it tells the compiler that the value is of a specific type.
-         *     However, we need to be careful when using type assertions, as it can lead to runtime errors if the type assertion is incorrect.
-         *          In this case, we are asserting that e.target is an HTMLFormElement.
-         *                              and e.target.search is an HTMLInputElement.
-         */
-        // const val = e.target as HTMLFormElement;
-        // const search = val.search as HTMLInputElement;
-        // const searchValue = search.value;
-
-        const newParams = new URLSearchParams(searchParams.toString());
-
-        /**
-         * >>> This is an example of variable lookup, JS will look for a variable named `search` in the current scope,
-         *      this then will look for a variable named `search` in the parent scope, and so on until it reaches the global scope.
-         *      In this case, the variable `search` is declared in the parent scope, so it will be used.
-         *          Line 52
-         */
-        if (search) {
-            newParams.set('word', search);
-        } else {
-            newParams.delete('word');
-        }
-
-        router.push(createUrl('/search', newParams));
+        submitSearch();
+        onSubmitted?.();
     };
 
-    useEffect(() => {
-        
-        const handleKeyPress = (e: KeyboardEvent) => {
-            // depends on the platform, we will use different key combinations
-            const key = isMac ? e.metaKey : e.ctrlKey;
-            if (key && e.key === 'k') {
-                e.preventDefault();
-                e.stopPropagation();
-                searchRef.current?.focus();
-            }
-            
-        };
+    const handleFocus = () => {
+        if (isCommandLauncher) {
+            onOpenCommand?.();
+            searchRef.current?.blur();
+        }
+    };
 
-        if (!isMobile) window.addEventListener('keydown', handleKeyPress);
+    const handleClick = () => {
+        if (isCommandLauncher) {
+            onOpenCommand?.();
+        }
+    };
 
-        return () => {
-            if (!isMobile) window.removeEventListener('keydown', handleKeyPress);
-        };
-    }, [isMobile, isMac]);
-
-    useEffect(() => {
-       const isMac = window.navigator.userAgentData
-            ? window.navigator.userAgentData.platform === 'macOS'
-            : /Mac/i.test(window.navigator.userAgent);
-
-        setIsMac(isMac);
-    }, []);
+    const groupHeight = size === 'large' ? 'h-11 text-base' : 'h-9 text-sm';
 
     return (
-        <form onSubmit={handleSubmit} className="w-full">
-            <BootstrapInput
-                id="search-input"
-                name="search"
-                placeholder="Hallucinate"
-                value={search}
-                /**
-                 * >>> Functions are treated as first-class citizens in JavaScript,
-                 *      they can be passed around as arguments to other functions
-                 */
-                onChange={(e) => setSearch(e.target.value)}
-                inputRef={searchRef}
-                InputProps={{
-                    endAdornment: !isMobile ? (
-                        <InputAdornment position="end">
-                            <InputEndAdornment component="span">
-                                {isMac ? '⌘' : 'Ctrl'} + K
-                            </InputEndAdornment>
-                        </InputAdornment>
-                    ) : undefined
-                }}
-            />
+        <form onSubmit={handleSubmit} className="relative w-full">
+            <InputGroup className={cn(groupHeight, isCommandLauncher && 'cursor-pointer')}>
+                <InputGroupAddon align="inline-start">
+                    <Search className="size-4 text-muted-foreground" aria-hidden />
+                </InputGroupAddon>
+                <InputGroupInput
+                    ref={searchRef}
+                    id="search-input"
+                    name="search"
+                    placeholder="Search a word, phrase, or comparison"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    onFocus={handleFocus}
+                    onClick={handleClick}
+                    readOnly={isReadOnly}
+                    autoFocus={autoFocus}
+                    className={cn(isCommandLauncher && 'cursor-pointer')}
+                />
+                <InputGroupAddon align="inline-end">
+                    {search && !isReadOnly ? (
+                        <InputGroupButton type="submit" aria-label="Search Lexicons">
+                            <Search className="size-4" />
+                        </InputGroupButton>
+                    ) : (
+                        onOpenCommand && <KbdHint onClick={onOpenCommand} />
+                    )}
+                </InputGroupAddon>
+            </InputGroup>
         </form>
     );
 };

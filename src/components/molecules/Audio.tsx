@@ -1,17 +1,19 @@
 import { useRef, useState } from 'react';
+import { Volume2, VolumeX } from 'lucide-react';
 
-import { AudioIcon, AudioNotFoundIcon } from '@/components/atoms/AppIcons';
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Phonetic } from '@/types';
-import { IconButton, IconButtonProps, Stack, StackProps, Tooltip, Typography } from '@mui/material';
 import { getLicenseString } from '@/utils';
+import { cn } from '@/lib/utils';
 
 type AudioProps = {
     phonetic: Phonetic;
     showPhonetic?: boolean;
-    buttonSx?: IconButtonProps['sx'];
-} & Partial<StackProps>;
+    className?: string;
+};
 
-const Audio = ({ phonetic, showPhonetic = true, sx, buttonSx }: AudioProps) => {
+const Audio = ({ phonetic, showPhonetic = true, className }: AudioProps) => {
     const audioRef = useRef<HTMLAudioElement>(null);
     const [shouldDisable, setShouldDisable] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -29,33 +31,41 @@ const Audio = ({ phonetic, showPhonetic = true, sx, buttonSx }: AudioProps) => {
 
     const onError = () => setShouldDisable(true);
 
+    const hasAudio = Boolean(phonetic.audio?.trim());
+    const Icon = hasAudio ? Volume2 : VolumeX;
+
+    const tooltipText =
+        shouldDisable || !hasAudio
+            ? 'Audio not found or cannot be played.'
+            : `Click to play | ${phonetic.text} | ${getLicenseString(phonetic.license)}`;
+
     return (
-        <Stack direction="row" alignItems="center" spacing={1} sx={sx}>
-            <Tooltip
-                title={
-                    shouldDisable || !phonetic.audio
-                        ? 'Audio not found or cannot be played.'
-                        : `Click to play | ${phonetic.text} | ${getLicenseString(phonetic.license)}`
-                }
-            >
-                <span>
-                    <IconButton
-                        size="small"
-                        component="button"
-                        onClick={handlePlay}
-                        disabled={!phonetic.audio || shouldDisable || isPlaying}
-                        sx={{ border: 'none', ...buttonSx }}
-                    >
-                        {phonetic.audio ? <AudioIcon /> : <AudioNotFoundIcon />}
-                    </IconButton>
-                </span>
+        <span className={cn('inline-flex items-center gap-2', className)}>
+            <Tooltip>
+                <TooltipTrigger
+                    render={
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-sm"
+                            onClick={handlePlay}
+                            disabled={!hasAudio || shouldDisable || isPlaying}
+                            aria-label="Play pronunciation"
+                        />
+                    }
+                >
+                    <Icon className="size-4" />
+                </TooltipTrigger>
+                <TooltipContent>{tooltipText}</TooltipContent>
             </Tooltip>
-            {showPhonetic && <Typography variant="body2">{phonetic.text}</Typography>}
-            <audio ref={audioRef} controls={false} className="hidden" onError={onError} onEnded={handleEnded}>
-                <source src={phonetic.audio} type="audio/mpeg" />
-                Your browser does not support the audio element.
-            </audio>
-        </Stack>
+            {showPhonetic && <span className="text-sm">{phonetic.text}</span>}
+            {hasAudio && (
+                <audio ref={audioRef} controls={false} className="hidden" onError={onError} onEnded={handleEnded}>
+                    <source src={phonetic.audio} type="audio/mpeg" />
+                    Your browser does not support the audio element.
+                </audio>
+            )}
+        </span>
     );
 };
 

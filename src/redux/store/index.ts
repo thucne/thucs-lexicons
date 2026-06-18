@@ -3,17 +3,11 @@ import { configureStore } from '@reduxjs/toolkit';
 import type { TypedUseSelectorHook } from 'react-redux';
 
 import searchResultsReducer from '@/redux/reducers/searchResults';
-import favoriteLexiconsReducer from '@/redux/reducers/favoriteLexicons';
-import authReducer from '@/redux/reducers/auth';
-import authStatusReducer from '@/redux/reducers/authStatus';
 
 export const makeStore = () => {
     return configureStore({
         reducer: {
-            searchResults: searchResultsReducer,
-            favoriteLexicons: favoriteLexiconsReducer,
-            auth: authReducer,
-            authStatus: authStatusReducer
+            searchResults: searchResultsReducer
         }
     });
 };

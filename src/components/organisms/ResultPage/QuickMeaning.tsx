@@ -1,39 +1,40 @@
-import { useEffect, useState } from 'react';
-import { useListener, useOnHoveredText } from '@/hooks/use-listener';
-import { Box, Button, CircularProgress, Stack, Typography } from '@mui/material';
-import AppMenu from '@/components/atoms/AppMenu';
-import { getFreeDictionaryLexicons, getSupabaseLexicons } from '@/utils';
-import { SearchResult, SearchResultsSupabase } from '@/types';
-import { useAppDispatch } from '@/redux/store';
-import { persistWordToDatabaseAndStore } from '@/redux/reducers/favoriteLexicons';
-import { RightIcon } from '@/components/atoms/AppIcons';
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import { ArrowRight, Sparkles } from 'lucide-react';
+
 import Audio from '@/components/molecules/Audio';
+import { Popover, PopoverContent } from '@/components/ui/popover';
+import { Skeleton } from '@/components/ui/skeleton';
+import { SourceBadge } from '@/components/ui/source-badge';
+import { useOnHoveredText } from '@/hooks/use-listener';
+import { useLexiconWithAI } from '@/hooks/use-lexicon';
+import { SearchResult } from '@/types';
+import { getFreeDictionaryLexicons } from '@/utils';
 
 const QuickMeaning = () => {
-    const dispatch = useAppDispatch();
-
     const [isLoading, setIsLoading] = useState(false);
     const [meaning, setMeaning] = useState<SearchResult | undefined>(undefined);
+    const [useAiFallback, setUseAiFallback] = useState(false);
+    const hoveredTextRef = useRef<string | null>(null);
 
     const [hoveredTextRaw, hoveredTextElement, setHoveredTextElement] = useOnHoveredText({
         delay: 1000,
-        delayOnLeave: true,
         filterClassName: 'lexicon'
     });
-    const hoveredText = hoveredTextRaw?.split(/\W+/).filter((word) => word.length > 0)?.[0];
+    const hoveredText = hoveredTextRaw?.split(/\W+/).filter((word) => word.length > 0)?.[0] ?? null;
+
+    const { data: aiResults, isLoading: isAiLoading } = useLexiconWithAI(
+        useAiFallback && hoveredText ? hoveredText : undefined
+    );
 
     const resetMenu = () => {
         setHoveredTextElement(null);
         setMeaning(undefined);
+        setUseAiFallback(false);
+        hoveredTextRef.current = null;
     };
-
-    useListener({
-        eventName: 'mouseleave',
-        callback: resetMenu,
-        elementSelector: '#quick-meaning .MuiPaper-root',
-        dependencies: [hoveredTextElement]
-    });
 
     useEffect(() => {
         const lexicons = document.querySelectorAll('.lexicon');
@@ -44,123 +45,120 @@ const QuickMeaning = () => {
         if (hoveredTextElement) {
             hoveredTextElement.classList.add('underline');
         }
-    }, [hoveredText, hoveredTextElement]);
+    }, [hoveredTextElement]);
 
     useEffect(() => {
+        if (!hoveredText) {
+            setMeaning(undefined);
+            setUseAiFallback(false);
+            return;
+        }
+
+        const activeHover = hoveredText;
+        hoveredTextRef.current = activeHover;
+        setUseAiFallback(false);
+
         const fetchMeaning = async () => {
-            let results;
-
-            const responseFromSupabase: SearchResultsSupabase[] = await getSupabaseLexicons([hoveredText!]);
-            const foundWord = responseFromSupabase.find((result) => result.word === hoveredText);
-
-            if (foundWord) {
-                results = foundWord.searchResults;
-            } else {
-                const fetchedResults = await getFreeDictionaryLexicons([hoveredText!]);
-                results = fetchedResults?.[0]?.searchResults;
-                dispatch(persistWordToDatabaseAndStore(fetchedResults));
+            setIsLoading(true);
+            try {
+                const results = await getFreeDictionaryLexicons([activeHover]);
+                if (activeHover !== hoveredTextRef.current) {
+                    return;
+                }
+                const dictionaryResult = results?.[0]?.[0];
+                if (dictionaryResult) {
+                    setMeaning(dictionaryResult);
+                } else {
+                    setUseAiFallback(true);
+                }
+            } finally {
+                if (activeHover === hoveredTextRef.current) {
+                    setIsLoading(false);
+                }
             }
-
-            setMeaning(results?.[0]);
         };
 
-        if (hoveredText) {
-            setIsLoading(true);
-            fetchMeaning().finally(() => {
-                setIsLoading(false);
-            });
+        fetchMeaning();
+    }, [hoveredText]);
+
+    useEffect(() => {
+        if (!useAiFallback || !hoveredText) {
+            return;
         }
-    }, [hoveredText, dispatch]);
+
+        const aiDefinition = aiResults?.definitions?.[0];
+        if (aiDefinition && hoveredText === hoveredTextRef.current) {
+            setMeaning(aiDefinition);
+        }
+    }, [aiResults, hoveredText, useAiFallback]);
+
+    const isContentLoading = isLoading || (useAiFallback && isAiLoading);
+    const isAiMeaning = Boolean(meaning?.openai || useAiFallback);
 
     return (
-        <AppMenu
-            menuId="quick-meaning"
-            anchorEl={hoveredTextElement}
-            anchorElId="quick-meaning-anchorId"
-            onClose={resetMenu}
+        <Popover
+            open={Boolean(hoveredTextElement)}
+            onOpenChange={(open) => {
+                if (!open) {
+                    resetMenu();
+                }
+            }}
         >
-            <Box
-                className="transition-all duration-500"
-                sx={{
-                    height: hoveredText ? 'auto' : 0,
-                    px: hoveredText ? 1.5 : 0,
-                    py: hoveredText ? 0.5 : 0
-                }}
+            <PopoverContent
+                anchor={hoveredTextElement}
+                className="w-80 p-4"
+                side="top"
+                align="start"
+                onMouseLeave={resetMenu}
             >
-                {isLoading && (
-                    <Typography variant="body2" color="info.main" sx={{ maxWidth: 250 }}>
-                        <CircularProgress size={14} className="m-auto mr-2 align-middle" />
-                        Loading... Please wait
-                    </Typography>
+                {isContentLoading && (
+                    <div className="space-y-2" role="status">
+                        <Skeleton className="h-4 w-3/4" />
+                        <Skeleton className="h-3 w-full" />
+                        <p className="text-sm text-muted-foreground">Loading definition…</p>
+                    </div>
                 )}
-                {hoveredText && !isLoading && meaning && (
-                    <Stack direction="column" spacing={0.5}>
-                        <Typography variant="h6">{meaning.word}</Typography>
-                        <Typography
-                            variant="caption"
-                            component="span"
-                            color="textSecondary"
-                            className="flex items-center gap-1"
-                        >
-                            <Typography variant="caption" component="span" color="text.primary">
-                                {meaning.meanings?.[0]?.partOfSpeech}
-                            </Typography>
+                {hoveredText && !isContentLoading && meaning && (
+                    <div className="space-y-2">
+                        <div className="flex items-center justify-between gap-2">
+                            <p className="text-base font-semibold">{meaning.word}</p>
+                            <SourceBadge variant={isAiMeaning ? 'ai' : 'dictionary'} />
+                        </div>
+                        <div className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
+                            <span className="text-foreground">{meaning.meanings?.[0]?.partOfSpeech}</span>
                             {meaning.phonetics?.[0]?.text && (
-                                <Typography variant="caption" component="span">
-                                    - {meaning.phonetics?.[0]?.text}
-                                </Typography>
+                                <span className="font-mono">- {meaning.phonetics[0].text}</span>
                             )}
                             {meaning.phonetics?.[0] && (
                                 <>
-                                    <Typography variant="caption" component="span">
-                                        -
-                                    </Typography>
-                                    <Audio
-                                        phonetic={meaning.phonetics[0]}
-                                        showPhonetic={false}
-                                        sx={{ display: 'inline-block' }}
-                                        buttonSx={{
-                                            py: 0,
-                                            ':hover': {
-                                                backgroundColor: 'transparent'
-                                            }
-                                        }}
-                                    />
+                                    <span>-</span>
+                                    <Audio phonetic={meaning.phonetics[0]} showPhonetic={false} />
                                 </>
                             )}
-                        </Typography>
-                        <Typography variant="body2">{meaning.meanings?.[0]?.definitions?.[0]?.definition}</Typography>
-                    </Stack>
+                        </div>
+                        <p className="text-sm leading-relaxed">{meaning.meanings?.[0]?.definitions?.[0]?.definition}</p>
+                        {isAiMeaning && (
+                            <p className="flex items-center gap-1 text-xs text-status-ai-foreground">
+                                <Sparkles className="size-3" />
+                                AI fallback — verify before relying on it.
+                            </p>
+                        )}
+                        <div className="flex justify-end pt-1">
+                            <Link
+                                href={`/search/${encodeURIComponent(meaning.word)}`}
+                                className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                            >
+                                Go to this word
+                                <ArrowRight className="size-4" />
+                            </Link>
+                        </div>
+                    </div>
                 )}
-                {hoveredText && !isLoading && !meaning && (
-                    <Typography variant="body2" color="warning.main">
-                        No definition found for &quot;{hoveredText}&quot;
-                    </Typography>
+                {hoveredText && !isContentLoading && !meaning && (
+                    <p className="text-sm text-muted-foreground">No definition found for “{hoveredText}”</p>
                 )}
-                {hoveredText && !isLoading && meaning && (
-                    <Box className="mt-3 flex justify-end">
-                        <Button
-                            disableRipple
-                            sx={{
-                                textTransform: 'none',
-                                ':hover': {
-                                    backgroundColor: 'transparent',
-                                    '.MuiSvgIcon-root': {
-                                        transform: 'translateX(5px)',
-                                        transition: 'transform 0.2s'
-                                    }
-                                }
-                            }}
-                            endIcon={<RightIcon />}
-                            LinkComponent={Link}
-                            href={`/search/${meaning.word}`}
-                        >
-                            Go to this word
-                        </Button>
-                    </Box>
-                )}
-            </Box>
-        </AppMenu>
+            </PopoverContent>
+        </Popover>
     );
 };
 
