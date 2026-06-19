@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { DYNAMIC_OG_BG } from '@/constants';
-import _ from 'lodash';
 import { getSafeOgParams } from './og-utils';
+import { smartTrim } from './smart-trim';
 
 export const runtime = 'edge';
 
@@ -28,16 +28,6 @@ const getInter = async () => {
     const buffer = await response.arrayBuffer();
 
     return buffer;
-};
-
-const smartTrim = (str = '', n: number, delim = ' ', appendix = '...') => {
-    const trueLength = _.max([0, n - appendix.length]) || 0;
-
-    if (str.length <= trueLength) return str;
-    const trimmedStr = str.slice(0, trueLength + delim.length);
-    const lastDelimIndex = trimmedStr.lastIndexOf(delim);
-    if (lastDelimIndex >= 0) return trimmedStr.slice(0, lastDelimIndex) + appendix;
-    return trimmedStr + appendix;
 };
 
 export async function GET(request: Request) {

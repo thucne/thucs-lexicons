@@ -1,6 +1,6 @@
 'use client';
 import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
-import { debounce, type DebouncedFunc } from 'lodash';
+import { debounce, type Debounced } from '@/utils/debounce';
 
 type HoverOptions = {
     delay?: number;
@@ -17,7 +17,7 @@ type ListenerParams = {
     dependencies?: unknown[];
 };
 
-const cancelDebounced = (fn: DebouncedFunc<(...args: never[]) => void> | ((...args: never[]) => void)) => {
+const cancelDebounced = (fn: Debounced<(...args: never[]) => void> | ((...args: never[]) => void)) => {
     if ('cancel' in fn && typeof fn.cancel === 'function') {
         fn.cancel();
     }
@@ -42,10 +42,10 @@ export const useHoveredText = (options: HoverOptions): [string | null, HTMLEleme
             setHoveredTextElement(null);
         };
 
-        const enterFunc: DebouncedFunc<(e: MouseEvent) => void> | ((e: MouseEvent) => void) = options.delay
+        const enterFunc: Debounced<(e: MouseEvent) => void> | ((e: MouseEvent) => void) = options.delay
             ? debounce(onMouseEnter, options.delay)
             : onMouseEnter;
-        const leaveFunc: DebouncedFunc<() => void> | (() => void) =
+        const leaveFunc: Debounced<() => void> | (() => void) =
             options.delayOnLeave && options.delay ? debounce(onMouseLeave, options.delay) : onMouseLeave;
 
         document.addEventListener('mouseover', enterFunc);
@@ -107,7 +107,7 @@ export const useOnHoveredText = (
             cancelDebounced(enterFunc);
         };
 
-        const enterFunc: DebouncedFunc<(e: MouseEvent) => void> | ((e: MouseEvent) => void) = delay
+        const enterFunc: Debounced<(e: MouseEvent) => void> | ((e: MouseEvent) => void) = delay
             ? debounce(onMouseEnter, delay)
             : onMouseEnter;
 
