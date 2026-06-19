@@ -10,12 +10,14 @@ export const getLicenseString = (license?: License): string =>
 
 const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || '';
 
+export const dictionaryUrl = (word: string) => [FREE_DICTIONARY_API, encodeURIComponent(word)].join('/');
+
 export const hasDefinition = async (query?: string) => {
     if (!query) {
         return false;
     }
 
-    const res = await fetch(`${FREE_DICTIONARY_API}/${query}`);
+    const res = await fetch(dictionaryUrl(query));
 
     if (!res.ok) {
         const hasMeaning = await fetch(
@@ -44,7 +46,7 @@ export const getFirstDefinition = (results: SearchResults) => {
 
 export const getFreeDictionaryLexicons = async (words: string[]) => {
     const wordsListPromises = words.map(async (word) => {
-        const response = await fetch(`${FREE_DICTIONARY_API}/${word}`);
+        const response = await fetch(dictionaryUrl(word));
         return await response.json();
     });
 
