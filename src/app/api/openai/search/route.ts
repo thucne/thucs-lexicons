@@ -179,9 +179,12 @@ const search = async (input: string) => {
         return JSON.parse(response.choices[0].message.content ?? '{}');
     } catch (error) {
         console.error('Error during OpenAI search:', error);
-        return {};
+        throw error;
     }
 };
+
+const statusForOpenAIError = (error: unknown) =>
+    typeof error === 'object' && error !== null && 'status' in error && error.status === 429 ? 503 : 502;
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -201,9 +204,11 @@ export async function GET(request: Request) {
         });
     }
 
-    const result = await search(input);
+    try {
+        const result = await search(input);
 
-    return new Response(JSON.stringify(result), {
-        headers: { 'Content-Type': 'application/json' }
-    });
+        return Response.json(result);
+    } catch (error) {
+        return Response.json({ error: 'Failed to fetch definition.' }, { status: statusForOpenAIError(error) });
+    }
 }
