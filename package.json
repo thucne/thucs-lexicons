@@ -9,7 +9,8 @@
         "lint": "next lint",
         "typecheck": "tsc --noEmit",
         "test": "vitest run",
-        "format": "prettier \"**/*.{ts,tsx,json}\" --write"
+        "format": "prettier \"**/*.{ts,tsx,json}\" --write",
+        "format:check": "prettier \"**/*.{ts,tsx,json}\" --check"
     },
     "dependencies": {
         "@base-ui/react": "^1.6.0",
