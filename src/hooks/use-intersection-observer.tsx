@@ -8,18 +8,22 @@ export const useIntersectionStatus = (
     }
 ): boolean => {
     const [isIntersecting, setIsIntersecting] = useState(false);
+    const { root = null, rootMargin = '0px', threshold = 0, unobserveOnIntersect = false } = options;
 
     useEffect(() => {
         const element = ref.current;
 
-        const observer = new IntersectionObserver(([entry], observer) => {
-            if (entry.isIntersecting) {
-                setIsIntersecting(true);
-                if (options.unobserveOnIntersect) {
-                    observer.unobserve(entry.target);
+        const observer = new IntersectionObserver(
+            ([entry], observer) => {
+                if (entry.isIntersecting) {
+                    setIsIntersecting(true);
+                    if (unobserveOnIntersect) {
+                        observer.unobserve(entry.target);
+                    }
                 }
-            }
-        }, options);
+            },
+            { root, rootMargin, threshold }
+        );
 
         if (element) {
             observer.observe(element);
@@ -30,7 +34,7 @@ export const useIntersectionStatus = (
                 observer.unobserve(element);
             }
         };
-    }, [ref, options]);
+    }, [ref, root, rootMargin, threshold, unobserveOnIntersect]);
 
     return isIntersecting;
 };

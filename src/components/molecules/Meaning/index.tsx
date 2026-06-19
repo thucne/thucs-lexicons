@@ -12,10 +12,12 @@ type MeaningProps = {
     hidePosLabel?: boolean;
 };
 
+const MEANING_IO_OPTIONS = { threshold: 0.5, unobserveOnIntersect: true } as const;
+
 const MeaningComponent = ({ meaning, index, hidePosLabel = false }: MeaningProps) => {
     const meaningRef = useRef<HTMLDivElement>(null);
 
-    const isIntersecting = useIntersectionStatus(meaningRef, { threshold: 0.5, unobserveOnIntersect: true });
+    const isIntersecting = useIntersectionStatus(meaningRef, MEANING_IO_OPTIONS);
 
     return (
         <div ref={meaningRef} className="grid gap-4">
