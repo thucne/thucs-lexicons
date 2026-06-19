@@ -1,0 +1,20 @@
+{
+    "definitions": [
+        {
+            "word": "break the ice",
+            "phonetic": "",
+            "phonetics": [],
+            "meanings": [
+                {
+                    "partOfSpeech": "idiom",
+                    "definitions": [
+                        {
+                            "definition": "To make people feel more relaxed at the beginning of an interaction."
+                        }
+                    ]
+                }
+            ],
+            "openai": true
+        }
+    ]
+}

@@ -1,0 +1,28 @@
+[
+    {
+        "word": "perfect",
+        "phonetic": "/ˈpəːfɪkt/",
+        "phonetics": [
+            {
+                "text": "/ˈpəːfɪkt/"
+            }
+        ],
+        "meanings": [
+            {
+                "partOfSpeech": "adjective",
+                "definitions": [
+                    {
+                        "definition": "Having all the required or desirable elements, qualities, or characteristics."
+                    }
+                ],
+                "synonyms": ["ideal"],
+                "antonyms": ["imperfect"]
+            }
+        ],
+        "license": {
+            "name": "CC BY-SA 3.0",
+            "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        },
+        "sourceUrls": ["https://en.wiktionary.org/wiki/perfect"]
+    }
+]

@@ -20,6 +20,7 @@ import { HERO_MAX_PRONUNCIATION_VARIANTS } from '@/utils/phonetics';
 import { isPhoneticRegex } from '@/utils/regex';
 
 import QuickMeaning from './QuickMeaning';
+import { pickSearchResults } from './result-selection';
 import { ResultEmptyState, ResultLoadingState } from './result-states';
 import { ResultSidebar } from './result-sidebar';
 
@@ -141,7 +142,13 @@ const ResultPage = ({ word: rawWord }: ResultPageProps) => {
     const shouldFetchWithAI = shouldFetchDictionary && !isLoading && !resultsFromFetch?.length;
     const { data: resultsFromAIRaw, isLoading: isAILoading } = useLexiconWithAI(shouldFetchWithAI ? word : undefined);
     const resultsFromAI = Array.isArray(resultsFromAIRaw?.definitions) ? resultsFromAIRaw.definitions : undefined;
-    const results = (resultsFromStore || resultsFromFetch || resultsFromAI) as SearchResults | undefined;
+    const results = pickSearchResults({
+        store: resultsFromStore,
+        storeWord: searchResultsFromStore.word,
+        query: word,
+        fetch: resultsFromFetch,
+        ai: resultsFromAI
+    });
 
     useEffect(() => {
         const nextResults = resultsFromFetch || resultsFromAI;
