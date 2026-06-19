@@ -44,17 +44,24 @@ export const getFirstDefinition = (results: SearchResults) => {
     return definition;
 };
 
-export const getFreeDictionaryLexicons = async (words: string[]) => {
-    const wordsListPromises = words.map(async (word) => {
+export const getFreeDictionaryLexiconsMap = async (words: string[]) => {
+    const uniqueWords = [...new Set(words.filter((word) => word.length > 0))];
+    const wordsListPromises = uniqueWords.map(async (word) => {
         const response = await fetch(dictionaryUrl(word));
-        return await response.json();
+        return [word, await response.json()] as const;
     });
 
     // to speed up the process, we fetch the words in parallel
     const results = await Promise.allSettled(wordsListPromises);
 
-    return results
-        .filter((result): result is PromiseFulfilledResult<SearchResults> => result.status === 'fulfilled')
+    const entries = results
+        .filter((result): result is PromiseFulfilledResult<readonly [string, unknown]> => result.status === 'fulfilled')
         .map((result) => result.value)
-        .filter((result): result is SearchResults => Array.isArray(result) && result.length > 0);
+        .filter((entry): entry is readonly [string, SearchResults] => Array.isArray(entry[1]) && entry[1].length > 0);
+
+    return new Map(entries);
+};
+
+export const getFreeDictionaryLexicons = async (words: string[]) => {
+    return Array.from((await getFreeDictionaryLexiconsMap(words)).values());
 };

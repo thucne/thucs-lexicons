@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { ThesaurusType } from '@/types';
-import { getFirstDefinition, getFreeDictionaryLexicons } from '@/utils';
+import { SearchResults, ThesaurusType } from '@/types';
+import { getFirstDefinition, getFreeDictionaryLexiconsMap } from '@/utils';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Skeleton } from '@/components/ui/skeleton';
 import ThesaurusList, { ThesaurusItem, ThesaurusTypeProps } from './ThesaurusList';
@@ -12,13 +12,12 @@ type ThesaurusProps = {
     autoExpand?: boolean;
 };
 
-const toThesaurusItems = async (words: string[]) => {
-    const results = await getFreeDictionaryLexicons(words.slice(0, 5));
+const toThesaurusItems = (words: string[], lexiconMap: Map<string, SearchResults>) => {
+    return words.slice(0, 5).flatMap((word): ThesaurusItem[] => {
+        const result = lexiconMap.get(word);
+        const entry = result?.[0];
 
-    return results.flatMap((result): ThesaurusItem[] => {
-        const entry = result[0];
-
-        if (!entry?.word) {
+        if (!result || !entry?.word) {
             return [];
         }
 
@@ -43,13 +42,12 @@ const Thesaurus = ({ antonyms = [], synonyms = [], autoExpand = false }: Thesaur
         const fetchAll = async () => {
             setIsLoading(true);
 
-            const [nextAntonyms, nextSynonyms] = await Promise.all([
-                toThesaurusItems(antonyms),
-                toThesaurusItems(synonyms)
-            ]);
+            const antonymWords = antonyms.slice(0, 5);
+            const synonymWords = synonyms.slice(0, 5);
+            const lexiconMap = await getFreeDictionaryLexiconsMap([...antonymWords, ...synonymWords]);
 
-            setAntonymsList(nextAntonyms);
-            setSynonymsList(nextSynonyms);
+            setAntonymsList(toThesaurusItems(antonymWords, lexiconMap));
+            setSynonymsList(toThesaurusItems(synonymWords, lexiconMap));
             setIsLoading(false);
             setFetched(true);
         };

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { SearchResults } from '@/types';
-import { getFreeDictionaryLexicons } from '@/utils';
+import { getFreeDictionaryLexicons, getFreeDictionaryLexiconsMap } from '@/utils';
 
 const fetchMock = vi.fn();
 
@@ -44,5 +44,40 @@ describe('getFreeDictionaryLexicons for thesaurus data', () => {
             .mockResolvedValueOnce({ json: () => Promise.resolve({ title: 'No Definitions Found' }) });
 
         await expect(getFreeDictionaryLexicons(['missing', 'ok', 'unknown'])).resolves.toEqual([validResults]);
+    });
+
+    it('fetches duplicate words only once for shared thesaurus batches', async () => {
+        const okResults: SearchResults = [
+            {
+                word: 'ok',
+                phonetic: '',
+                phonetics: [],
+                meanings: [
+                    {
+                        partOfSpeech: 'adjective',
+                        definitions: [
+                            {
+                                definition: 'All right.',
+                                synonyms: [],
+                                antonyms: []
+                            }
+                        ],
+                        synonyms: [],
+                        antonyms: []
+                    }
+                ],
+                license: {
+                    name: '',
+                    url: ''
+                },
+                sourceUrls: []
+            }
+        ];
+        fetchMock.mockResolvedValue({ json: () => Promise.resolve(okResults) });
+
+        const results = await getFreeDictionaryLexiconsMap(['ok', 'fine', 'ok']);
+
+        expect(fetchMock).toHaveBeenCalledTimes(2);
+        expect([...results.keys()]).toEqual(['ok', 'fine']);
     });
 });
