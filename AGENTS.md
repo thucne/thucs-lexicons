@@ -42,13 +42,15 @@ Use Tailwind utilities (`bg-background`, `text-muted-foreground`, `bg-status-ai`
 
 - **Home** (`HomePage`): editorial hero, InputGroup search, outline Badge example queries
 - **Result** (`ResultPage`): single hero block (no nested cards), Accordion per POS, `max-w-prose` definitions, sticky sidebar at `top-16`
-- **QuickMeaning**: HoverCard on `.lexicon` spans with dictionary + optional AI fallback
+- **QuickMeaning**: Popover anchored to `.lexicon` spans with dictionary + optional AI fallback; hover timing is managed in `QuickMeaning.tsx` + `useOnHoveredText`
 
 ## Verification
 
 ```bash
 pnpm build
 pnpm lint
+pnpm typecheck
+pnpm test
 rg "@mui/" src   # must return zero matches
 ```
 
