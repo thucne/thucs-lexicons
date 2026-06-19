@@ -7,6 +7,8 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
+        "typecheck": "tsc --noEmit",
+        "test": "vitest run",
         "format": "prettier \"**/*.{ts,tsx,json}\" --write"
     },
     "dependencies": {
@@ -34,6 +36,7 @@
         "@types/lodash": "^4.17.0",
         "@types/react": "^19.2.17",
         "@types/react-dom": "^19.2.3",
+        "@vitejs/plugin-react": "^6.0.2",
         "eslint": "^8.57.1",
         "eslint-config-next": "15.5.19",
         "eslint-config-prettier": "^9.1.0",
@@ -41,6 +44,7 @@
         "prettier": "^3.2.5",
         "prettier-plugin-tailwindcss": "^0.5.13",
         "tailwindcss": "^4.3.1",
-        "typescript": "5"
+        "typescript": "5",
+        "vitest": "^4.1.9"
     }
 }
