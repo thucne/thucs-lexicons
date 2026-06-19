@@ -11,26 +11,55 @@ You are an AI assistant specialized in providing accurate definitions and explan
 
 For the given input, your primary goal is to provide a comprehensive and easy-to-understand definition. However, if the input is clearly a **misspelling** or **does not correspond to any known word or phrase**, it is crucial to indicate this rather than attempting to define something nonsensical.
 
-If you are **certain** the input is a valid word or phrase (even if a common misspelling that you can correct), please provide the definition in the following JSON format. If you are **uncertain** or if the input is **gibberish/meaningless**, return an empty JSON object {}.
+If you are **certain** the input is a valid word or phrase (even if a common misspelling that you can correct), return a JSON object with a "definitions" array. If you are **uncertain** or if the input is **gibberish/meaningless**, return { "definitions": [] }.
 
-For each word or phrase, provide the following fields in the JSON response:
-  - "word": The original input word or phrase.
-  - "didYouMean": If the input was a common misspelling, provide the corrected spelling of the word. If the input was spelled correctly or is not a known misspelling, this field should be null.
-  - "phonetic": The primary phonetic spelling of the word, enclosed in slashes (e.g., "/ˈfɪlɪŋ/"). This should be a single string.
-  - "phonetics": An array of objects, each representing a phonetic representation. Each object should have:
-      - "text": The phonetic transcription (e.g., "/ˈfɪlɪlɪŋ/").
-      - "audio": A URL to an audio pronunciation of the word, if available. If not available, provide null.
-  - "origin": The etymology or origin of the word, if available. If not, provide null.
-  - "meanings": An array of objects, each representing a distinct meaning of the word. Each meaning object should contain:
-      - "partOfSpeech": The part of speech (e.g., "noun", "verb", "adjective").
-      - "definitions": An array of objects, each containing:
-          - "definition": The specific definition of the word.
-          - "example": An example sentence using this definition. If not available, provide null.
-          - "synonyms": An array of synonyms for this specific definition. If none, provide an empty array [].
-          - "antonyms": An array of antonyms for this specific definition. If none, provide an empty array [].
+The response must match this wrapper shape:
+{
+  "definitions": [
+    {
+      "openai": true,
+      "word": "original input word or phrase",
+      "didYouMean": null,
+      "phonetic": "/primary phonetic spelling/",
+      "phonetics": [{ "text": "/phonetic transcription/", "audio": null }],
+      "origin": "",
+      "meanings": [
+        {
+          "partOfSpeech": "noun",
+          "definitions": [
+            {
+              "definition": "specific definition",
+              "example": "",
+              "synonyms": [],
+              "antonyms": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+For each definition:
+  - "openai" must always be true.
+  - "word" is the original input word or phrase.
+  - "didYouMean" is the corrected spelling for common misspellings, otherwise null.
+  - "phonetic" is a single string; use an empty string if unavailable.
+  - "phonetics" is an array of { "text", "audio" }; use null for unavailable audio.
+  - "origin" is a string; use an empty string if unavailable.
+  - "meanings[].definitions[].example" is a string; use an empty string if unavailable.
+  - "synonyms" and "antonyms" must be arrays, empty when none are available.
 
 Now, provide the definition for "${input}" in the specified JSON format.
 `;
+
+const normalizeSearchResult = (result: unknown) => {
+    if (typeof result === 'object' && result !== null && 'definitions' in result && Array.isArray(result.definitions)) {
+        return result;
+    }
+
+    return { definitions: [] };
+};
 
 const search = async (input: string) => {
     try {
@@ -176,7 +205,7 @@ const search = async (input: string) => {
             }
         });
 
-        return JSON.parse(response.choices[0].message.content ?? '{}');
+        return normalizeSearchResult(JSON.parse(response.choices[0].message.content ?? '{}'));
     } catch (error) {
         console.error('Error during OpenAI search:', error);
         throw error;

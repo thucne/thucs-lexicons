@@ -52,5 +52,20 @@ describe('GET /api/openai/search', () => {
 
         expect(response.status).toBe(200);
         await expect(response.json()).resolves.toEqual(body);
+        expect(createMock.mock.calls[0][0].messages[1].content).toContain('"definitions"');
+        expect(createMock.mock.calls[0][0].messages[1].content).toContain('"openai": true');
+    });
+
+    it('normalizes malformed successful responses to an empty definitions array', async () => {
+        vi.resetModules();
+        createMock.mockResolvedValueOnce({
+            choices: [{ message: { content: JSON.stringify({ word: 'hello' }) } }]
+        });
+        const { GET } = await import('./route');
+
+        const response = await GET(new Request('http://localhost/api/openai/search?input=hello'));
+
+        expect(response.status).toBe(200);
+        await expect(response.json()).resolves.toEqual({ definitions: [] });
     });
 });
