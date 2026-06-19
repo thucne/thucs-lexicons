@@ -56,5 +56,5 @@ export const getFreeDictionaryLexicons = async (words: string[]) => {
     return results
         .filter((result): result is PromiseFulfilledResult<SearchResults> => result.status === 'fulfilled')
         .map((result) => result.value)
-        .filter((result): result is SearchResults => Array.isArray(result));
+        .filter((result): result is SearchResults => Array.isArray(result) && result.length > 0);
 };

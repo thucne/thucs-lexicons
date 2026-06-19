@@ -15,13 +15,21 @@ type ThesaurusProps = {
 const toThesaurusItems = async (words: string[]) => {
     const results = await getFreeDictionaryLexicons(words.slice(0, 5));
 
-    return results.map(
-        (result): ThesaurusItem => ({
-            word: result[0].word,
-            definition: getFirstDefinition(result),
-            url: `/search/${encodeURIComponent(result[0].word)}`
-        })
-    );
+    return results.flatMap((result): ThesaurusItem[] => {
+        const entry = result[0];
+
+        if (!entry?.word) {
+            return [];
+        }
+
+        return [
+            {
+                word: entry.word,
+                definition: getFirstDefinition(result),
+                url: `/search/${encodeURIComponent(entry.word)}`
+            }
+        ];
+    });
 };
 
 const Thesaurus = ({ antonyms = [], synonyms = [], autoExpand = false }: ThesaurusProps) => {
