@@ -1,5 +1,7 @@
 import OpenAI from 'openai';
 
+import { rateLimitOrThrow } from '@/lib/rate-limit';
+
 const API_KEY = process.env.OPENAI_API_KEY;
 
 const openAI = new OpenAI({
@@ -216,6 +218,11 @@ const statusForOpenAIError = (error: unknown) =>
     typeof error === 'object' && error !== null && 'status' in error && error.status === 429 ? 503 : 502;
 
 export async function GET(request: Request) {
+    const limited = await rateLimitOrThrow(request, 'openai-search');
+    if (limited) {
+        return limited;
+    }
+
     const { searchParams } = new URL(request.url);
     const input = (searchParams.get('input') ?? '').trim();
 

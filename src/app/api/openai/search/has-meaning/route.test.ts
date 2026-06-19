@@ -40,6 +40,28 @@ describe('GET /api/openai/search/has-meaning', () => {
         await expect(response.json()).resolves.toEqual({ error: 'Failed to check definition.' });
     });
 
+    it('returns 429 when the has-meaning route rate limit is exceeded', async () => {
+        vi.resetModules();
+        createMock.mockResolvedValue({
+            choices: [{ message: { content: JSON.stringify({ value: true }) } }]
+        });
+        const { GET } = await import('./route');
+        const request = () =>
+            new Request('http://localhost/api/openai/search/has-meaning?input=hello', {
+                headers: { 'x-forwarded-for': '203.0.113.21' }
+            });
+
+        for (let index = 0; index < 10; index += 1) {
+            await GET(request());
+        }
+
+        const response = await GET(request());
+
+        expect(response.status).toBe(429);
+        await expect(response.json()).resolves.toEqual({ error: 'Too many requests.' });
+        expect(createMock).toHaveBeenCalledTimes(10);
+    });
+
     it('returns parsed JSON for successful responses', async () => {
         vi.resetModules();
         const body = { value: true };
