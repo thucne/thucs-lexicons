@@ -16,6 +16,7 @@ vi.mock('openai', () => ({
 
 describe('GET /api/openai/search', () => {
     beforeEach(() => {
+        process.env.OPENAI_API_KEY = 'test-openai-key';
         createMock.mockReset();
     });
 
@@ -38,6 +39,18 @@ describe('GET /api/openai/search', () => {
 
         expect(response.status).toBe(502);
         await expect(response.json()).resolves.toEqual({ error: 'Failed to fetch definition.' });
+    });
+
+    it('returns 503 when OpenAI is not configured', async () => {
+        vi.resetModules();
+        delete process.env.OPENAI_API_KEY;
+        const { GET } = await import('./route');
+
+        const response = await GET(new Request('http://localhost/api/openai/search?input=hello'));
+
+        expect(response.status).toBe(503);
+        await expect(response.json()).resolves.toEqual({ error: 'AI search is not configured.' });
+        expect(createMock).not.toHaveBeenCalled();
     });
 
     it('returns 429 when the search route rate limit is exceeded', async () => {

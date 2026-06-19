@@ -1,12 +1,5 @@
-import OpenAI from 'openai';
-
 import { rateLimitOrThrow } from '@/lib/rate-limit';
-
-const API_KEY = process.env.OPENAI_API_KEY;
-
-const openAI = new OpenAI({
-    apiKey: API_KEY
-});
+import { getOpenAIClient, MissingOpenAIKeyError } from '@/lib/openai-config';
 
 const prompt = (input: string) => `
   You are an AI assistant that will tell the website if the word/phrase has a definition or not.
@@ -20,6 +13,7 @@ const prompt = (input: string) => `
 
 const search = async (input: string) => {
     try {
+        const openAI = getOpenAIClient();
         const response = await openAI.chat.completions.create({
             model: 'gpt-5-nano',
             messages: [
@@ -62,7 +56,13 @@ const search = async (input: string) => {
 };
 
 const statusForOpenAIError = (error: unknown) =>
-    typeof error === 'object' && error !== null && 'status' in error && error.status === 429 ? 503 : 502;
+    error instanceof MissingOpenAIKeyError ||
+    (typeof error === 'object' && error !== null && 'status' in error && error.status === 429)
+        ? 503
+        : 502;
+
+const errorMessageForOpenAIError = (error: unknown) =>
+    error instanceof MissingOpenAIKeyError ? 'AI search is not configured.' : 'Failed to check definition.';
 
 export async function GET(request: Request) {
     const limited = await rateLimitOrThrow(request, 'openai-has-meaning');
@@ -92,6 +92,6 @@ export async function GET(request: Request) {
 
         return Response.json(result);
     } catch (error) {
-        return Response.json({ error: 'Failed to check definition.' }, { status: statusForOpenAIError(error) });
+        return Response.json({ error: errorMessageForOpenAIError(error) }, { status: statusForOpenAIError(error) });
     }
 }
