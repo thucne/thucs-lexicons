@@ -16,6 +16,18 @@ const MEANING_IO_OPTIONS = { threshold: 0.5, unobserveOnIntersect: true } as con
 
 const MeaningComponent = ({ meaning, index, hidePosLabel = false }: MeaningProps) => {
     const meaningRef = useRef<HTMLDivElement>(null);
+    const mergedAntonyms = [
+        ...new Set([
+            ...(meaning.antonyms ?? []),
+            ...meaning.definitions.flatMap((definition) => definition.antonyms ?? [])
+        ])
+    ];
+    const mergedSynonyms = [
+        ...new Set([
+            ...(meaning.synonyms ?? []),
+            ...meaning.definitions.flatMap((definition) => definition.synonyms ?? [])
+        ])
+    ];
 
     const isIntersecting = useIntersectionStatus(meaningRef, MEANING_IO_OPTIONS);
 
@@ -33,13 +45,12 @@ const MeaningComponent = ({ meaning, index, hidePosLabel = false }: MeaningProps
                         key={`${meaning.partOfSpeech}-definition-${definitionIndex}`}
                         definition={definition}
                         index={index + definitionIndex}
-                        isIntersecting={isIntersecting}
                     />
                 ))}
             </ul>
 
             {isIntersecting && (
-                <Thesaurus antonyms={meaning.antonyms} synonyms={meaning.synonyms} autoExpand={index === 0} />
+                <Thesaurus antonyms={mergedAntonyms} synonyms={mergedSynonyms} autoExpand={index === 0} />
             )}
         </div>
     );

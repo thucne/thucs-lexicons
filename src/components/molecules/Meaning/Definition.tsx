@@ -1,14 +1,11 @@
 import { Definition } from '@/types';
 
-import Thesaurus from '../Thesaurus';
-
 type DefinitionProps = {
     definition: Definition;
     index: number;
-    isIntersecting?: boolean;
 };
 
-const DefinitionComponent = ({ definition, index, isIntersecting = true }: DefinitionProps) => {
+const DefinitionComponent = ({ definition, index }: DefinitionProps) => {
     return (
         <li className="my-2">
             <div className="flex flex-col gap-2">
@@ -25,9 +22,6 @@ const DefinitionComponent = ({ definition, index, isIntersecting = true }: Defin
                 </p>
                 {!!definition?.example?.length && (
                     <p className="border-border text-muted-foreground border-l-2 pl-3 text-sm">{definition.example}</p>
-                )}
-                {isIntersecting && (
-                    <Thesaurus antonyms={definition.antonyms} synonyms={definition.synonyms} autoExpand={index === 0} />
                 )}
             </div>
         </li>
