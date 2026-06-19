@@ -3,9 +3,12 @@
 import { useCallback, useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import { createUrl } from '@/utils';
-
 export const EXAMPLE_QUERIES = ['serendipity', 'affect vs effect', 'break the ice', 'resilience in a sentence'];
+
+export function getSearchNavigationHref(word: string) {
+    const nextSearch = word.trim();
+    return nextSearch ? `/search/${encodeURIComponent(nextSearch)}` : '/search';
+}
 
 export function useSearchNavigation(defaultValue = '') {
     const searchParams = useSearchParams();
@@ -23,17 +26,9 @@ export function useSearchNavigation(defaultValue = '') {
     const submitSearch = useCallback(
         (word?: string) => {
             const nextSearch = (word ?? search).trim();
-            const newParams = new URLSearchParams(searchParams.toString());
-
-            if (nextSearch) {
-                newParams.set('word', nextSearch);
-            } else {
-                newParams.delete('word');
-            }
-
-            router.push(createUrl('/search', newParams));
+            router.push(getSearchNavigationHref(nextSearch));
         },
-        [search, searchParams, router]
+        [search, router]
     );
 
     return { search, setSearch, submitSearch };
