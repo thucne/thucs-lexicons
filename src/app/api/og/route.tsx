@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { DYNAMIC_OG_BG } from '@/constants';
 import _ from 'lodash';
+import { getSafeOgParams } from './og-utils';
 
 export const runtime = 'edge';
 
@@ -41,9 +42,13 @@ const smartTrim = (str = '', n: number, delim = ' ', appendix = '...') => {
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
+    const safeParams = getSafeOgParams(searchParams);
 
-    const word = searchParams.get('word') ?? 'Hello, World!';
-    const definition = searchParams.get('definition') || '';
+    if (!safeParams.ok) {
+        return new Response(safeParams.error, { status: 400 });
+    }
+
+    const { word, definition } = safeParams;
     const trimmedDefinition = smartTrim(definition, 150, ' ', '... Learn more.');
 
     return new ImageResponse(
