@@ -4,7 +4,10 @@ export const HERO_MAX_PRONUNCIATION_VARIANTS = 3;
 
 /** Strip surrounding slashes/brackets for comparison. */
 export function normalizePhoneticText(text: string): string {
-    return text.trim().replace(/^[/\[\]·\s]+|[/\[\]·\s]+$/g, '').trim();
+    return text
+        .trim()
+        .replace(/^[/\[\]·\s]+|[/\[\]·\s]+$/g, '')
+        .trim();
 }
 
 /** Format IPA for display with a single slash pair. */
@@ -75,10 +78,7 @@ export function getUniquePhonetics(entry: SearchResult): Phonetic[] {
     return Array.from(seen.values());
 }
 
-export function getDisplayPhonetics(
-    entry: SearchResult,
-    options?: { max?: number; offset?: number }
-): Phonetic[] {
+export function getDisplayPhonetics(entry: SearchResult, options?: { max?: number; offset?: number }): Phonetic[] {
     const offset = options?.offset ?? 0;
     const slice = getUniquePhonetics(entry).slice(offset);
 

@@ -7,6 +7,7 @@ export const DEFAULT_OG_IMAGE =
     'https://res.cloudinary.com/katyperrycbt/image/upload/v1748517362/ykimulgowtsaln0bfoj2.jpg';
 // export const DYNAMIC_OG_BG = 'https://res.cloudinary.com/katyperrycbt/image/upload/v1723636982/vkwvdhxz54adjppfrchx.jpg'
 // export const DYNAMIC_OG_BG = 'https://res.cloudinary.com/katyperrycbt/image/upload/v1748245946/zbaeledlaymaiwbr7ett.jpg'
-export const DYNAMIC_OG_BG = 'https://res.cloudinary.com/katyperrycbt/image/upload/v1748246677/lpmt1j6uh8mytu9gnl6u.jpg'
+export const DYNAMIC_OG_BG =
+    'https://res.cloudinary.com/katyperrycbt/image/upload/v1748246677/lpmt1j6uh8mytu9gnl6u.jpg';
 // export const DYNAMIC_OG_BG = 'https://res.cloudinary.com/katyperrycbt/image/upload/v1748271816/f5sycomugw4yrmerpfce.avif'
 // export const DYNAMIC_OG_BG = 'https://res.cloudinary.com/katyperrycbt/image/upload/v1748273080/boazlabiwqdm5dgntrtk.jpg'

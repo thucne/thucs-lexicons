@@ -20,7 +20,9 @@ const MeaningComponent = ({ meaning, index, hidePosLabel = false }: MeaningProps
     return (
         <div ref={meaningRef} className="grid gap-4">
             {!hidePosLabel && (
-                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{meaning.partOfSpeech}</p>
+                <p className="text-muted-foreground text-xs font-medium uppercase tracking-wide">
+                    {meaning.partOfSpeech}
+                </p>
             )}
 
             <ul className="my-0 list-none space-y-4 pl-0">

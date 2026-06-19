@@ -18,7 +18,7 @@ const NavigationBar = () => {
     const isHome = pathname === '/';
 
     return (
-        <header className="sticky top-0 z-50 border-b bg-background/80 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <header className="bg-background/80 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b px-4 backdrop-blur">
             <div className="flex h-14 items-center justify-between gap-4">
                 <Link href="/" className="text-lg font-semibold tracking-tight md:ml-5">
                     Lexicons

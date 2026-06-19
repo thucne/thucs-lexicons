@@ -26,8 +26,8 @@ export function ResultLoadingState({ word }: { word: string }) {
                     <Skeleton className="h-24 w-full max-w-sm" />
                     <Skeleton className="h-24 w-full max-w-sm" />
                 </div>
-                <p className="text-sm text-muted-foreground">
-                    Exploring <span className="font-medium text-foreground">{word}</span>…
+                <p className="text-muted-foreground text-sm">
+                    Exploring <span className="text-foreground font-medium">{word}</span>…
                 </p>
             </div>
         </PageShell>
@@ -65,7 +65,7 @@ export function ResultEmptyState({ word }: { word: string }) {
                         </Badge>
                     </Link>
                 </div>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                     Or press <KbdHint className="inline-flex" /> to search from anywhere.
                 </p>
             </div>

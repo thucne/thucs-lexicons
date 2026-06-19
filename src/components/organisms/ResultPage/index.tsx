@@ -8,12 +8,7 @@ import MeaningComponent from '@/components/molecules/Meaning';
 import PronunciationList from '@/components/molecules/PronunciationList';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger
-} from '@/components/ui/accordion';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { PageShell } from '@/components/ui/page-shell';
 import { Separator } from '@/components/ui/separator';
 import { SourceBadge } from '@/components/ui/source-badge';
@@ -35,15 +30,7 @@ type ResultPageProps = {
 const getPartOfSpeechList = (entry: SearchResult) =>
     Array.from(new Set(entry.meanings.map((meaning) => meaning.partOfSpeech).filter(Boolean)));
 
-const ResultHero = ({
-    word,
-    entry,
-    isByAI
-}: {
-    word: string;
-    entry: SearchResult;
-    isByAI: boolean;
-}) => {
+const ResultHero = ({ word, entry, isByAI }: { word: string; entry: SearchResult; isByAI: boolean }) => {
     const partOfSpeechList = getPartOfSpeechList(entry);
 
     return (
@@ -51,14 +38,18 @@ const ResultHero = ({
             <div className="flex flex-wrap items-center gap-2">
                 <SourceBadge variant={isByAI ? 'ai' : 'dictionary'} />
                 {partOfSpeechList.map((pos) => (
-                    <Badge key={pos} variant="secondary" className="rounded-full text-xs font-medium uppercase tracking-wide">
+                    <Badge
+                        key={pos}
+                        variant="secondary"
+                        className="rounded-full text-xs font-medium uppercase tracking-wide"
+                    >
                         {pos}
                     </Badge>
                 ))}
             </div>
 
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
-                <h1 className="text-4xl font-semibold tracking-tight leading-tight md:text-5xl">
+                <h1 className="text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
                     {entry.word || word}
                 </h1>
                 <PronunciationList entry={entry} maxVariants={HERO_MAX_PRONUNCIATION_VARIANTS} />
@@ -79,7 +70,7 @@ const ResultHero = ({
 
             {isByAI && (
                 <Alert className="border-status-ai/40 bg-status-ai/30">
-                    <Sparkles className="size-4 text-status-ai-foreground" />
+                    <Sparkles className="text-status-ai-foreground size-4" />
                     <AlertDescription className="text-status-ai-foreground">
                         AI generated this entry because the dictionary source did not cover the query. Check wording
                         before relying on it.
@@ -104,7 +95,11 @@ const ResultDefinitions = ({ entry, word }: { entry: SearchResult; word: string 
         return (
             <div className="max-w-prose space-y-6">
                 {meanings.map((meaning, index) => (
-                    <MeaningComponent key={`${word}-${meaning.partOfSpeech}-${index}`} meaning={meaning} index={index} />
+                    <MeaningComponent
+                        key={`${word}-${meaning.partOfSpeech}-${index}`}
+                        meaning={meaning}
+                        index={index}
+                    />
                 ))}
             </div>
         );
@@ -114,7 +109,7 @@ const ResultDefinitions = ({ entry, word }: { entry: SearchResult; word: string 
         <Accordion multiple defaultValue={posEntries.map(([pos]) => pos)} className="max-w-prose">
             {posEntries.map(([pos, meanings]) => (
                 <AccordionItem key={pos} value={pos}>
-                    <AccordionTrigger className="text-xs font-medium uppercase tracking-wide text-muted-foreground hover:no-underline">
+                    <AccordionTrigger className="text-muted-foreground text-xs font-medium uppercase tracking-wide hover:no-underline">
                         {pos}
                     </AccordionTrigger>
                     <AccordionContent className="space-y-6 pt-2">

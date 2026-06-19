@@ -31,10 +31,7 @@ const ThesaurusList = ({ type, words, id }: ThesaurusTypeProps) => {
                             render={
                                 <Link
                                     href={word.url}
-                                    className={cn(
-                                        buttonVariants({ variant: 'outline', size: 'sm' }),
-                                        'rounded-full'
-                                    )}
+                                    className={cn(buttonVariants({ variant: 'outline', size: 'sm' }), 'rounded-full')}
                                 />
                             }
                         >

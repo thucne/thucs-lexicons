@@ -5,12 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { createUrl } from '@/utils';
 
-export const EXAMPLE_QUERIES = [
-    'serendipity',
-    'affect vs effect',
-    'break the ice',
-    'resilience in a sentence'
-];
+export const EXAMPLE_QUERIES = ['serendipity', 'affect vs effect', 'break the ice', 'resilience in a sentence'];
 
 export function useSearchNavigation(defaultValue = '') {
     const searchParams = useSearchParams();

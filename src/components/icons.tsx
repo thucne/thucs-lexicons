@@ -1,17 +1,4 @@
-export {
-    ArrowRight,
-    Check,
-    Code2,
-    Minus,
-    Monitor,
-    Moon,
-    Plus,
-    Search,
-    Sun,
-    Volume2,
-    VolumeX,
-    X
-} from 'lucide-react';
+export { ArrowRight, Check, Code2, Minus, Monitor, Moon, Plus, Search, Sun, Volume2, VolumeX, X } from 'lucide-react';
 
 // Legacy aliases
 export { Sun as LightModeIcon } from 'lucide-react';

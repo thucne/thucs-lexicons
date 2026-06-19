@@ -7,11 +7,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { SearchResult, SearchResults } from '@/types';
 import { cn } from '@/lib/utils';
-import {
-    getUniquePhonetics,
-    hasPronunciation,
-    HERO_MAX_PRONUNCIATION_VARIANTS
-} from '@/utils/phonetics';
+import { getUniquePhonetics, hasPronunciation, HERO_MAX_PRONUNCIATION_VARIANTS } from '@/utils/phonetics';
 
 const unique = (values: string[]) => Array.from(new Set(values.filter(Boolean))).slice(0, 12);
 
@@ -52,11 +48,7 @@ export function PronunciationCard({ entry }: { entry: SearchResult }) {
                 </SectionHeading>
             </CardHeader>
             <CardContent>
-                <PronunciationList
-                    entry={entry}
-                    offset={HERO_MAX_PRONUNCIATION_VARIANTS}
-                    className="sm:flex-col"
-                />
+                <PronunciationList entry={entry} offset={HERO_MAX_PRONUNCIATION_VARIANTS} className="sm:flex-col" />
             </CardContent>
         </Card>
     );
@@ -87,7 +79,7 @@ export function ExploreWithAICard({ word }: { word: string }) {
                 <SectionHeading>Explore with AI</SectionHeading>
             </CardHeader>
             <CardContent className="space-y-3">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                     These searches use generated help only when the dictionary cannot cover the request directly.
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -170,7 +162,10 @@ export function ExampleLabCard({ results }: { results: SearchResults }) {
             </CardHeader>
             <CardContent className="space-y-2">
                 {examples.map((example, index) => (
-                    <p key={`${example}-${index}`} className="border-l-2 border-border pl-3 text-sm text-muted-foreground">
+                    <p
+                        key={`${example}-${index}`}
+                        className="border-border text-muted-foreground border-l-2 pl-3 text-sm"
+                    >
                         {example}
                     </p>
                 ))}

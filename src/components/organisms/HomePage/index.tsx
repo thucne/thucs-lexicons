@@ -37,7 +37,7 @@ const HomePage = () => {
 
     return (
         <PageShell className="py-8 md:py-14">
-            <div className="rounded-2xl bg-muted/30 p-6 md:p-8">
+            <div className="bg-muted/30 rounded-2xl p-6 md:p-8">
                 <div className="grid gap-8 md:grid-cols-12">
                     <div className="space-y-8 md:col-span-7">
                         <Badge variant="secondary" size="lg" className="gap-1.5 rounded-full">
@@ -46,10 +46,10 @@ const HomePage = () => {
                         </Badge>
 
                         <div className="space-y-3">
-                            <h1 className="text-4xl font-semibold tracking-tight leading-tight md:text-5xl">
+                            <h1 className="text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
                                 A sharper way to explore English.
                             </h1>
-                            <p className="max-w-lg text-lg text-muted-foreground">
+                            <p className="text-muted-foreground max-w-lg text-lg">
                                 Lexicons blends dictionary data with clearly labeled AI help for phrases, comparisons,
                                 examples, and nuance.
                             </p>
@@ -82,10 +82,10 @@ const HomePage = () => {
                                         <div key={capability.title}>
                                             {index > 0 && <Separator className="mb-4" />}
                                             <div className="flex gap-3">
-                                                <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+                                                <Icon className="text-muted-foreground mt-0.5 size-4 shrink-0" />
                                                 <div className="space-y-1">
                                                     <p className="font-medium">{capability.title}</p>
-                                                    <p className="text-sm text-muted-foreground">{capability.body}</p>
+                                                    <p className="text-muted-foreground text-sm">{capability.body}</p>
                                                 </div>
                                             </div>
                                         </div>

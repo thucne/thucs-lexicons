@@ -20,28 +20,22 @@ const PronunciationList = ({ entry, maxVariants, offset = 0, className }: Pronun
     return (
         <div
             className={cn(
-                'flex flex-col gap-1 font-mono text-sm text-muted-foreground sm:flex-row sm:flex-wrap sm:items-center',
+                'text-muted-foreground flex flex-col gap-1 font-mono text-sm sm:flex-row sm:flex-wrap sm:items-center',
                 className
             )}
         >
             {variants.map((phonetic, index) => {
                 const key =
-                    normalizePhoneticText(phonetic.text) ||
-                    phonetic.audio?.trim() ||
-                    `phonetic-${offset + index}`;
+                    normalizePhoneticText(phonetic.text) || phonetic.audio?.trim() || `phonetic-${offset + index}`;
 
                 return (
                     <div key={key} className="flex items-center gap-1 sm:contents">
                         {index > 0 && (
-                            <span aria-hidden className="mx-1 hidden text-muted-foreground sm:inline">
+                            <span aria-hidden className="text-muted-foreground mx-1 hidden sm:inline">
                                 ·
                             </span>
                         )}
-                        <Audio
-                            phonetic={phonetic}
-                            showPhonetic={Boolean(phonetic.text?.trim())}
-                            className="gap-1"
-                        />
+                        <Audio phonetic={phonetic} showPhonetic={Boolean(phonetic.text?.trim())} className="gap-1" />
                     </div>
                 );
             })}

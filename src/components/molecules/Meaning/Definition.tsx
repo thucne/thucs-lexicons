@@ -12,7 +12,7 @@ const DefinitionComponent = ({ definition, index, isIntersecting = true }: Defin
     return (
         <li className="my-2">
             <div className="flex flex-col gap-2">
-                <p className="lexicon-box text-sm leading-relaxed text-foreground">
+                <p className="lexicon-box text-foreground text-sm leading-relaxed">
                     {definition.definition?.length
                         ? definition.definition.split(' ').map((word, defIndex) => (
                               <span key={`${index}-${defIndex}`}>
@@ -24,7 +24,7 @@ const DefinitionComponent = ({ definition, index, isIntersecting = true }: Defin
                         : 'No definition found'}
                 </p>
                 {!!definition?.example?.length && (
-                    <p className="border-l-2 border-border pl-3 text-sm text-muted-foreground">{definition.example}</p>
+                    <p className="border-border text-muted-foreground border-l-2 pl-3 text-sm">{definition.example}</p>
                 )}
                 {isIntersecting && (
                     <Thesaurus antonyms={definition.antonyms} synonyms={definition.synonyms} autoExpand={index === 0} />

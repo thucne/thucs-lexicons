@@ -2,12 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { ThesaurusType } from '@/types';
 import { getFirstDefinition, getFreeDictionaryLexicons } from '@/utils';
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger
-} from '@/components/ui/accordion';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Skeleton } from '@/components/ui/skeleton';
 import ThesaurusList, { ThesaurusItem, ThesaurusTypeProps } from './ThesaurusList';
 
@@ -60,7 +55,7 @@ const Thesaurus = ({ antonyms = [], synonyms = [], autoExpand = false }: Thesaur
 
     if (isLoading) {
         return (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="text-muted-foreground flex items-center gap-2 text-sm">
                 <Skeleton className="size-3.5 rounded-full" />
                 Loading related words…
             </div>

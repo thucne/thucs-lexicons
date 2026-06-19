@@ -25,7 +25,10 @@ export function KbdHint({ className, onClick }: KbdHintProps) {
             <button
                 type="button"
                 onClick={onClick}
-                className={cn('rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring', className)}
+                className={cn(
+                    'focus-visible:ring-ring rounded-md focus-visible:outline-none focus-visible:ring-2',
+                    className
+                )}
                 aria-label="Open command palette"
             >
                 <Badge variant="outline" className="font-mono text-xs font-normal">

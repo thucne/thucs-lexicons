@@ -60,7 +60,7 @@ export async function GET(request: Request) {
                     justifyContent: 'center',
                     alignItems: 'flex-start',
                     flexDirection: 'column',
-                    padding: '62.5px',
+                    padding: '62.5px'
                 }}
             >
                 <p

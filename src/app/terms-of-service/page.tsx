@@ -49,7 +49,7 @@ const TermsOfService = () => {
                 {sections.map((section) => (
                     <section key={section.title} className="space-y-2">
                         <h2 className="text-xl font-semibold">{section.title}</h2>
-                        <p className="leading-relaxed text-muted-foreground">{section.body}</p>
+                        <p className="text-muted-foreground leading-relaxed">{section.body}</p>
                     </section>
                 ))}
             </article>

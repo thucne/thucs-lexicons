@@ -39,13 +39,13 @@ const Footer = () => {
                     <div className="flex flex-row flex-wrap items-center gap-4">
                         <Link
                             href="/terms-of-service"
-                            className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+                            className="text-muted-foreground text-sm underline-offset-4 hover:underline"
                         >
                             Terms of Service
                         </Link>
                         <Link
                             href="/privacy-policy"
-                            className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+                            className="text-muted-foreground text-sm underline-offset-4 hover:underline"
                         >
                             Privacy Policy
                         </Link>
@@ -64,17 +64,17 @@ const Footer = () => {
                                     loading="lazy"
                                 />
                             </Link>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-muted-foreground text-sm">
                                 Copyright © {new Date().getFullYear()} Thucde.dev. All rights reserved.
                             </p>
                         </div>
                         <div className="flex items-center gap-3">
-                            <p className="text-sm text-muted-foreground">Source code available on GitHub</p>
+                            <p className="text-muted-foreground text-sm">Source code available on GitHub</p>
                             <Link
                                 href="https://github.com/thucne/thucs-lexicons"
                                 target="_blank"
                                 aria-label="GitHub repository"
-                                className="text-foreground transition-colors hover:text-primary"
+                                className="text-foreground hover:text-primary transition-colors"
                             >
                                 <GitHubIcon className="size-5" />
                             </Link>

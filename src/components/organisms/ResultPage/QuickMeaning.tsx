@@ -161,7 +161,7 @@ const QuickMeaning = () => {
                     <div className="space-y-2" role="status">
                         <Skeleton className="h-4 w-3/4" />
                         <Skeleton className="h-3 w-full" />
-                        <p className="text-sm text-muted-foreground">Loading definition…</p>
+                        <p className="text-muted-foreground text-sm">Loading definition…</p>
                     </div>
                 )}
                 {hoveredText && !isContentLoading && meaning && (
@@ -170,7 +170,7 @@ const QuickMeaning = () => {
                             <p className="text-base font-semibold">{meaning.word}</p>
                             <SourceBadge variant={isAiMeaning ? 'ai' : 'dictionary'} />
                         </div>
-                        <div className="flex flex-wrap items-center gap-1 text-xs text-muted-foreground">
+                        <div className="text-muted-foreground flex flex-wrap items-center gap-1 text-xs">
                             <span className="text-foreground">{meaning.meanings?.[0]?.partOfSpeech}</span>
                             {meaning.phonetics?.[0]?.text && (
                                 <span className="font-mono">- {meaning.phonetics[0].text}</span>
@@ -184,7 +184,7 @@ const QuickMeaning = () => {
                         </div>
                         <p className="text-sm leading-relaxed">{meaning.meanings?.[0]?.definitions?.[0]?.definition}</p>
                         {isAiMeaning && (
-                            <p className="flex items-center gap-1 text-xs text-status-ai-foreground">
+                            <p className="text-status-ai-foreground flex items-center gap-1 text-xs">
                                 <Sparkles className="size-3" />
                                 AI fallback — verify before relying on it.
                             </p>
@@ -192,7 +192,7 @@ const QuickMeaning = () => {
                         <div className="flex justify-end pt-1">
                             <Link
                                 href={`/search/${encodeURIComponent(meaning.word)}`}
-                                className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                                className="text-primary inline-flex items-center gap-1 text-sm hover:underline"
                             >
                                 Go to this word
                                 <ArrowRight className="size-4" />
@@ -201,7 +201,7 @@ const QuickMeaning = () => {
                     </div>
                 )}
                 {hoveredText && !isContentLoading && !meaning && (
-                    <p className="text-sm text-muted-foreground">No definition found for “{hoveredText}”</p>
+                    <p className="text-muted-foreground text-sm">No definition found for “{hoveredText}”</p>
                 )}
             </PopoverContent>
         </Popover>

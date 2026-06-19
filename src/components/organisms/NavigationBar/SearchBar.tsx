@@ -4,12 +4,7 @@ import { useEffect, useRef } from 'react';
 import { Search } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import {
-    InputGroup,
-    InputGroupAddon,
-    InputGroupButton,
-    InputGroupInput
-} from '@/components/ui/input-group';
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group';
 import { KbdHint } from '@/components/ui/kbd-hint';
 import { useSearchNavigation } from '@/hooks/use-search-navigation';
 import { cn } from '@/lib/utils';
@@ -69,7 +64,7 @@ const SearchBar = ({
         <form onSubmit={handleSubmit} className="relative w-full">
             <InputGroup className={cn(groupHeight, isCommandLauncher && 'cursor-pointer')}>
                 <InputGroupAddon align="inline-start">
-                    <Search className="size-4 text-muted-foreground" aria-hidden />
+                    <Search className="text-muted-foreground size-4" aria-hidden />
                 </InputGroupAddon>
                 <InputGroupInput
                     ref={searchRef}
