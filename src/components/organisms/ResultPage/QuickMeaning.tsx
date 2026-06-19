@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Sparkles } from 'lucide-react';
 
@@ -18,6 +18,8 @@ const QuickMeaning = () => {
     const [meaning, setMeaning] = useState<SearchResult | undefined>(undefined);
     const [useAiFallback, setUseAiFallback] = useState(false);
     const hoveredTextRef = useRef<string | null>(null);
+    const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const popoverContentRef = useRef<HTMLDivElement | null>(null);
 
     const [hoveredTextRaw, hoveredTextElement, setHoveredTextElement] = useOnHoveredText({
         delay: 1000,
@@ -29,12 +31,55 @@ const QuickMeaning = () => {
         useAiFallback && hoveredText ? hoveredText : undefined
     );
 
-    const resetMenu = () => {
+    const clearCloseTimer = useCallback(() => {
+        if (closeTimerRef.current) {
+            clearTimeout(closeTimerRef.current);
+            closeTimerRef.current = null;
+        }
+    }, []);
+
+    const resetMenu = useCallback(() => {
+        clearCloseTimer();
         setHoveredTextElement(null);
         setMeaning(undefined);
         setUseAiFallback(false);
         hoveredTextRef.current = null;
-    };
+    }, [clearCloseTimer, setHoveredTextElement]);
+
+    const scheduleResetMenu = useCallback(() => {
+        clearCloseTimer();
+        closeTimerRef.current = setTimeout(resetMenu, 150);
+    }, [clearCloseTimer, resetMenu]);
+
+    const handleTargetMouseLeave = useCallback(
+        (event: MouseEvent) => {
+            const relatedTarget = event.relatedTarget;
+
+            if (relatedTarget instanceof Node && popoverContentRef.current?.contains(relatedTarget)) {
+                clearCloseTimer();
+                return;
+            }
+
+            scheduleResetMenu();
+        },
+        [clearCloseTimer, scheduleResetMenu]
+    );
+
+    useEffect(() => clearCloseTimer, [clearCloseTimer]);
+
+    useEffect(() => {
+        if (!hoveredTextElement) {
+            return;
+        }
+
+        hoveredTextElement.addEventListener('mouseenter', clearCloseTimer);
+        hoveredTextElement.addEventListener('mouseleave', handleTargetMouseLeave);
+
+        return () => {
+            hoveredTextElement.removeEventListener('mouseenter', clearCloseTimer);
+            hoveredTextElement.removeEventListener('mouseleave', handleTargetMouseLeave);
+        };
+    }, [clearCloseTimer, handleTargetMouseLeave, hoveredTextElement]);
 
     useEffect(() => {
         const lexicons = document.querySelectorAll('.lexicon');
@@ -96,20 +141,21 @@ const QuickMeaning = () => {
     const isAiMeaning = Boolean(meaning?.openai || useAiFallback);
 
     return (
-        <Popover
-            open={Boolean(hoveredTextElement)}
-            onOpenChange={(open) => {
-                if (!open) {
-                    resetMenu();
-                }
-            }}
-        >
+        <Popover open={Boolean(hoveredTextElement)}>
             <PopoverContent
                 anchor={hoveredTextElement}
+                ref={popoverContentRef}
                 className="w-80 p-4"
                 side="top"
                 align="start"
-                onMouseLeave={resetMenu}
+                initialFocus={false}
+                onMouseEnter={clearCloseTimer}
+                onMouseLeave={scheduleResetMenu}
+                onKeyDown={(event) => {
+                    if (event.key === 'Escape') {
+                        resetMenu();
+                    }
+                }}
             >
                 {isContentLoading && (
                     <div className="space-y-2" role="status">

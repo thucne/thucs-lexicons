@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
@@ -22,8 +23,13 @@ function GitHubIcon({ className }: { className?: string }) {
 }
 
 const Footer = () => {
+    const [mounted, setMounted] = useState(false);
     const { resolvedTheme } = useTheme();
-    const bannerSrc = resolvedTheme === 'dark' ? THUCDEDEV_BANNER_PNG_DARK : THUCDEDEV_BANNER_PNG;
+    const bannerSrc = mounted && resolvedTheme === 'dark' ? THUCDEDEV_BANNER_PNG_DARK : THUCDEDEV_BANNER_PNG;
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     return (
         <>

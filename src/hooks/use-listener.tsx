@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
 import { debounce, type DebouncedFunc } from 'lodash';
 
 type HoverOptions = {
@@ -64,18 +64,47 @@ export const useHoveredText = (options: HoverOptions): [string | null, HTMLEleme
 
 export const useOnHoveredText = (
     options: HoverOptions
-): [string | null, HTMLElement | null, (element: HTMLElement | null) => void] => {
+): [string | null, HTMLElement | null, Dispatch<SetStateAction<HTMLElement | null>>] => {
     const { delay, filterClassName } = options;
     const [hoveredTextElement, setHoveredTextElement] = useState<HTMLElement | null>(null);
     const hoveredText = hoveredTextElement?.innerText || null;
 
     useEffect(() => {
+        const getHoverTarget = (target: EventTarget | null) => {
+            if (!(target instanceof HTMLElement)) {
+                return null;
+            }
+
+            if (!filterClassName) {
+                return target;
+            }
+
+            return target.closest<HTMLElement>(`.${filterClassName}`);
+        };
+
         const onMouseEnter = (e: MouseEvent) => {
-            if (filterClassName && !(e.target as HTMLElement).classList.contains(filterClassName)) {
+            const target = getHoverTarget(e.target);
+
+            if (!target) {
                 return;
             }
-            const target = e.target as HTMLElement;
-            setHoveredTextElement(target);
+
+            setHoveredTextElement((currentTarget) => (currentTarget === target ? currentTarget : target));
+        };
+
+        const onMouseLeave = (e: MouseEvent) => {
+            const target = getHoverTarget(e.target);
+
+            if (!target) {
+                return;
+            }
+
+            const relatedTarget = e.relatedTarget;
+            if (relatedTarget instanceof Node && target.contains(relatedTarget)) {
+                return;
+            }
+
+            cancelDebounced(enterFunc);
         };
 
         const enterFunc: DebouncedFunc<(e: MouseEvent) => void> | ((e: MouseEvent) => void) = delay
@@ -83,9 +112,11 @@ export const useOnHoveredText = (
             : onMouseEnter;
 
         document.addEventListener('mouseover', enterFunc);
+        document.addEventListener('mouseout', onMouseLeave);
 
         return () => {
             document.removeEventListener('mouseover', enterFunc);
+            document.removeEventListener('mouseout', onMouseLeave);
             cancelDebounced(enterFunc);
         };
     }, [delay, filterClassName]);
