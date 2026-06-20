@@ -1,4 +1,5 @@
-import { SearchResults } from '@/types';
+import { SearchResult, SearchResults } from '@/types';
+import { isPhoneticRegex } from '@/utils/regex';
 
 type PickSearchResultsArgs = {
     store?: unknown;
@@ -39,4 +40,37 @@ export function pickSearchResults({ store, storeWord, query, fetch, ai }: PickSe
     }
 
     return undefined;
+}
+
+const normalizeLookupText = (value: string) => value.trim().replace(/\s+/g, ' ').toLowerCase();
+
+const isLikelyPhoneticText = (value: string) => {
+    const trimmedValue = value.trim();
+    const isBracketedPhonetic =
+        (trimmedValue.startsWith('/') && trimmedValue.endsWith('/')) ||
+        (trimmedValue.startsWith('[') && trimmedValue.endsWith(']'));
+
+    return isBracketedPhonetic && isPhoneticRegex.test(trimmedValue);
+};
+
+export function getResultDisplayState(query: string, entry: SearchResult) {
+    const searchedWord = query.trim();
+    const entryWord = entry.word.trim();
+    const suggestedWord = typeof entry.didYouMean === 'string' ? entry.didYouMean.trim() : '';
+    const usableSuggestion = suggestedWord && !isLikelyPhoneticText(suggestedWord) ? suggestedWord : '';
+    const displayWord = usableSuggestion || entryWord || searchedWord;
+    const normalizedQuery = normalizeLookupText(searchedWord);
+    const correctionWord =
+        usableSuggestion && normalizeLookupText(usableSuggestion) !== normalizedQuery
+            ? usableSuggestion
+            : entryWord && normalizeLookupText(entryWord) !== normalizedQuery
+              ? entryWord
+              : undefined;
+
+    return {
+        displayWord,
+        searchedWord,
+        correctionWord,
+        isShowingCorrection: Boolean(correctionWord)
+    };
 }

@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { Sparkles } from 'lucide-react';
+import { SearchCheck, Sparkles } from 'lucide-react';
 
 import MeaningComponent from '@/components/molecules/Meaning';
 import PronunciationList from '@/components/molecules/PronunciationList';
@@ -17,10 +17,9 @@ import { selectSearchResults, setSearchResults } from '@/redux/reducers/searchRe
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { Meaning, SearchResult, SearchResults } from '@/types';
 import { HERO_MAX_PRONUNCIATION_VARIANTS } from '@/utils/phonetics';
-import { isPhoneticRegex } from '@/utils/regex';
 
 import QuickMeaning from './QuickMeaning';
-import { isSearchResults, pickSearchResults } from './result-selection';
+import { getResultDisplayState, isSearchResults, pickSearchResults } from './result-selection';
 import { ResultEmptyState, ResultLoadingState } from './result-states';
 import { ResultSidebar } from './result-sidebar';
 
@@ -36,6 +35,7 @@ const shouldUseAIFirst = (query: string) =>
 
 const ResultHero = ({ word, entry, isByAI }: { word: string; entry: SearchResult; isByAI: boolean }) => {
     const partOfSpeechList = getPartOfSpeechList(entry);
+    const { displayWord, searchedWord, correctionWord } = getResultDisplayState(word, entry);
 
     return (
         <header className="space-y-4 border-b pb-5 sm:pb-6">
@@ -54,22 +54,25 @@ const ResultHero = ({ word, entry, isByAI }: { word: string; entry: SearchResult
 
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
                 <h1 className="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl md:text-5xl">
-                    {entry.word || word}
+                    {displayWord}
                 </h1>
                 <PronunciationList entry={entry} maxVariants={HERO_MAX_PRONUNCIATION_VARIANTS} />
             </div>
 
-            {entry.didYouMean && !isPhoneticRegex.test(entry.didYouMean) && (
-                <p className="text-muted-foreground">
-                    Did you mean{' '}
-                    <Link
-                        href={`/search/${encodeURIComponent(entry.didYouMean)}`}
-                        className="underline underline-offset-4"
-                    >
-                        {entry.didYouMean}
-                    </Link>
-                    ?
-                </p>
+            {correctionWord && (
+                <Alert className="border-primary/30 bg-primary/5">
+                    <SearchCheck className="text-primary size-4" />
+                    <AlertDescription>
+                        Showing results for{' '}
+                        <Link
+                            href={`/search/${encodeURIComponent(correctionWord)}`}
+                            className="font-medium underline underline-offset-4"
+                        >
+                            {correctionWord}
+                        </Link>
+                        . You searched for “{searchedWord}”.
+                    </AlertDescription>
+                </Alert>
             )}
 
             {isByAI && (

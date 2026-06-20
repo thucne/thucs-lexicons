@@ -162,4 +162,16 @@ describe('GET /api/openai/search', () => {
         expect(response.status).toBe(200);
         await expect(response.json()).resolves.toEqual({ definitions: [] });
     });
+
+    it('normalizes empty OpenAI message content to an empty definitions array', async () => {
+        createMock.mockResolvedValueOnce({
+            choices: [{ message: { content: '' } }]
+        });
+        const { GET } = await import('./route');
+
+        const response = await GET(new Request('http://localhost/api/openai/search?input=knock%20on%20wood'));
+
+        expect(response.status).toBe(200);
+        await expect(response.json()).resolves.toEqual({ definitions: [] });
+    });
 });

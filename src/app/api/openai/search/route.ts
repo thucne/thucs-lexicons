@@ -102,14 +102,16 @@ You are an AI assistant specialized in providing accurate definitions and explan
 
 For the given input, your primary goal is to provide a comprehensive and easy-to-understand definition. However, if the input is clearly a **misspelling** or **does not correspond to any known word or phrase**, it is crucial to indicate this rather than attempting to define something nonsensical.
 
-If you are **certain** the input is a valid word or phrase (even if a common misspelling that you can correct), return a JSON object with a "definitions" array. If you are **uncertain** or if the input is **gibberish/meaningless**, return { "definitions": [] }.
+If you are **certain** the input is a valid word or phrase, return a JSON object with a "definitions" array.
+If the input is a common typo or misspelling that you can confidently correct, return definitions for the corrected word or phrase, not for the typo.
+If you are **uncertain** or if the input is **gibberish/meaningless**, return { "definitions": [] }.
 
 The response must match this wrapper shape:
 {
   "definitions": [
     {
       "openai": true,
-      "word": "original input word or phrase",
+      "word": "word or phrase being defined; use the corrected spelling for typos",
       "didYouMean": null,
       "phonetic": "/primary phonetic spelling/",
       "phonetics": [{ "text": "/phonetic transcription/", "audio": null }],
@@ -133,8 +135,8 @@ The response must match this wrapper shape:
 
 For each definition:
   - "openai" must always be true.
-  - "word" is the original input word or phrase.
-  - "didYouMean" is the corrected spelling for common misspellings, otherwise null.
+  - "word" is the exact word or phrase being defined. For typos, use the corrected spelling.
+  - "didYouMean" is the corrected spelling for common misspellings, otherwise null. For typos, this should match "word".
   - "phonetic" is a single string; use an empty string if unavailable.
   - "phonetics" is an array of { "text", "audio" }; use null for unavailable audio.
   - "origin" is a string; use an empty string if unavailable.
@@ -152,12 +154,32 @@ const normalizeSearchResult = (result: unknown): AIResult => {
     return { definitions: [] };
 };
 
+const parseSearchResult = (content: string | null | undefined): AIResult => {
+    const trimmedContent = content?.trim();
+
+    if (!trimmedContent) {
+        return { definitions: [] };
+    }
+
+    try {
+        return normalizeSearchResult(JSON.parse(trimmedContent));
+    } catch {
+        return { definitions: [] };
+    }
+};
+
 const getLocalFallback = (input: string): AIResult | undefined => localFallbacks[input.toLowerCase()];
 
 const search = async (input: string) => {
     try {
         const openAI = getOpenAIClient();
         const model = process.env.OPENAI_MODEL || 'gpt-5-nano';
+        const gpt5Options = model.startsWith('gpt-5')
+            ? ({
+                  reasoning_effort: 'minimal',
+                  verbosity: 'low'
+              } as const)
+            : {};
         const response = await openAI.chat.completions.create({
             model: model,
             messages: [
@@ -171,8 +193,8 @@ const search = async (input: string) => {
                     content: prompt(input)
                 }
             ],
-            max_completion_tokens: 1000,
-            temperature: 0.2,
+            max_completion_tokens: 2000,
+            ...gpt5Options,
             response_format: {
                 type: 'json_schema',
                 json_schema: {
@@ -193,12 +215,13 @@ const search = async (input: string) => {
                                         },
                                         word: {
                                             type: 'string',
-                                            description: 'The original input word or phrase.'
+                                            description:
+                                                'The word or phrase being defined. For typos, use the corrected spelling.'
                                         },
                                         didYouMean: {
                                             type: 'string',
                                             description:
-                                                'If the input was misspelled, this field contains the corrected spelling of the word.',
+                                                'If the input was misspelled, this field contains the corrected spelling of the word or phrase.',
                                             nullable: true
                                         },
                                         phonetic: {
@@ -300,7 +323,7 @@ const search = async (input: string) => {
             }
         });
 
-        return normalizeSearchResult(JSON.parse(response.choices[0].message.content ?? '{}'));
+        return parseSearchResult(response.choices[0]?.message.content);
     } catch (error) {
         console.error('Error during OpenAI search:', error);
         throw error;
