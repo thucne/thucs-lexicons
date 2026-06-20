@@ -18,7 +18,6 @@ export async function jsonFetcher<T>(url: string): Promise<T> {
     return res.json();
 }
 
-const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || '';
 export const useLexicon = (
     word?: string,
     options?: SWRConfiguration
@@ -35,7 +34,7 @@ export const useLexiconWithAI = (
     options?: SWRConfiguration
 ): SWRResponse & { data: OpenAIResults | undefined } => {
     return useSWR<OpenAIResults>(
-        word ? `${DOMAIN}${OPENAI_MEANING_API}?input=${encodeURIComponent(word.slice(0, 100))}` : null,
+        word ? `${OPENAI_MEANING_API}?input=${encodeURIComponent(word.slice(0, 100))}` : null,
         jsonFetcher,
         options
     );

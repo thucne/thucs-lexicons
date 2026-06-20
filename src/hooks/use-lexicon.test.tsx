@@ -3,7 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FREE_DICTIONARY_API, OPENAI_MEANING_API } from '@/constants';
 
 const useSWRMock = vi.hoisted(() => vi.fn());
-const domain = process.env.NEXT_PUBLIC_DOMAIN || '';
 
 vi.mock('swr', () => ({
     default: useSWRMock
@@ -37,7 +36,7 @@ describe('useLexicon hooks', () => {
 
         useLexiconWithAI('affect vs effect');
 
-        expect(useSWRMock.mock.calls[0][0]).toBe(`${domain}${OPENAI_MEANING_API}?input=affect%20vs%20effect`);
+        expect(useSWRMock.mock.calls[0][0]).toBe(`${OPENAI_MEANING_API}?input=affect%20vs%20effect`);
     });
 
     it('parses JSON when the response status is OK', async () => {
