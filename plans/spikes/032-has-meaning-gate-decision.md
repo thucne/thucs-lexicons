@@ -65,7 +65,7 @@ Cons:
 
 Delete the stack now and keep plan 025 unblocked.
 
-The current product behavior is a direct dictionary-first fallback. A sequential boolean gate optimizes for a narrow cost case but worsens latency for legitimate phrases and idioms, which are core Lexicons use cases. Cost control is already better handled by plan 016 rate limiting and plan 014 schema alignment.
+The current product behavior is a direct dictionary-first fallback. A sequential boolean gate optimizes for a narrow cost case but worsens latency for legitimate phrases and idioms, which are core thucne dictionary use cases. Cost control is already better handled by plan 016 rate limiting and plan 014 schema alignment.
 
 ## Follow-up
 

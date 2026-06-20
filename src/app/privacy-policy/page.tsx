@@ -1,32 +1,33 @@
 import type { Metadata } from 'next';
 
 import { PageShell } from '@/components/ui/page-shell';
+import { SITE_NAME } from '@/constants';
 
 export const metadata: Metadata = {
-    title: 'Privacy Policy | Lexicons',
-    description: 'How Lexicons handles dictionary searches without accounts or saved word lists.'
+    title: 'Privacy Policy',
+    description: `How ${SITE_NAME} handles dictionary searches without accounts or saved word lists.`
 };
 
 const sections = [
     {
         title: 'Overview',
-        body: 'Lexicons is a stateless dictionary at dictionary.thucde.dev. It is designed for lookup without sign-in, profiles, or saved word lists.'
+        body: `${SITE_NAME} is a stateless dictionary at dictionary.thucde.dev. It is designed for lookup without sign-in, profiles, or saved word lists.`
     },
     {
         title: 'What We Do Not Store',
-        body: 'Lexicons does not maintain user accounts, collect email addresses, or keep a database of your searches or favorites. We do not sell personal information.'
+        body: `${SITE_NAME} does not maintain user accounts, collect email addresses, or keep a database of your searches or favorites. We do not sell personal information.`
     },
     {
         title: 'How Searches Work',
-        body: 'When you look up a word or phrase, Lexicons sends your query to the Free Dictionary API. If that source cannot cover the query, the query may also be sent to OpenAI to produce a clearly labeled fallback explanation. During a browser session, recent results may be cached in memory so you can move between pages without repeating the same request; this cache is not saved to disk and is cleared when the session ends.'
+        body: `When you look up a word or phrase, ${SITE_NAME} sends your query to the Free Dictionary API. If that source cannot cover the query, the query may also be sent to OpenAI to produce a clearly labeled fallback explanation. During a browser session, recent results may be cached in memory so you can move between pages without repeating the same request; this cache is not saved to disk and is cleared when the session ends.`
     },
     {
         title: 'Local Browser Preferences',
-        body: 'Lexicons may store your theme choice (light, dark, or system) in your browser so the setting persists between visits. This preference is not linked to an identity and contains no search history.'
+        body: `${SITE_NAME} may store your theme choice (light, dark, or system) in your browser so the setting persists between visits. This preference is not linked to an identity and contains no search history.`
     },
     {
         title: 'Server and Hosting Logs',
-        body: 'Lexicons is hosted on Vercel. Like most web applications, standard server and platform logs may record information such as IP address, browser type, requested URLs, timestamps, and error details. These logs support reliability and security; Lexicons does not use them to build user profiles or saved search histories.'
+        body: `${SITE_NAME} is hosted on Vercel. Like most web applications, standard server and platform logs may record information such as IP address, browser type, requested URLs, timestamps, and error details. These logs support reliability and security; ${SITE_NAME} does not use them to build user profiles or saved search histories.`
     },
     {
         title: 'Third-Party Services',

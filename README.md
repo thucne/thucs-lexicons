@@ -1,8 +1,8 @@
-# Lexicons
+# thucne dictionary
 
 **Last updated: 2026-06-19**
 
-Lexicons is a stateless AI dictionary for fast word, phrase, comparison, pronunciation, and related-word exploration.
+thucne dictionary is a stateless AI dictionary for fast word, phrase, comparison, pronunciation, and related-word exploration.
 
 - No login, account, or saved-word persistence.
 - Free Dictionary API is the primary source for canonical English dictionary entries.

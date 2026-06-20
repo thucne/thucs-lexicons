@@ -9,7 +9,7 @@ import { EXAMPLE_QUERIES } from '@/hooks/use-search-navigation';
 
 export function ResultLoadingState({ word }: { word: string }) {
     return (
-        <PageShell size="narrow" role="status" aria-live="polite">
+        <PageShell size="narrow" className="py-5 sm:py-8 md:py-14" role="status" aria-live="polite">
             <div className="space-y-6">
                 <div className="space-y-3 border-b pb-6">
                     <Skeleton className="h-5 w-28" />
@@ -38,11 +38,13 @@ export function ResultEmptyState({ word }: { word: string }) {
     const examples = EXAMPLE_QUERIES.slice(0, 2);
 
     return (
-        <PageShell size="narrow">
-            <div className="space-y-6">
+        <PageShell size="narrow" className="py-5 sm:py-8 md:py-14">
+            <div className="space-y-5 sm:space-y-6">
                 <div className="space-y-2">
-                    <h1 className="text-2xl font-semibold tracking-tight">No meaning found</h1>
-                    <p className="text-muted-foreground">We could not find a dictionary or AI match for this query.</p>
+                    <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">No meaning found</h1>
+                    <p className="text-muted-foreground text-sm sm:text-base">
+                        We could not find a dictionary or AI match for this query.
+                    </p>
                 </div>
                 <Alert>
                     <AlertTitle>No dictionary or AI match</AlertTitle>
@@ -54,13 +56,13 @@ export function ResultEmptyState({ word }: { word: string }) {
                 <div className="flex flex-wrap items-center gap-2">
                     {examples.map((example) => (
                         <Link key={example} href={`/search/${encodeURIComponent(example)}`}>
-                            <Badge variant="chip" size="lg" className="cursor-pointer">
+                            <Badge variant="chip" size="lg" className="min-h-8 cursor-pointer px-3 text-xs sm:text-sm">
                                 {example}
                             </Badge>
                         </Link>
                     ))}
                     <Link href={`/search/${encodeURIComponent(`${word} vs similar word`)}`}>
-                        <Badge variant="chip" size="lg" className="cursor-pointer">
+                        <Badge variant="chip" size="lg" className="min-h-8 cursor-pointer px-3 text-xs sm:text-sm">
                             Try Compare Mode
                         </Badge>
                     </Link>

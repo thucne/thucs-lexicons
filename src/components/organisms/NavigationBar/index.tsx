@@ -18,13 +18,13 @@ const NavigationBar = () => {
     const isHome = pathname === '/';
 
     return (
-        <header className="bg-background/80 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 border-b px-4 backdrop-blur">
-            <div className="flex h-14 items-center justify-between gap-4">
-                <Link href="/" className="text-lg font-semibold tracking-tight md:ml-5">
-                    Lexicons
+        <header className="bg-background/85 supports-[backdrop-filter]:bg-background/65 fixed inset-x-0 top-0 z-50 border-b px-4 backdrop-blur">
+            <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3">
+                <Link href="/" className="text-base font-semibold tracking-tight sm:text-lg">
+                    thucne dictionary
                 </Link>
 
-                <div className={`hidden w-full max-w-[480px] ${isHome ? 'sm:block' : 'block'}`}>
+                <div className="hidden min-w-0 max-w-[480px] flex-1 sm:block">
                     <Suspense fallback={<Skeleton className="h-10 w-full" />}>
                         <SearchBar onOpenCommand={openCommand} commandFirst />
                     </Suspense>

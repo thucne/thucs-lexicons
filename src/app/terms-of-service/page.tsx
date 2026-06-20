@@ -1,28 +1,29 @@
 import type { Metadata } from 'next';
 
 import { PageShell } from '@/components/ui/page-shell';
+import { SITE_NAME } from '@/constants';
 
 export const metadata: Metadata = {
-    title: 'Terms of Service | Lexicons',
-    description: 'Terms for using Lexicons, a stateless dictionary at dictionary.thucde.dev.'
+    title: 'Terms of Service',
+    description: `Terms for using ${SITE_NAME}, a stateless dictionary at dictionary.thucde.dev.`
 };
 
 const sections = [
     {
         title: 'About the Service',
-        body: 'Lexicons is a stateless English dictionary at dictionary.thucde.dev. It provides word and phrase lookup, pronunciation, example usage, related-word exploration, quick meanings on hover, and command-palette search. The service is free to use and does not require an account.'
+        body: `${SITE_NAME} is a stateless English dictionary at dictionary.thucde.dev. It provides word and phrase lookup, pronunciation, example usage, related-word exploration, quick meanings on hover, and command-palette search. The service is free to use and does not require an account.`
     },
     {
         title: 'Acceptable Use',
-        body: 'Use Lexicons lawfully and for personal reference. Do not attempt to disrupt the website, overload its APIs, scrape it at abusive rates, or interfere with third-party providers that power lookups.'
+        body: `Use ${SITE_NAME} lawfully and for personal reference. Do not attempt to disrupt the website, overload its APIs, scrape it at abusive rates, or interfere with third-party providers that power lookups.`
     },
     {
         title: 'No Accounts or Saved Data',
-        body: 'Lexicons does not offer login, user accounts, favorites, or saved word lists. Search results are not written to a Lexicons database. During a browser session, results may be held in memory to support navigation; this cache is cleared when you close the tab or browser.'
+        body: `${SITE_NAME} does not offer login, user accounts, favorites, or saved word lists. Search results are not written to a ${SITE_NAME} database. During a browser session, results may be held in memory to support navigation; this cache is cleared when you close the tab or browser.`
     },
     {
         title: 'Third-Party Sources',
-        body: 'Dictionary entries come primarily from the Free Dictionary API. When a query is not covered there—such as slang, idioms, phrases, or likely misspellings—Lexicons may send the query to OpenAI for a clearly labeled fallback explanation. Those providers operate under their own terms and availability.'
+        body: `Dictionary entries come primarily from the Free Dictionary API. When a query is not covered there—such as slang, idioms, phrases, or likely misspellings—${SITE_NAME} may send the query to OpenAI for a clearly labeled fallback explanation. Those providers operate under their own terms and availability.`
     },
     {
         title: 'Accuracy and AI Content',

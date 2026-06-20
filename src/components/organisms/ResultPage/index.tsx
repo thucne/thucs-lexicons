@@ -31,11 +31,13 @@ type ResultPageProps = {
 const getPartOfSpeechList = (entry: SearchResult) =>
     Array.from(new Set(entry.meanings.map((meaning) => meaning.partOfSpeech).filter(Boolean)));
 
+const shouldUseAIFirst = (query: string) => /\bvs\.?\b/i.test(query) || /\bin a sentence\b/i.test(query);
+
 const ResultHero = ({ word, entry, isByAI }: { word: string; entry: SearchResult; isByAI: boolean }) => {
     const partOfSpeechList = getPartOfSpeechList(entry);
 
     return (
-        <header className="space-y-4 border-b pb-6">
+        <header className="space-y-4 border-b pb-5 sm:pb-6">
             <div className="flex flex-wrap items-center gap-2">
                 <SourceBadge variant={isByAI ? 'ai' : 'dictionary'} />
                 {partOfSpeechList.map((pos) => (
@@ -50,7 +52,7 @@ const ResultHero = ({ word, entry, isByAI }: { word: string; entry: SearchResult
             </div>
 
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
-                <h1 className="text-4xl font-semibold leading-tight tracking-tight md:text-5xl">
+                <h1 className="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl md:text-5xl">
                     {entry.word || word}
                 </h1>
                 <PronunciationList entry={entry} maxVariants={HERO_MAX_PRONUNCIATION_VARIANTS} />
@@ -136,10 +138,10 @@ const ResultPage = ({ word: rawWord }: ResultPageProps) => {
     const resultsFromStore =
         searchResultsFromStore.word.toLowerCase() === word.toLowerCase() ? searchResultsFromStore.results : undefined;
 
-    const shouldFetchDictionary = !resultsFromStore?.length;
+    const shouldFetchDictionary = !resultsFromStore?.length && !shouldUseAIFirst(word);
     const { data: resultsFromFetchRaw, isLoading } = useLexicon(shouldFetchDictionary ? word : undefined);
     const resultsFromFetch = isSearchResults(resultsFromFetchRaw) ? resultsFromFetchRaw : undefined;
-    const shouldFetchWithAI = shouldFetchDictionary && !isLoading && !resultsFromFetch?.length;
+    const shouldFetchWithAI = !resultsFromStore?.length && !isLoading && !resultsFromFetch?.length;
     const { data: resultsFromAIRaw, isLoading: isAILoading } = useLexiconWithAI(shouldFetchWithAI ? word : undefined);
     const resultsFromAI = isSearchResults(resultsFromAIRaw?.definitions) ? resultsFromAIRaw.definitions : undefined;
     const results = pickSearchResults({
@@ -170,10 +172,10 @@ const ResultPage = ({ word: rawWord }: ResultPageProps) => {
     const isByAI = Boolean(resultsFromAI?.length || results.some((result) => result.openai));
 
     return (
-        <PageShell>
+        <PageShell className="py-5 sm:py-8 md:py-10">
             <QuickMeaning />
-            <div className="grid gap-8 md:grid-cols-12">
-                <div className="space-y-8 md:col-span-8">
+            <div className="grid gap-7 md:grid-cols-12 md:gap-8">
+                <div className="space-y-7 md:col-span-8 md:space-y-8">
                     <ResultHero word={word} entry={primaryEntry} isByAI={isByAI} />
                     {results.map((result, index) => (
                         <div key={`${word}-result-${index}`}>

@@ -34,9 +34,9 @@ const Footer = () => {
     return (
         <>
             <Separator />
-            <footer className="px-4 py-6">
-                <div className="mx-auto flex max-w-6xl flex-col gap-6">
-                    <div className="flex flex-row flex-wrap items-center gap-4">
+            <footer className="px-4 py-5 sm:py-6">
+                <div className="mx-auto flex max-w-6xl flex-col gap-5 sm:gap-6">
+                    <div className="flex flex-row flex-wrap items-center gap-x-4 gap-y-2">
                         <Link
                             href="/terms-of-service"
                             className="text-muted-foreground text-sm underline-offset-4 hover:underline"
@@ -50,7 +50,7 @@ const Footer = () => {
                             Privacy Policy
                         </Link>
                     </div>
-                    <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                         <div className="space-y-2">
                             <Link href="https://thucde.dev/" className="inline-block h-[50px]">
                                 <Image
@@ -69,7 +69,7 @@ const Footer = () => {
                             </p>
                         </div>
                         <div className="flex items-center gap-3">
-                            <p className="text-muted-foreground text-sm">Source code available on GitHub</p>
+                            <p className="text-muted-foreground text-sm leading-6">Source code available on GitHub</p>
                             <Link
                                 href="https://github.com/thucne/thucs-lexicons"
                                 target="_blank"

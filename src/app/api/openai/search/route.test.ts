@@ -53,6 +53,23 @@ describe('GET /api/openai/search', () => {
         expect(createMock).not.toHaveBeenCalled();
     });
 
+    it('returns a local fallback for promoted example queries without calling OpenAI', async () => {
+        vi.resetModules();
+        delete process.env.OPENAI_API_KEY;
+        const { GET } = await import('./route');
+
+        const response = await GET(new Request('http://localhost/api/openai/search?input=affect%20vs%20effect'));
+
+        expect(response.status).toBe(200);
+        const body = await response.json();
+        expect(body.definitions[0]).toMatchObject({
+            openai: true,
+            word: 'affect vs effect'
+        });
+        expect(body.definitions[0].meanings[0].definitions[0].definition).toContain('Affect is usually a verb');
+        expect(createMock).not.toHaveBeenCalled();
+    });
+
     it('returns 429 when the search route rate limit is exceeded', async () => {
         vi.resetModules();
         createMock.mockResolvedValue({

@@ -81,7 +81,7 @@ const SearchBar = ({
                 />
                 <InputGroupAddon align="inline-end">
                     {search && !isReadOnly ? (
-                        <InputGroupButton type="submit" aria-label="Search Lexicons">
+                        <InputGroupButton type="submit" aria-label="Search thucne dictionary">
                             <Search className="size-4" />
                         </InputGroupButton>
                     ) : (

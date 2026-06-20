@@ -15,7 +15,7 @@ const SearchPageBody = ({ word }: SearchPageProps) => {
         <div className="mx-auto max-w-3xl px-4 py-8 md:py-16">
             <Card>
                 <CardHeader className="space-y-2">
-                    <CardTitle className="text-3xl">Search Lexicons</CardTitle>
+                    <CardTitle className="text-3xl">Search thucne dictionary</CardTitle>
                     <p className="text-muted-foreground">
                         Enter a word, phrase, idiom, or comparison to open the meaning explorer.
                     </p>

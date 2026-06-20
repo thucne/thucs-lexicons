@@ -1,5 +1,100 @@
 import { rateLimitOrThrow } from '@/lib/rate-limit';
 import { getOpenAIClient, MissingOpenAIKeyError } from '@/lib/openai-config';
+import type { SearchResults } from '@/types';
+
+type AIResult = {
+    definitions: SearchResults;
+};
+
+const localFallbacks: Record<string, AIResult> = {
+    'affect vs effect': {
+        definitions: [
+            {
+                openai: true,
+                word: 'affect vs effect',
+                phonetic: '',
+                phonetics: [],
+                origin: '',
+                meanings: [
+                    {
+                        partOfSpeech: 'usage',
+                        definitions: [
+                            {
+                                definition: 'Affect is usually a verb meaning to influence or change something.',
+                                example: 'The cold weather can affect your mood.',
+                                synonyms: ['influence', 'change', 'shape'],
+                                antonyms: []
+                            },
+                            {
+                                definition: 'Effect is usually a noun meaning a result or consequence.',
+                                example: 'The new policy had a positive effect on attendance.',
+                                synonyms: ['result', 'outcome', 'consequence'],
+                                antonyms: []
+                            },
+                            {
+                                definition:
+                                    'Effect can also be a formal verb meaning to bring something about, as in "effect change."',
+                                example: 'The committee hoped to effect meaningful reform.',
+                                synonyms: ['produce', 'cause', 'achieve'],
+                                antonyms: []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    'break the ice': {
+        definitions: [
+            {
+                openai: true,
+                word: 'break the ice',
+                phonetic: '',
+                phonetics: [],
+                origin: '',
+                meanings: [
+                    {
+                        partOfSpeech: 'idiom',
+                        definitions: [
+                            {
+                                definition:
+                                    'To make people feel more relaxed and willing to talk, especially at the start of a meeting or conversation.',
+                                example: 'She told a quick story to break the ice before the workshop began.',
+                                synonyms: ['start a conversation', 'ease tension', 'warm up'],
+                                antonyms: []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    'resilience in a sentence': {
+        definitions: [
+            {
+                openai: true,
+                word: 'resilience in a sentence',
+                phonetic: '',
+                phonetics: [],
+                origin: '',
+                meanings: [
+                    {
+                        partOfSpeech: 'example',
+                        definitions: [
+                            {
+                                definition:
+                                    'Use resilience to describe the ability to recover, adapt, or keep going after difficulty.',
+                                example: 'Her resilience helped the team recover after a difficult launch.',
+                                synonyms: ['strength', 'adaptability', 'perseverance'],
+                                antonyms: ['fragility']
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+};
 
 const prompt = (input: string) => `
 You are an AI assistant specialized in providing accurate definitions and explanations of words and phrases.
@@ -55,6 +150,8 @@ const normalizeSearchResult = (result: unknown) => {
 
     return { definitions: [] };
 };
+
+const getLocalFallback = (input: string): AIResult | undefined => localFallbacks[input.toLowerCase()];
 
 const search = async (input: string) => {
     try {
@@ -218,11 +315,6 @@ const errorMessageForOpenAIError = (error: unknown) =>
     error instanceof MissingOpenAIKeyError ? 'AI search is not configured.' : 'Failed to fetch definition.';
 
 export async function GET(request: Request) {
-    const limited = await rateLimitOrThrow(request, 'openai-search');
-    if (limited) {
-        return limited;
-    }
-
     const { searchParams } = new URL(request.url);
     const input = (searchParams.get('input') ?? '').trim();
 
@@ -238,6 +330,17 @@ export async function GET(request: Request) {
             status: 400,
             headers: { 'Content-Type': 'application/json' }
         });
+    }
+
+    const localFallback = getLocalFallback(input);
+
+    if (localFallback) {
+        return Response.json(localFallback);
+    }
+
+    const limited = await rateLimitOrThrow(request, 'openai-search');
+    if (limited) {
+        return limited;
     }
 
     try {

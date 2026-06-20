@@ -29,7 +29,7 @@ const CommandSearch = ({ open, onOpenChange }: CommandSearchProps) => {
         <CommandDialog
             open={open}
             onOpenChange={onOpenChange}
-            title="Search Lexicons"
+            title="Search thucne dictionary"
             description="Search a word, phrase, or comparison"
         >
             <Command>

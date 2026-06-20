@@ -25,7 +25,7 @@ describe('OG image parameters', () => {
     });
 
     it('encodes spaces in metadata OG image URLs', () => {
-        expect(buildOgImageUrl('break the ice', 'Open Lexicons')).toContain('word=break+the+ice');
+        expect(buildOgImageUrl('break the ice', 'Open thucne dictionary')).toContain('word=break+the+ice');
     });
 
     it('encodes ampersands inside metadata OG image URL values', () => {

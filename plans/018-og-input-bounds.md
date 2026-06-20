@@ -39,7 +39,7 @@ Caller `src/app/search/[word]/page.tsx` (lines 29–33 as of `fb2c1ca`) passes r
 url: `/api/og?word=${word}&definition=${
     hasDictionaryResult
         ? encodeURIComponent(getFirstDefinition(results))
-        : 'Open Lexicons to explore this entry'
+        : 'Open thucne dictionary to explore this entry'
 }`,
 ```
 
@@ -99,7 +99,7 @@ const ogParams = new URLSearchParams({
     word: decodedWord.slice(0, MAX_METADATA_OG_WORD),
     definition: hasDictionaryResult
         ? getFirstDefinition(results).slice(0, MAX_METADATA_OG_DEFINITION)
-        : 'Open Lexicons to explore this entry'
+        : 'Open thucne dictionary to explore this entry'
 });
 
 url: `/api/og?${ogParams.toString()}`;

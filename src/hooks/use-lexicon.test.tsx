@@ -23,6 +23,19 @@ describe('useLexicon hooks', () => {
         expect(useSWRMock.mock.calls[0][0]).toBe(`${FREE_DICTIONARY_API}/break%20the%20ice`);
     });
 
+    it('disables automatic retries for dictionary misses', async () => {
+        const { useLexicon } = await import('./use-lexicon');
+
+        useLexicon('break the ice');
+
+        expect(useSWRMock.mock.calls[0][2]).toMatchObject({
+            dedupingInterval: 60_000,
+            errorRetryCount: 0,
+            revalidateOnFocus: false,
+            shouldRetryOnError: false
+        });
+    });
+
     it('passes null to SWR when dictionary word is absent', async () => {
         const { useLexicon } = await import('./use-lexicon');
 
@@ -37,6 +50,19 @@ describe('useLexicon hooks', () => {
         useLexiconWithAI('affect vs effect');
 
         expect(useSWRMock.mock.calls[0][0]).toBe(`${OPENAI_MEANING_API}?input=affect%20vs%20effect`);
+    });
+
+    it('disables automatic retries for AI fallback errors', async () => {
+        const { useLexiconWithAI } = await import('./use-lexicon');
+
+        useLexiconWithAI('affect vs effect');
+
+        expect(useSWRMock.mock.calls[0][2]).toMatchObject({
+            dedupingInterval: 60_000,
+            errorRetryCount: 0,
+            revalidateOnFocus: false,
+            shouldRetryOnError: false
+        });
     });
 
     it('parses JSON when the response status is OK', async () => {

@@ -17,7 +17,7 @@ export async function generateMetadata({ searchParams }: SearchPageProps): Promi
     }
 
     return {
-        title: `Searching "${word}" | Lexicons`,
+        title: `Searching "${word}"`,
         description: `Opening the meaning explorer for "${word}".`
     };
 }

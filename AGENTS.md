@@ -1,4 +1,4 @@
-# Lexicons — Agent Guide
+# thucne dictionary — Agent Guide
 
 ## Stack
 

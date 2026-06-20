@@ -7,6 +7,13 @@ type OpenAIResults = {
     definitions: SearchResults;
 };
 
+const lexiconSWRDefaults: SWRConfiguration = {
+    dedupingInterval: 60_000,
+    errorRetryCount: 0,
+    revalidateOnFocus: false,
+    shouldRetryOnError: false
+};
+
 export async function jsonFetcher<T>(url: string): Promise<T> {
     const res = await fetch(url);
 
@@ -22,11 +29,10 @@ export const useLexicon = (
     word?: string,
     options?: SWRConfiguration
 ): SWRResponse & { data: SearchResults | undefined } => {
-    return useSWR<SearchResults>(
-        word ? `${FREE_DICTIONARY_API}/${encodeURIComponent(word)}` : null,
-        jsonFetcher,
-        options
-    );
+    return useSWR<SearchResults>(word ? `${FREE_DICTIONARY_API}/${encodeURIComponent(word)}` : null, jsonFetcher, {
+        ...lexiconSWRDefaults,
+        ...options
+    });
 };
 
 export const useLexiconWithAI = (
@@ -36,6 +42,6 @@ export const useLexiconWithAI = (
     return useSWR<OpenAIResults>(
         word ? `${OPENAI_MEANING_API}?input=${encodeURIComponent(word.slice(0, 100))}` : null,
         jsonFetcher,
-        options
+        { ...lexiconSWRDefaults, ...options }
     );
 };

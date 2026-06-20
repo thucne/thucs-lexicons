@@ -6,17 +6,23 @@ import './globals.css';
 import AppWrapper from '@/components/organisms/Wrappers/AppWrapper';
 import StoreProvider from '@/components/organisms/Wrappers/StoreProvider';
 import { AppProviders } from '@/components/providers/app-providers';
-import { DEFAULT_OG_IMAGE } from '@/constants';
+import { DEFAULT_OG_IMAGE, SITE_DESCRIPTION, SITE_NAME } from '@/constants';
 
 const geistSans = GeistSans;
 const geistMono = GeistMono;
 
 export const metadata: Metadata = {
     metadataBase: new URL('https://dictionary.thucde.dev'),
-    title: 'Lexicons | Stateless AI Dictionary',
-    description:
-        'A fast, no-account dictionary for meanings, phrases, pronunciation, nuance, and related-word discovery.',
+    title: {
+        default: SITE_NAME,
+        template: `%s | ${SITE_NAME}`
+    },
+    applicationName: SITE_NAME,
+    description: SITE_DESCRIPTION,
     openGraph: {
+        title: SITE_NAME,
+        description: SITE_DESCRIPTION,
+        siteName: SITE_NAME,
         images: [
             {
                 url: DEFAULT_OG_IMAGE,
@@ -26,6 +32,12 @@ export const metadata: Metadata = {
         ],
         locale: 'en_US',
         type: 'website'
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: SITE_NAME,
+        description: SITE_DESCRIPTION,
+        images: [DEFAULT_OG_IMAGE]
     }
 };
 

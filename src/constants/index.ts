@@ -1,5 +1,8 @@
 export const FREE_DICTIONARY_API = 'https://api.dictionaryapi.dev/api/v2/entries/en';
 export const OPENAI_MEANING_API = '/api/openai/search';
+export const SITE_NAME = 'thucne dictionary';
+export const SITE_DESCRIPTION =
+    'A fast, no-account dictionary for meanings, phrases, pronunciation, nuance, and related-word discovery.';
 export const THUCDEDEV_BANNER_PNG = '/thucdedev-banner.png';
 export const THUCDEDEV_BANNER_PNG_DARK = '/thucdedev-banner.dark.png';
 export const DEFAULT_OG_IMAGE =

@@ -1,6 +1,6 @@
 import ResultPage from '@/components/organisms/ResultPage';
 import { buildOgImageUrl } from '@/app/api/og/og-utils';
-import { FREE_DICTIONARY_API } from '@/constants';
+import { FREE_DICTIONARY_API, SITE_NAME } from '@/constants';
 import { SearchResults } from '@/types';
 import { getFirstDefinition } from '@/utils';
 import type { Metadata } from 'next';
@@ -18,14 +18,18 @@ export async function generateMetadata({ params }: WordPageProps): Promise<Metad
         .catch(() => undefined);
 
     const hasDictionaryResult = Array.isArray(results);
-    const ogDefinition = hasDictionaryResult ? getFirstDefinition(results) : 'Open Lexicons to explore this entry';
+    const ogDefinition = hasDictionaryResult ? getFirstDefinition(results) : `Open ${SITE_NAME} to explore this entry`;
 
     return {
-        title: `${decodedWord} | Meaning Explorer - Lexicons`,
+        title: `${decodedWord} | Meaning Explorer`,
         description: hasDictionaryResult
             ? getFirstDefinition(results)
             : `Explore meanings, phrases, examples, and related words for "${decodedWord}".`,
         openGraph: {
+            title: `${decodedWord} | Meaning Explorer`,
+            description: hasDictionaryResult
+                ? getFirstDefinition(results)
+                : `Explore meanings, phrases, examples, and related words for "${decodedWord}".`,
             images: [
                 {
                     url: buildOgImageUrl(decodedWord, ogDefinition),
