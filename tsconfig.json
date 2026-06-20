@@ -21,7 +21,6 @@
             "@/*": ["./src/*"],
             "fonts/*": ["./public/fonts/*"]
         },
-        "experimentalDecorators": true,
         "target": "ES2017"
     },
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "prettier.config.js"],
