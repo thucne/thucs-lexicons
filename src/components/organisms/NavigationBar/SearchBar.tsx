@@ -29,6 +29,7 @@ const SearchBar = ({
     editable = false
 }: SearchBarProps) => {
     const searchRef = useRef<HTMLInputElement>(null);
+    const isClick = useRef(false);
     const { search, setSearch, submitSearch } = useSearchNavigation(defaultValue);
     const isCommandLauncher = Boolean(onOpenCommand && commandFirst && !editable);
     const isReadOnly = isCommandLauncher && !autoFocus;
@@ -47,14 +48,24 @@ const SearchBar = ({
 
     const handleFocus = () => {
         if (isCommandLauncher) {
-            onOpenCommand?.();
+            if (!isClick.current) {
+                onOpenCommand?.();
+            }
             searchRef.current?.blur();
+            isClick.current = false;
+        }
+    };
+
+    const handleMouseDown = () => {
+        if (isCommandLauncher) {
+            isClick.current = true;
         }
     };
 
     const handleClick = () => {
         if (isCommandLauncher) {
             onOpenCommand?.();
+            isClick.current = false;
         }
     };
 
@@ -74,6 +85,7 @@ const SearchBar = ({
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     onFocus={handleFocus}
+                    onMouseDown={handleMouseDown}
                     onClick={handleClick}
                     readOnly={isReadOnly}
                     autoFocus={autoFocus}
