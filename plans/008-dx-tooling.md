@@ -59,6 +59,7 @@ No secret values should appear in `.env.example` — placeholders only.
 - `.env.example` (create)
 - `package.json` — add `format:check` script
 - `.github/workflows/ci.yml` — add `format:check` step (if plan 007 landed)
+- Formatting-only changes produced by `pnpm format` if `pnpm format:check` exposes existing repo-wide drift. Keep these in a separate commit from the DX tooling commit.
 
 **Out of scope**:
 - Populating real secrets
@@ -111,6 +112,10 @@ NEXT_PUBLIC_DOMAIN=http://localhost:3000
 "format:check": "prettier \"**/*.{ts,tsx,json}\" --check"
 ```
 
+Run `pnpm format:check`.
+
+If it fails only because existing files need Prettier formatting, run `pnpm format` once and commit that formatting baseline separately with a message like `Format existing files for check gate`. Do not combine behavior changes with this formatting commit.
+
 **Verify**: `pnpm format:check` → exit 0
 
 ### Step 4: Wire format:check into CI (if exists)
@@ -130,12 +135,14 @@ If `.github/workflows/ci.yml` exists from plan 007, add `- run: pnpm format:chec
 - [ ] `.env.example` exists and is tracked by git
 - [ ] `.gitignore` no longer blocks `.env.example`
 - [ ] `pnpm format:check` exits 0
+- [ ] If formatting baseline was required, it is a formatting-only commit separate from the `.env.example` / script / CI changes
 - [ ] `plans/README.md` row 008 → DONE
 
 ## STOP conditions
 
 - Other `.env` variants (e.g. `.env.staging`) need tracking — stop and ask operator which patterns to allow.
-- `format:check` fails on >50 files — run `pnpm format` once, commit formatting separately, then re-verify.
+- `pnpm format` changes generated/build/vendor files, secrets, or files outside the repo's source/config/docs/test surface — stop and report.
+- `pnpm format:check` still fails after `pnpm format` — stop and report the remaining file list.
 
 ## Maintenance notes
 
