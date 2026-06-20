@@ -76,7 +76,7 @@ function CommandList({ className, ...props }: React.ComponentProps<typeof Comman
         <CommandPrimitive.List
             data-slot="command-list"
             className={cn(
-                'no-scrollbar max-h-72 scroll-py-1 overflow-y-auto overflow-x-hidden outline-none',
+                'no-scrollbar max-h-72 scroll-py-2 overflow-y-auto overflow-x-hidden py-1 outline-none',
                 className
             )}
             {...props}
@@ -99,7 +99,7 @@ function CommandGroup({ className, ...props }: React.ComponentProps<typeof Comma
         <CommandPrimitive.Group
             data-slot="command-group"
             className={cn(
-                'text-foreground **:[[cmdk-group-heading]]:px-2 **:[[cmdk-group-heading]]:py-1.5 **:[[cmdk-group-heading]]:text-xs **:[[cmdk-group-heading]]:font-medium **:[[cmdk-group-heading]]:text-muted-foreground overflow-hidden p-1',
+                'text-foreground **:[[cmdk-group-heading]]:px-2.5 **:[[cmdk-group-heading]]:pb-1.5 **:[[cmdk-group-heading]]:pt-1 **:[[cmdk-group-heading]]:text-xs **:[[cmdk-group-heading]]:font-medium **:[[cmdk-group-heading]]:text-muted-foreground **:[[cmdk-group-items]]:grid **:[[cmdk-group-items]]:gap-1 overflow-hidden px-1.5 pb-1.5',
                 className
             )}
             {...props}
@@ -122,7 +122,7 @@ function CommandItem({ className, children, ...props }: React.ComponentProps<typ
         <CommandPrimitive.Item
             data-slot="command-item"
             className={cn(
-                "group/command-item outline-hidden in-data-[slot=dialog-content]:rounded-lg! data-selected:bg-muted data-selected:text-foreground data-selected:*:[svg]:text-foreground relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+                "group/command-item outline-hidden in-data-[slot=dialog-content]:rounded-lg! data-selected:bg-muted data-selected:text-foreground data-selected:*:[svg]:text-foreground relative flex min-h-8 cursor-default select-none items-center gap-2 rounded-md px-2.5 py-2 text-sm leading-none transition-colors data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
                 className
             )}
             {...props}
