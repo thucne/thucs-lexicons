@@ -13,6 +13,7 @@ describe('useLexicon hooks', () => {
     beforeEach(() => {
         useSWRMock.mockReset();
         useSWRMock.mockReturnValue({ data: undefined, isLoading: false });
+        vi.unstubAllGlobals();
     });
 
     it('passes an encoded dictionary URL to SWR', async () => {
@@ -45,5 +46,49 @@ describe('useLexicon hooks', () => {
         useLexiconWithAICheck('café');
 
         expect(useSWRMock.mock.calls[0][0]).toBe(`${domain}${OPENAI_MEANING_CHECK_API}?input=caf%C3%A9`);
+    });
+
+    it('parses JSON when the response status is OK', async () => {
+        const body = { definitions: [] };
+        vi.stubGlobal(
+            'fetch',
+            vi.fn().mockResolvedValue({
+                ok: true,
+                json: async () => body
+            })
+        );
+        const { jsonFetcher } = await import('./use-lexicon');
+
+        await expect(jsonFetcher('/api/openai/search?input=test')).resolves.toBe(body);
+    });
+
+    it('throws API error messages when the response status is not OK', async () => {
+        vi.stubGlobal(
+            'fetch',
+            vi.fn().mockResolvedValue({
+                ok: false,
+                status: 502,
+                json: async () => ({ error: 'Failed to fetch definition.' })
+            })
+        );
+        const { jsonFetcher } = await import('./use-lexicon');
+
+        await expect(jsonFetcher('/api/openai/search?input=test')).rejects.toThrow('Failed to fetch definition.');
+    });
+
+    it('throws a status fallback when an error response has no JSON body', async () => {
+        vi.stubGlobal(
+            'fetch',
+            vi.fn().mockResolvedValue({
+                ok: false,
+                status: 404,
+                json: async () => {
+                    throw new Error('Invalid JSON');
+                }
+            })
+        );
+        const { jsonFetcher } = await import('./use-lexicon');
+
+        await expect(jsonFetcher(`${FREE_DICTIONARY_API}/missing`)).rejects.toThrow('Request failed: 404');
     });
 });
