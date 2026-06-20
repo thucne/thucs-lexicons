@@ -66,4 +66,16 @@ describe('pickSearchResults', () => {
             })
         ).toBeUndefined();
     });
+
+    it('ignores malformed array payloads', () => {
+        expect(
+            pickSearchResults({
+                store: [{ word: 'cached' }],
+                storeWord: 'cached',
+                query: 'cached',
+                fetch: [{ meanings: [] }],
+                ai: [{ word: 'ai', meanings: [] }]
+            })
+        ).toEqual([{ word: 'ai', meanings: [] }]);
+    });
 });

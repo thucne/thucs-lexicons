@@ -1,14 +1,29 @@
 import { SearchResults } from '@/types';
 
 type PickSearchResultsArgs = {
-    store?: SearchResults;
+    store?: unknown;
     storeWord: string;
     query: string;
-    fetch?: SearchResults;
-    ai?: SearchResults;
+    fetch?: unknown;
+    ai?: unknown;
 };
 
-const hasResults = (results?: SearchResults): results is SearchResults => Boolean(results?.length);
+export function isSearchResults(value: unknown): value is SearchResults {
+    return (
+        Array.isArray(value) &&
+        value.every(
+            (result) =>
+                typeof result === 'object' &&
+                result !== null &&
+                'word' in result &&
+                typeof result.word === 'string' &&
+                'meanings' in result &&
+                Array.isArray(result.meanings)
+        )
+    );
+}
+
+const hasResults = (results?: unknown): results is SearchResults => isSearchResults(results) && results.length > 0;
 
 export function pickSearchResults({ store, storeWord, query, fetch, ai }: PickSearchResultsArgs) {
     if (storeWord.toLowerCase() === query.toLowerCase() && hasResults(store)) {

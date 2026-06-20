@@ -20,7 +20,7 @@ import { HERO_MAX_PRONUNCIATION_VARIANTS } from '@/utils/phonetics';
 import { isPhoneticRegex } from '@/utils/regex';
 
 import QuickMeaning from './QuickMeaning';
-import { pickSearchResults } from './result-selection';
+import { isSearchResults, pickSearchResults } from './result-selection';
 import { ResultEmptyState, ResultLoadingState } from './result-states';
 import { ResultSidebar } from './result-sidebar';
 
@@ -138,10 +138,10 @@ const ResultPage = ({ word: rawWord }: ResultPageProps) => {
 
     const shouldFetchDictionary = !resultsFromStore?.length;
     const { data: resultsFromFetchRaw, isLoading } = useLexicon(shouldFetchDictionary ? word : undefined);
-    const resultsFromFetch = Array.isArray(resultsFromFetchRaw) ? resultsFromFetchRaw : undefined;
+    const resultsFromFetch = isSearchResults(resultsFromFetchRaw) ? resultsFromFetchRaw : undefined;
     const shouldFetchWithAI = shouldFetchDictionary && !isLoading && !resultsFromFetch?.length;
     const { data: resultsFromAIRaw, isLoading: isAILoading } = useLexiconWithAI(shouldFetchWithAI ? word : undefined);
-    const resultsFromAI = Array.isArray(resultsFromAIRaw?.definitions) ? resultsFromAIRaw.definitions : undefined;
+    const resultsFromAI = isSearchResults(resultsFromAIRaw?.definitions) ? resultsFromAIRaw.definitions : undefined;
     const results = pickSearchResults({
         store: resultsFromStore,
         storeWord: searchResultsFromStore.word,
