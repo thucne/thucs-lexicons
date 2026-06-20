@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { FREE_DICTIONARY_API, OPENAI_MEANING_API, OPENAI_MEANING_CHECK_API } from '@/constants';
+import { FREE_DICTIONARY_API, OPENAI_MEANING_API } from '@/constants';
 
 const useSWRMock = vi.hoisted(() => vi.fn());
 const domain = process.env.NEXT_PUBLIC_DOMAIN || '';
@@ -38,14 +38,6 @@ describe('useLexicon hooks', () => {
         useLexiconWithAI('affect vs effect');
 
         expect(useSWRMock.mock.calls[0][0]).toBe(`${domain}${OPENAI_MEANING_API}?input=affect%20vs%20effect`);
-    });
-
-    it('passes an encoded AI meaning-check URL to SWR', async () => {
-        const { useLexiconWithAICheck } = await import('./use-lexicon');
-
-        useLexiconWithAICheck('café');
-
-        expect(useSWRMock.mock.calls[0][0]).toBe(`${domain}${OPENAI_MEANING_CHECK_API}?input=caf%C3%A9`);
     });
 
     it('parses JSON when the response status is OK', async () => {

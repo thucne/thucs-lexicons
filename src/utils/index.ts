@@ -1,4 +1,4 @@
-import { FREE_DICTIONARY_API, OPENAI_MEANING_CHECK_API } from '@/constants';
+import { FREE_DICTIONARY_API } from '@/constants';
 import { License, SearchResults } from '@/types';
 
 export const createUrl = (url: string, params: URLSearchParams): string => {
@@ -8,34 +8,7 @@ export const createUrl = (url: string, params: URLSearchParams): string => {
 export const getLicenseString = (license?: License): string =>
     license ? `${license.name} | ${license.url || 'No License URL found'}` : 'No License found';
 
-const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || '';
-
 export const dictionaryUrl = (word: string) => [FREE_DICTIONARY_API, encodeURIComponent(word)].join('/');
-
-export const hasDefinition = async (query?: string) => {
-    if (!query) {
-        return false;
-    }
-
-    const res = await fetch(dictionaryUrl(query));
-
-    if (!res.ok) {
-        const hasMeaning = await fetch(
-            `${DOMAIN}${OPENAI_MEANING_CHECK_API}?input=${encodeURIComponent(query.slice(0, 100))}`
-        )
-            .then((res) => res.json())
-            .catch((error) => {
-                console.error('Error checking meaning:', error);
-                return { value: false };
-            });
-
-        if (!hasMeaning?.value) {
-            return false;
-        }
-    }
-
-    return true;
-};
 
 export const getFirstDefinition = (results: SearchResults) => {
     const firstMeaning = results[0];

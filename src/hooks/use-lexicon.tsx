@@ -1,6 +1,6 @@
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 
-import { FREE_DICTIONARY_API, OPENAI_MEANING_API, OPENAI_MEANING_CHECK_API } from '@/constants';
+import { FREE_DICTIONARY_API, OPENAI_MEANING_API } from '@/constants';
 import { SearchResults } from '@/types';
 
 type OpenAIResults = {
@@ -32,17 +32,6 @@ export const useLexiconWithAI = (
 ): SWRResponse & { data: OpenAIResults | undefined } => {
     return useSWR<OpenAIResults>(
         word ? `${DOMAIN}${OPENAI_MEANING_API}?input=${encodeURIComponent(word.slice(0, 100))}` : null,
-        jsonFetcher,
-        options
-    );
-};
-
-export const useLexiconWithAICheck = (
-    word?: string,
-    options?: SWRConfiguration
-): SWRResponse & { data: { value: boolean } | undefined } => {
-    return useSWR<{ value: boolean }>(
-        word ? `${DOMAIN}${OPENAI_MEANING_CHECK_API}?input=${encodeURIComponent(word.slice(0, 100))}` : null,
         jsonFetcher,
         options
     );
