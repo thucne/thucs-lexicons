@@ -31,7 +31,8 @@ type ResultPageProps = {
 const getPartOfSpeechList = (entry: SearchResult) =>
     Array.from(new Set(entry.meanings.map((meaning) => meaning.partOfSpeech).filter(Boolean)));
 
-const shouldUseAIFirst = (query: string) => /\bvs\.?\b/i.test(query) || /\bin a sentence\b/i.test(query);
+const shouldUseAIFirst = (query: string) =>
+    query.trim().includes(' ') || /\bvs\.?\b/i.test(query) || /\bin a sentence\b/i.test(query);
 
 const ResultHero = ({ word, entry, isByAI }: { word: string; entry: SearchResult; isByAI: boolean }) => {
     const partOfSpeechList = getPartOfSpeechList(entry);
