@@ -23,7 +23,11 @@ export const useLexicon = (
     word?: string,
     options?: SWRConfiguration
 ): SWRResponse & { data: SearchResults | undefined } => {
-    return useSWR<SearchResults>(word ? `${FREE_DICTIONARY_API}/${encodeURIComponent(word)}` : null, jsonFetcher, options);
+    return useSWR<SearchResults>(
+        word ? `${FREE_DICTIONARY_API}/${encodeURIComponent(word)}` : null,
+        jsonFetcher,
+        options
+    );
 };
 
 export const useLexiconWithAI = (
