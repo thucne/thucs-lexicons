@@ -54,8 +54,8 @@ const HomePage = () => {
                                 A sharper way to explore English.
                             </h1>
                             <p className="text-muted-foreground max-w-lg text-base leading-7 md:text-lg">
-                                thucne dictionary blends dictionary data with clearly labeled AI help for phrases, comparisons,
-                                examples, and nuance.
+                                thucne dictionary blends dictionary data with clearly labeled AI help for phrases,
+                                comparisons, examples, and nuance.
                             </p>
                         </div>
 

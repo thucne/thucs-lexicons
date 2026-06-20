@@ -5,30 +5,83 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { PageShell } from '@/components/ui/page-shell';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { EXAMPLE_QUERIES } from '@/hooks/use-search-navigation';
+
+import QuickMeaning from './QuickMeaning';
 
 export function ResultLoadingState({ word }: { word: string }) {
     return (
-        <PageShell size="narrow" className="py-5 sm:py-8 md:py-14" role="status" aria-live="polite">
-            <div className="space-y-6">
-                <div className="space-y-3 border-b pb-6">
-                    <Skeleton className="h-5 w-28" />
-                    <Skeleton className="h-12 w-2/3" />
-                    <Skeleton className="h-5 w-40" />
+        <PageShell className="py-5 sm:py-8 md:py-10" role="status" aria-live="polite">
+            <QuickMeaning />
+            <div className="grid gap-7 md:grid-cols-12 md:gap-8">
+                <div className="space-y-7 md:col-span-8 md:space-y-8">
+                    <header className="space-y-4 border-b pb-5 sm:pb-6">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <Skeleton className="h-5 w-24 rounded-full" />
+                            <Skeleton className="h-5 w-16 rounded-full" />
+                        </div>
+                        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
+                            <h1 className="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl md:text-5xl">
+                                {word}
+                            </h1>
+                            <Skeleton className="h-6 w-32" />
+                        </div>
+                    </header>
+
+                    <div className="max-w-prose space-y-6">
+                        <div className="space-y-3">
+                            <Skeleton className="h-4 w-16" />
+                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className="h-4 w-5/6" />
+                        </div>
+                        <div className="space-y-3">
+                            <Skeleton className="h-4 w-16" />
+                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className="h-4 w-5/6" />
+                        </div>
+                    </div>
+
+                    <p className="text-muted-foreground text-sm">
+                        Exploring <span className="text-foreground font-medium">{word}</span>…
+                    </p>
                 </div>
-                <div className="max-w-prose space-y-3">
-                    <Skeleton className="h-4 w-16" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-5/6" />
-                </div>
-                <div className="hidden space-y-3 md:block">
-                    <Skeleton className="h-24 w-full max-w-sm" />
-                    <Skeleton className="h-24 w-full max-w-sm" />
-                </div>
-                <p className="text-muted-foreground text-sm">
-                    Exploring <span className="text-foreground font-medium">{word}</span>…
-                </p>
+
+                <aside className="md:col-span-4">
+                    <div className="space-y-4 md:sticky md:top-16">
+                        <Card>
+                            <CardHeader>
+                                <Skeleton className="h-5 w-32" />
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                                <Skeleton className="h-4 w-full" />
+                                <div className="flex flex-wrap gap-2">
+                                    <Skeleton className="h-8 w-24 rounded-full" />
+                                    <Skeleton className="h-8 w-28 rounded-full" />
+                                    <Skeleton className="h-8 w-24 rounded-full" />
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <Skeleton className="h-5 w-24" />
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="space-y-2">
+                                    <Skeleton className="h-4 w-16" />
+                                    <div className="flex flex-wrap gap-2">
+                                        <Skeleton className="h-8 w-20 rounded-full" />
+                                        <Skeleton className="h-8 w-24 rounded-full" />
+                                        <Skeleton className="h-8 w-16 rounded-full" />
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </aside>
             </div>
         </PageShell>
     );
