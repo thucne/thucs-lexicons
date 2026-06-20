@@ -158,7 +158,7 @@ const search = async (input: string) => {
     try {
         const openAI = getOpenAIClient();
         const response = await openAI.chat.completions.create({
-            model: 'gpt-5-nano',
+            model: 'gpt-4o-mini',
             messages: [
                 {
                     role: 'system',
