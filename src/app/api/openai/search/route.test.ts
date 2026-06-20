@@ -17,7 +17,10 @@ vi.mock('openai', () => ({
 describe('GET /api/openai/search', () => {
     beforeEach(() => {
         process.env.OPENAI_API_KEY = 'test-openai-key';
+        delete process.env.OPENAI_DAILY_REQUEST_LIMIT;
+        delete process.env.OPENAI_CACHE_TTL_SECONDS;
         createMock.mockReset();
+        vi.resetModules();
     });
 
     it('returns 400 for missing input', async () => {
@@ -31,7 +34,6 @@ describe('GET /api/openai/search', () => {
     });
 
     it('returns 502 when OpenAI throws', async () => {
-        vi.resetModules();
         createMock.mockRejectedValueOnce(new Error('OpenAI unavailable'));
         const { GET } = await import('./route');
 
@@ -42,7 +44,6 @@ describe('GET /api/openai/search', () => {
     });
 
     it('returns 503 when OpenAI is not configured', async () => {
-        vi.resetModules();
         delete process.env.OPENAI_API_KEY;
         const { GET } = await import('./route');
 
@@ -54,7 +55,6 @@ describe('GET /api/openai/search', () => {
     });
 
     it('returns a local fallback for promoted example queries without calling OpenAI', async () => {
-        vi.resetModules();
         delete process.env.OPENAI_API_KEY;
         const { GET } = await import('./route');
 
@@ -71,7 +71,7 @@ describe('GET /api/openai/search', () => {
     });
 
     it('returns 429 when the search route rate limit is exceeded', async () => {
-        vi.resetModules();
+        process.env.OPENAI_CACHE_TTL_SECONDS = '0';
         createMock.mockResolvedValue({
             choices: [{ message: { content: JSON.stringify({ definitions: [] }) } }]
         });
@@ -92,8 +92,51 @@ describe('GET /api/openai/search', () => {
         expect(createMock).toHaveBeenCalledTimes(10);
     });
 
+    it('returns 429 when the daily OpenAI request budget is exhausted', async () => {
+        process.env.OPENAI_DAILY_REQUEST_LIMIT = '1';
+        process.env.OPENAI_CACHE_TTL_SECONDS = '0';
+        createMock.mockResolvedValue({
+            choices: [{ message: { content: JSON.stringify({ definitions: [] }) } }]
+        });
+        const { GET } = await import('./route');
+
+        const firstResponse = await GET(new Request('http://localhost/api/openai/search?input=hello'));
+        const secondResponse = await GET(new Request('http://localhost/api/openai/search?input=world'));
+
+        expect(firstResponse.status).toBe(200);
+        expect(secondResponse.status).toBe(429);
+        await expect(secondResponse.json()).resolves.toEqual({ error: 'AI request budget reached.' });
+        expect(secondResponse.headers.get('Retry-After')).toBeTruthy();
+        expect(createMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not spend daily budget on local fallbacks', async () => {
+        process.env.OPENAI_DAILY_REQUEST_LIMIT = '0';
+        const { GET } = await import('./route');
+
+        const response = await GET(new Request('http://localhost/api/openai/search?input=affect%20vs%20effect'));
+
+        expect(response.status).toBe(200);
+        expect(createMock).not.toHaveBeenCalled();
+    });
+
+    it('serves repeated AI fallback queries from cache without extra OpenAI calls', async () => {
+        const body = { definitions: [{ openai: true, word: 'hello' }] };
+        createMock.mockResolvedValue({
+            choices: [{ message: { content: JSON.stringify(body) } }]
+        });
+        const { GET } = await import('./route');
+
+        const firstResponse = await GET(new Request('http://localhost/api/openai/search?input=hello'));
+        const secondResponse = await GET(new Request('http://localhost/api/openai/search?input=hello'));
+
+        expect(firstResponse.status).toBe(200);
+        expect(secondResponse.status).toBe(200);
+        await expect(secondResponse.json()).resolves.toEqual(body);
+        expect(createMock).toHaveBeenCalledTimes(1);
+    });
+
     it('returns parsed JSON for successful responses', async () => {
-        vi.resetModules();
         const body = { definitions: [{ openai: true, word: 'hello' }] };
         createMock.mockResolvedValueOnce({
             choices: [{ message: { content: JSON.stringify(body) } }]
@@ -109,7 +152,6 @@ describe('GET /api/openai/search', () => {
     });
 
     it('normalizes malformed successful responses to an empty definitions array', async () => {
-        vi.resetModules();
         createMock.mockResolvedValueOnce({
             choices: [{ message: { content: JSON.stringify({ word: 'hello' }) } }]
         });

@@ -1,5 +1,6 @@
 import { rateLimitOrThrow } from '@/lib/rate-limit';
 import { getOpenAIClient, MissingOpenAIKeyError } from '@/lib/openai-config';
+import { consumeOpenAIBudgetOrThrow, getCachedOpenAIResult, setCachedOpenAIResult } from '@/lib/openai-usage-guard';
 import type { SearchResults } from '@/types';
 
 type AIResult = {
@@ -143,9 +144,9 @@ For each definition:
 Now, provide the definition for "${input}" in the specified JSON format.
 `;
 
-const normalizeSearchResult = (result: unknown) => {
+const normalizeSearchResult = (result: unknown): AIResult => {
     if (typeof result === 'object' && result !== null && 'definitions' in result && Array.isArray(result.definitions)) {
-        return result;
+        return { definitions: result.definitions as SearchResults };
     }
 
     return { definitions: [] };
@@ -338,13 +339,26 @@ export async function GET(request: Request) {
         return Response.json(localFallback);
     }
 
+    const cached = getCachedOpenAIResult(input);
+
+    if (cached) {
+        return Response.json(cached);
+    }
+
     const limited = await rateLimitOrThrow(request, 'openai-search');
     if (limited) {
         return limited;
     }
 
+    const budgetLimited = consumeOpenAIBudgetOrThrow();
+    if (budgetLimited) {
+        return budgetLimited;
+    }
+
     try {
         const result = await search(input);
+
+        setCachedOpenAIResult(input, result);
 
         return Response.json(result);
     } catch (error) {
