@@ -60,7 +60,7 @@ const Footer = () => {
                                     height={50}
                                     draggable={false}
                                     quality={100}
-                                    style={{ objectFit: 'contain' }}
+                                    style={{ width: 'auto', height: '50px', objectFit: 'contain' }}
                                     loading="lazy"
                                 />
                             </Link>
