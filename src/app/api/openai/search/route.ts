@@ -157,8 +157,9 @@ const getLocalFallback = (input: string): AIResult | undefined => localFallbacks
 const search = async (input: string) => {
     try {
         const openAI = getOpenAIClient();
+        const model = process.env.OPENAI_MODEL || 'gpt-5-nano';
         const response = await openAI.chat.completions.create({
-            model: 'gpt-4o-mini',
+            model: model,
             messages: [
                 {
                     role: 'system',
