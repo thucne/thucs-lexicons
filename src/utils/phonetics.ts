@@ -75,7 +75,16 @@ export function getUniquePhonetics(entry: SearchResult): Phonetic[] {
         }
     }
 
-    return Array.from(seen.values());
+    const uniqueList = Array.from(seen.values());
+
+    // Prioritize pronunciations with audio
+    return uniqueList.sort((a, b) => {
+        const aHasAudio = Boolean(a.audio?.trim());
+        const bHasAudio = Boolean(b.audio?.trim());
+        if (aHasAudio && !bHasAudio) return -1;
+        if (!aHasAudio && bHasAudio) return 1;
+        return 0;
+    });
 }
 
 export function getDisplayPhonetics(entry: SearchResult, options?: { max?: number; offset?: number }): Phonetic[] {

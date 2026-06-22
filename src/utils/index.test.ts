@@ -4,6 +4,7 @@ import { FREE_DICTIONARY_API } from '@/constants';
 import dictionaryPerfect from '@/__fixtures__/dictionary-perfect.json';
 import { dictionaryUrl, extractCoreWord, getFirstDefinition, getFreeDictionaryLexicons } from '@/utils';
 import { SearchResults } from '@/types';
+import { getUniquePhonetics } from '@/utils/phonetics';
 
 const perfectResults = dictionaryPerfect as SearchResults;
 
@@ -83,5 +84,29 @@ describe('extractCoreWord', () => {
         expect(extractCoreWord('outbid in a sentence vs a similar word')).toBe('outbid');
         expect(extractCoreWord('common phrases with outbid in a sentence')).toBe('outbid');
         expect(extractCoreWord('common phrases with outbid vs a similar word vs a similar word')).toBe('outbid');
+    });
+});
+
+describe('getUniquePhonetics', () => {
+    it('prioritizes pronunciations with audio over those without', () => {
+        const entry = {
+            word: 'test',
+            phonetic: '/test-no-audio/',
+            phonetics: [
+                { text: '/test-no-audio-2/', audio: '' },
+                { text: '/test-with-audio/', audio: 'https://example.com/audio.mp3' },
+                { text: '/test-no-audio-3/', audio: undefined }
+            ],
+            meanings: []
+        };
+
+        const result = getUniquePhonetics(entry);
+        // The one with audio should be at index 0 because it has audio
+        expect(result[0].text).toBe('/test-with-audio/');
+        expect(result[0].audio).toBe('https://example.com/audio.mp3');
+
+        // The rest without audio should follow in stable order
+        expect(result[1].text).toBe('/test-no-audio/');
+        expect(result[2].text).toBe('/test-no-audio-2/');
     });
 });
