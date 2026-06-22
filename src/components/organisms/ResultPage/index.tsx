@@ -168,6 +168,28 @@ const ResultDefinitions = ({ entry, word }: { entry: SearchResult; word: string 
     );
 };
 
+const mergePhonetics = (aiResults: SearchResults | undefined, dictResults: SearchResults | undefined): SearchResults | undefined => {
+    if (!aiResults?.length || !dictResults?.length) {
+        return aiResults;
+    }
+
+    const dictEntry = dictResults[0];
+    if (!dictEntry) {
+        return aiResults;
+    }
+
+    return aiResults.map((aiEntry, idx) => {
+        if (idx === 0 && aiEntry.word.toLowerCase() === dictEntry.word.toLowerCase()) {
+            return {
+                ...aiEntry,
+                phonetic: dictEntry.phonetic || aiEntry.phonetic,
+                phonetics: dictEntry.phonetics?.length ? dictEntry.phonetics : aiEntry.phonetics
+            };
+        }
+        return aiEntry;
+    });
+};
+
 const ResultPage = ({ word: rawWord, mode }: ResultPageProps) => {
     const word = decodeURIComponent(rawWord);
     const dispatch = useAppDispatch();
@@ -185,21 +207,28 @@ const ResultPage = ({ word: rawWord, mode }: ResultPageProps) => {
         mode
     );
     const resultsFromAI = isSearchResults(resultsFromAIRaw?.definitions) ? resultsFromAIRaw.definitions : undefined;
+
+    const shouldFetchDictPhonetics = !resultsFromStore?.length && Boolean(mode);
+    const { data: dictPhoneticsRaw } = useLexicon(shouldFetchDictPhonetics ? word : undefined);
+    const dictPhonetics = isSearchResults(dictPhoneticsRaw) ? dictPhoneticsRaw : undefined;
+
+    const finalizedAIResults = resultsFromAI ? mergePhonetics(resultsFromAI, dictPhonetics) : undefined;
+
     const results = pickSearchResults({
         store: resultsFromStore,
         storeWord: searchResultsFromStore.word,
         query: cacheKey,
         fetch: resultsFromFetch,
-        ai: resultsFromAI
+        ai: finalizedAIResults
     });
 
     useEffect(() => {
-        const nextResults = resultsFromFetch || resultsFromAI;
+        const nextResults = resultsFromFetch || finalizedAIResults;
 
         if (nextResults?.length) {
             dispatch(setSearchResults({ word: cacheKey, results: nextResults }));
         }
-    }, [dispatch, resultsFromAI, resultsFromFetch, cacheKey]);
+    }, [dispatch, finalizedAIResults, resultsFromFetch, cacheKey]);
 
     if (isLoading || isAILoading) {
         return <ResultLoadingState word={word} />;
