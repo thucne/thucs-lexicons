@@ -214,17 +214,33 @@ const ResultPage = ({ word: rawWord, mode }: ResultPageProps) => {
             <div className="grid gap-7 md:grid-cols-12 md:gap-8">
                 <div className="space-y-7 md:col-span-8 md:space-y-8">
                     <ResultHero word={word} entry={primaryEntry} isByAI={isByAI} mode={mode} />
-                    {results.map((result, index) => (
-                        <div key={`${word}-result-${index}`}>
-                            {index > 0 && (
-                                <>
-                                    <Separator className="mb-6" />
-                                    <h2 className="mb-4 text-2xl font-semibold tracking-tight">{result.word}</h2>
-                                </>
-                            )}
-                            <ResultDefinitions entry={result} word={word} />
+                    {mode === 'similar' && results.length >= 2 ? (
+                        <div className="grid gap-6 md:grid-cols-2">
+                            {results.slice(0, 2).map((result, index) => (
+                                <div
+                                    key={`${word}-compare-${index}`}
+                                    className="border border-border/80 p-5 rounded-lg bg-card text-card-foreground shadow-xs flex flex-col gap-4"
+                                >
+                                    <h2 className="text-xl font-bold border-b pb-2 text-primary capitalize">
+                                        {result.word}
+                                    </h2>
+                                    <ResultDefinitions entry={result} word={word} />
+                                </div>
+                            ))}
                         </div>
-                    ))}
+                    ) : (
+                        results.map((result, index) => (
+                            <div key={`${word}-result-${index}`}>
+                                {index > 0 && (
+                                    <>
+                                        <Separator className="mb-6" />
+                                        <h2 className="mb-4 text-2xl font-semibold tracking-tight">{result.word}</h2>
+                                    </>
+                                )}
+                                <ResultDefinitions entry={result} word={word} />
+                            </div>
+                        ))
+                    )}
                 </div>
                 <aside className="md:col-span-4">
                     <div className="md:sticky md:top-16">

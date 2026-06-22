@@ -151,40 +151,55 @@ const comparePrompt = (coreWord: string) => `
 You are an AI assistant specialized in comparing similar or easily confused words.
 
 For the core word "${coreWord}":
-1. Identify a word that is closely related, similar, or commonly compared/confused with "${coreWord}".
+1. Identify a word that is a direct semantic counterpart, synonym, antonym, or commonly compared/confused word with "${coreWord}" (e.g., "outprice" or "underbid" or "outcompete" for "outbid", or "excellent" for "splendid"). Avoid generic or unrelated words.
 2. Compare the two words.
-3. In the returned JSON:
-   - The "word" field MUST be in the format: "${coreWord} vs [similar_word]". For example, if core word is "outbid" and you choose "outprice", the word field MUST be "outbid vs outprice".
-   - The "didYouMean" field must be null.
-   - Under "meanings", provide a comparison/usage explanation:
-     - Each word should have its own definition block under "definitions", explaining its specific meaning, usage, and examples.
-     - You may use "usage" or the word's actual part of speech (e.g. "verb", "noun") as the "partOfSpeech".
+3. In the returned JSON, you MUST return EXACTLY TWO separate entries in the "definitions" array:
+   - The first entry MUST be the definition of "${coreWord}". The "word" field for this entry MUST be exactly "${coreWord}".
+   - The second entry MUST be the definition of the compared word that you selected. The "word" field for this entry MUST be exactly that compared word.
+   - For both entries:
+     - The "didYouMean" field must be a JSON null (not the string "null").
+     - Under "meanings", provide standard dictionary definitions for that word, along with example sentences and synonyms/antonyms.
 
 Return the result in the following JSON format:
 {
   "definitions": [
     {
       "openai": true,
-      "word": "${coreWord} vs [similar_word]",
+      "word": "${coreWord}",
       "didYouMean": null,
       "phonetic": "",
       "phonetics": [],
       "origin": "",
       "meanings": [
         {
-          "partOfSpeech": "usage",
+          "partOfSpeech": "verb",
           "definitions": [
             {
-              "definition": "Definition of ${coreWord} in the context of this comparison.",
+              "definition": "Definition of ${coreWord}.",
               "example": "An example sentence using ${coreWord}.",
-              "synonyms": ["synonym1", "synonym2"],
+              "synonyms": ["synonym1"],
               "antonyms": ["antonym1"]
-            },
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "openai": true,
+      "word": "[compared_word]",
+      "didYouMean": null,
+      "phonetic": "",
+      "phonetics": [],
+      "origin": "",
+      "meanings": [
+        {
+          "partOfSpeech": "verb",
+          "definitions": [
             {
-              "definition": "Definition of [similar_word] in the context of this comparison.",
-              "example": "An example sentence using [similar_word].",
-              "synonyms": ["synonym1", "synonym2"],
-              "antonyms": ["antonym1"]
+              "definition": "Definition of [compared_word].",
+              "example": "An example sentence using [compared_word].",
+              "synonyms": ["synonym2"],
+              "antonyms": ["antonym2"]
             }
           ]
         }
@@ -201,8 +216,8 @@ For the word "${coreWord}":
 1. Explain how to use "${coreWord}" in a sentence.
 2. Provide natural, clear example sentences showing the word in action.
 3. In the returned JSON:
-   - The "word" field MUST be exactly "${coreWord} in a sentence".
-   - The "didYouMean" field must be null.
+   - The "word" field MUST be exactly "${coreWord}".
+   - The "didYouMean" field must be a JSON null (not the string "null").
    - Under "meanings", provide a context/usage explanation:
      - Set "partOfSpeech" to "example".
      - Under "definitions", provide a definition explaining how the word is used in a sentence, along with a high-quality example sentence in the "example" field.
@@ -212,7 +227,7 @@ Return the result in the following JSON format:
   "definitions": [
     {
       "openai": true,
-      "word": "${coreWord} in a sentence",
+      "word": "${coreWord}",
       "didYouMean": null,
       "phonetic": "",
       "phonetics": [],
@@ -224,8 +239,8 @@ Return the result in the following JSON format:
             {
               "definition": "Explanation of how to use '${coreWord}' in a sentence.",
               "example": "A clear, natural example sentence showing how to use '${coreWord}' in context.",
-              "synonyms": ["synonym1", "synonym2"],
-              "antonyms": ["antonym1"]
+              "synonyms": ["synonym1"],
+              "antonyms": []
             }
           ]
         }
@@ -242,18 +257,18 @@ For the word "${coreWord}":
 1. Identify common phrases, idioms, or collocations containing "${coreWord}".
 2. Explain their meanings and provide example sentences.
 3. In the returned JSON:
-   - The "word" field MUST be exactly "common phrases with ${coreWord}".
-   - The "didYouMean" field must be null.
+   - The "word" field MUST be exactly "${coreWord}".
+   - The "didYouMean" field must be a JSON null (not the string "null").
    - Under "meanings", provide a definition block for each identified phrase:
      - Set "partOfSpeech" to "phrase" or "idiom".
-     - Under "definitions", each item should define a specific phrase containing "${coreWord}", with a definition, example sentence, synonyms, and antonyms.
+     - IMPORTANT: The "definition" field for each definition item MUST start with the phrase itself, followed by a colon and the definition. Format: "[phrase]: [definition]". For example: "to outbid someone: to offer a higher price than another bidder." or "outbid at auction: to be surpassed by another bidder in an auction setting."
 
 Return the result in the following JSON format:
 {
   "definitions": [
     {
       "openai": true,
-      "word": "common phrases with ${coreWord}",
+      "word": "${coreWord}",
       "didYouMean": null,
       "phonetic": "",
       "phonetics": [],
@@ -263,13 +278,13 @@ Return the result in the following JSON format:
           "partOfSpeech": "phrase",
           "definitions": [
             {
-              "definition": "Definition of the first phrase containing '${coreWord}' (e.g. 'phrase 1').",
+              "definition": "phrase 1: Definition of the first phrase containing '${coreWord}'.",
               "example": "An example sentence using that phrase.",
               "synonyms": ["synonym1"],
               "antonyms": []
             },
             {
-              "definition": "Definition of the second phrase containing '${coreWord}' (e.g. 'phrase 2').",
+              "definition": "phrase 2: Definition of the second phrase containing '${coreWord}'.",
               "example": "An example sentence using that phrase.",
               "synonyms": ["synonym2"],
               "antonyms": []
