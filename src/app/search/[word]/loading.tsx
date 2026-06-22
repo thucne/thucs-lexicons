@@ -1,12 +1,7 @@
-import { Skeleton } from '@/components/ui/skeleton';
+import { ResultLoadingState } from '@/components/organisms/ResultPage/result-states';
 
 const LoadingLexicon = () => {
-    return (
-        <div className="text-muted-foreground flex items-center gap-2 px-4 py-6 text-sm">
-            <Skeleton className="size-5 rounded-full" />
-            Exploring this entry…
-        </div>
-    );
+    return <ResultLoadingState />;
 };
 
 export default LoadingLexicon;

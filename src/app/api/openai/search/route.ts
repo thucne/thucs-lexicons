@@ -2,6 +2,7 @@ import { rateLimitOrThrow } from '@/lib/rate-limit';
 import { getOpenAIClient, MissingOpenAIKeyError } from '@/lib/openai-config';
 import { consumeOpenAIBudgetOrThrow, getCachedOpenAIResult, setCachedOpenAIResult } from '@/lib/openai-usage-guard';
 import type { SearchResults } from '@/types';
+import { extractCoreWord } from '@/utils';
 
 type AIResult = {
     definitions: SearchResults;
@@ -146,6 +147,141 @@ For each definition:
 Now, provide the definition for "${input}" in the specified JSON format.
 `;
 
+const comparePrompt = (coreWord: string) => `
+You are an AI assistant specialized in comparing similar or easily confused words.
+
+For the core word "${coreWord}":
+1. Identify a word that is closely related, similar, or commonly compared/confused with "${coreWord}".
+2. Compare the two words.
+3. In the returned JSON:
+   - The "word" field MUST be in the format: "${coreWord} vs [similar_word]". For example, if core word is "outbid" and you choose "outprice", the word field MUST be "outbid vs outprice".
+   - The "didYouMean" field must be null.
+   - Under "meanings", provide a comparison/usage explanation:
+     - Each word should have its own definition block under "definitions", explaining its specific meaning, usage, and examples.
+     - You may use "usage" or the word's actual part of speech (e.g. "verb", "noun") as the "partOfSpeech".
+
+Return the result in the following JSON format:
+{
+  "definitions": [
+    {
+      "openai": true,
+      "word": "${coreWord} vs [similar_word]",
+      "didYouMean": null,
+      "phonetic": "",
+      "phonetics": [],
+      "origin": "",
+      "meanings": [
+        {
+          "partOfSpeech": "usage",
+          "definitions": [
+            {
+              "definition": "Definition of ${coreWord} in the context of this comparison.",
+              "example": "An example sentence using ${coreWord}.",
+              "synonyms": ["synonym1", "synonym2"],
+              "antonyms": ["antonym1"]
+            },
+            {
+              "definition": "Definition of [similar_word] in the context of this comparison.",
+              "example": "An example sentence using [similar_word].",
+              "synonyms": ["synonym1", "synonym2"],
+              "antonyms": ["antonym1"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+`;
+
+const contextPrompt = (coreWord: string) => `
+You are an AI assistant specialized in providing contextual examples and usage guidance for words and phrases.
+
+For the word "${coreWord}":
+1. Explain how to use "${coreWord}" in a sentence.
+2. Provide natural, clear example sentences showing the word in action.
+3. In the returned JSON:
+   - The "word" field MUST be exactly "${coreWord} in a sentence".
+   - The "didYouMean" field must be null.
+   - Under "meanings", provide a context/usage explanation:
+     - Set "partOfSpeech" to "example".
+     - Under "definitions", provide a definition explaining how the word is used in a sentence, along with a high-quality example sentence in the "example" field.
+
+Return the result in the following JSON format:
+{
+  "definitions": [
+    {
+      "openai": true,
+      "word": "${coreWord} in a sentence",
+      "didYouMean": null,
+      "phonetic": "",
+      "phonetics": [],
+      "origin": "",
+      "meanings": [
+        {
+          "partOfSpeech": "example",
+          "definitions": [
+            {
+              "definition": "Explanation of how to use '${coreWord}' in a sentence.",
+              "example": "A clear, natural example sentence showing how to use '${coreWord}' in context.",
+              "synonyms": ["synonym1", "synonym2"],
+              "antonyms": ["antonym1"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+`;
+
+const phrasePrompt = (coreWord: string) => `
+You are an AI assistant specialized in explaining common phrases, idioms, and collocations.
+
+For the word "${coreWord}":
+1. Identify common phrases, idioms, or collocations containing "${coreWord}".
+2. Explain their meanings and provide example sentences.
+3. In the returned JSON:
+   - The "word" field MUST be exactly "common phrases with ${coreWord}".
+   - The "didYouMean" field must be null.
+   - Under "meanings", provide a definition block for each identified phrase:
+     - Set "partOfSpeech" to "phrase" or "idiom".
+     - Under "definitions", each item should define a specific phrase containing "${coreWord}", with a definition, example sentence, synonyms, and antonyms.
+
+Return the result in the following JSON format:
+{
+  "definitions": [
+    {
+      "openai": true,
+      "word": "common phrases with ${coreWord}",
+      "didYouMean": null,
+      "phonetic": "",
+      "phonetics": [],
+      "origin": "",
+      "meanings": [
+        {
+          "partOfSpeech": "phrase",
+          "definitions": [
+            {
+              "definition": "Definition of the first phrase containing '${coreWord}' (e.g. 'phrase 1').",
+              "example": "An example sentence using that phrase.",
+              "synonyms": ["synonym1"],
+              "antonyms": []
+            },
+            {
+              "definition": "Definition of the second phrase containing '${coreWord}' (e.g. 'phrase 2').",
+              "example": "An example sentence using that phrase.",
+              "synonyms": ["synonym2"],
+              "antonyms": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+`;
+
 const normalizeSearchResult = (result: unknown): AIResult => {
     if (typeof result === 'object' && result !== null && 'definitions' in result && Array.isArray(result.definitions)) {
         return { definitions: result.definitions as SearchResults };
@@ -180,6 +316,20 @@ const search = async (input: string) => {
                   verbosity: 'low'
               } as const)
             : {};
+        let promptText = '';
+        const trimmedInput = input.trim();
+        const coreWord = extractCoreWord(trimmedInput);
+
+        if (/\bvs\s+(?:a\s+)?similar\s+word$/i.test(trimmedInput)) {
+            promptText = comparePrompt(coreWord);
+        } else if (/\bin\s+a\s+sentence$/i.test(trimmedInput)) {
+            promptText = contextPrompt(coreWord);
+        } else if (/^common\s+phrases\s+with\b/i.test(trimmedInput)) {
+            promptText = phrasePrompt(coreWord);
+        } else {
+            promptText = prompt(trimmedInput);
+        }
+
         const response = await openAI.chat.completions.create({
             model: model,
             messages: [
@@ -190,7 +340,7 @@ const search = async (input: string) => {
                 },
                 {
                     role: 'user',
-                    content: prompt(input)
+                    content: promptText
                 }
             ],
             max_completion_tokens: 2000,

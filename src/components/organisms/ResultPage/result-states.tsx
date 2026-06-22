@@ -10,7 +10,7 @@ import { EXAMPLE_QUERIES } from '@/hooks/use-search-navigation';
 
 import QuickMeaning from './QuickMeaning';
 
-export function ResultLoadingState({ word }: { word: string }) {
+export function ResultLoadingState({ word }: { word?: string }) {
     return (
         <PageShell className="py-5 sm:py-8 md:py-10" role="status" aria-live="polite">
             <QuickMeaning />
@@ -22,9 +22,13 @@ export function ResultLoadingState({ word }: { word: string }) {
                             <Skeleton className="h-5 w-16 rounded-full" />
                         </div>
                         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
-                            <h1 className="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl md:text-5xl">
-                                {word}
-                            </h1>
+                            {word ? (
+                                <h1 className="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl md:text-5xl">
+                                    {word}
+                                </h1>
+                            ) : (
+                                <Skeleton className="h-10 w-48" />
+                            )}
                             <Skeleton className="h-6 w-32" />
                         </div>
                     </header>
@@ -45,7 +49,13 @@ export function ResultLoadingState({ word }: { word: string }) {
                     </div>
 
                     <p className="text-muted-foreground text-sm">
-                        Exploring <span className="text-foreground font-medium">{word}</span>…
+                        {word ? (
+                            <>
+                                Exploring <span className="text-foreground font-medium">{word}</span>…
+                            </>
+                        ) : (
+                            'Exploring entry…'
+                        )}
                     </p>
                 </div>
 

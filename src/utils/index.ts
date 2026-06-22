@@ -38,3 +38,19 @@ export const getFreeDictionaryLexiconsMap = async (words: string[]) => {
 export const getFreeDictionaryLexicons = async (words: string[]) => {
     return Array.from((await getFreeDictionaryLexiconsMap(words)).values());
 };
+
+export function extractCoreWord(query: string): string {
+    let word = query.trim();
+    let previous: string;
+    do {
+        previous = word;
+        // Strip suffix " vs [a] similar word" (case-insensitive)
+        word = word.replace(/\s+vs\s+(?:a\s+)?similar\s+word$/i, '');
+        // Strip suffix " in a sentence" (case-insensitive)
+        word = word.replace(/\s+in\s+a\s+sentence$/i, '');
+        // Strip prefix "common phrases with " (case-insensitive)
+        word = word.replace(/^common\s+phrases\s+with\s+/i, '');
+    } while (word !== previous);
+    return word.trim();
+}
+

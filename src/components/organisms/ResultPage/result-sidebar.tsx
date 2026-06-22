@@ -8,6 +8,7 @@ import { SectionHeading } from '@/components/ui/section-heading';
 import { SearchResult, SearchResults } from '@/types';
 import { cn } from '@/lib/utils';
 import { getUniquePhonetics, hasPronunciation, HERO_MAX_PRONUNCIATION_VARIANTS } from '@/utils/phonetics';
+import { extractCoreWord } from '@/utils';
 
 const unique = (values: string[]) => Array.from(new Set(values.filter(Boolean))).slice(0, 12);
 
@@ -55,21 +56,22 @@ export function PronunciationCard({ entry }: { entry: SearchResult }) {
 }
 
 export function ExploreWithAICard({ word }: { word: string }) {
+    const coreWord = extractCoreWord(word);
     const prompts = [
         {
             icon: Lightbulb,
             label: 'Context Mode',
-            query: `${word} in a sentence`
+            query: `${coreWord} in a sentence`
         },
         {
             icon: GitCompare,
             label: 'Compare Mode',
-            query: `${word} vs a similar word`
+            query: `${coreWord} vs a similar word`
         },
         {
             icon: Sparkles,
             label: 'Phrase Mode',
-            query: `common phrases with ${word}`
+            query: `common phrases with ${coreWord}`
         }
     ];
 

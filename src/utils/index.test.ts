@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { FREE_DICTIONARY_API } from '@/constants';
 import dictionaryPerfect from '@/__fixtures__/dictionary-perfect.json';
-import { dictionaryUrl, getFirstDefinition, getFreeDictionaryLexicons } from '@/utils';
+import { dictionaryUrl, extractCoreWord, getFirstDefinition, getFreeDictionaryLexicons } from '@/utils';
 import { SearchResults } from '@/types';
 
 const perfectResults = dictionaryPerfect as SearchResults;
@@ -53,5 +53,35 @@ describe('getFreeDictionaryLexicons', () => {
 
         expect(fetchMock).toHaveBeenCalledTimes(1);
         expect(fetchMock).toHaveBeenCalledWith(`${FREE_DICTIONARY_API}/perfect`);
+    });
+});
+
+describe('extractCoreWord', () => {
+    it('returns the same word when no patterns are matched', () => {
+        expect(extractCoreWord('outbid')).toBe('outbid');
+        expect(extractCoreWord('break the ice')).toBe('break the ice');
+    });
+
+    it('strips " vs a similar word" or " vs similar word" suffixes', () => {
+        expect(extractCoreWord('outbid vs a similar word')).toBe('outbid');
+        expect(extractCoreWord('outbid vs similar word')).toBe('outbid');
+        expect(extractCoreWord('outbid VS A SIMILAR WORD')).toBe('outbid');
+    });
+
+    it('strips " in a sentence" suffix', () => {
+        expect(extractCoreWord('outbid in a sentence')).toBe('outbid');
+        expect(extractCoreWord('outbid IN A SENTENCE')).toBe('outbid');
+    });
+
+    it('strips "common phrases with " prefix', () => {
+        expect(extractCoreWord('common phrases with outbid')).toBe('outbid');
+        expect(extractCoreWord('COMMON PHRASES WITH outbid')).toBe('outbid');
+    });
+
+    it('recursively/repeatedly strips multiple nested patterns', () => {
+        expect(extractCoreWord('outbid vs a similar word vs a similar word')).toBe('outbid');
+        expect(extractCoreWord('outbid in a sentence vs a similar word')).toBe('outbid');
+        expect(extractCoreWord('common phrases with outbid in a sentence')).toBe('outbid');
+        expect(extractCoreWord('common phrases with outbid vs a similar word vs a similar word')).toBe('outbid');
     });
 });
