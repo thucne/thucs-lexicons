@@ -53,10 +53,17 @@ const isLikelyPhoneticText = (value: string) => {
     return isBracketedPhonetic && isPhoneticRegex.test(trimmedValue);
 };
 
+const isNullOrUndefinedLike = (val: unknown): boolean => {
+    if (val === null || val === undefined) return true;
+    if (typeof val !== 'string') return false;
+    const clean = val.trim().toLowerCase();
+    return !clean || clean === 'null' || clean === 'undefined' || clean === ':null' || clean === ':null,';
+};
+
 export function getResultDisplayState(query: string, entry: SearchResult) {
     const searchedWord = query.trim();
-    const entryWord = entry.word && entry.word.toLowerCase() !== 'null' ? entry.word.trim() : '';
-    const suggestedWord = typeof entry.didYouMean === 'string' && entry.didYouMean.toLowerCase() !== 'null' ? entry.didYouMean.trim() : '';
+    const entryWord = entry.word && !isNullOrUndefinedLike(entry.word) ? entry.word.trim() : '';
+    const suggestedWord = entry.didYouMean && !isNullOrUndefinedLike(entry.didYouMean) ? String(entry.didYouMean).trim() : '';
     const usableSuggestion = suggestedWord && !isLikelyPhoneticText(suggestedWord) ? suggestedWord : '';
     const displayWord = usableSuggestion || entryWord || searchedWord;
     const normalizedQuery = normalizeLookupText(searchedWord);

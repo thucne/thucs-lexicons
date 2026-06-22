@@ -132,4 +132,30 @@ describe('getResultDisplayState', () => {
             isShowingCorrection: false
         });
     });
+
+    it('does not treat null-like or undefined-like values as spelling corrections', () => {
+        expect(
+            getResultDisplayState('hello', {
+                ...baseEntry,
+                didYouMean: ':null,'
+            })
+        ).toEqual({
+            displayWord: 'hello',
+            searchedWord: 'hello',
+            correctionWord: undefined,
+            isShowingCorrection: false
+        });
+
+        expect(
+            getResultDisplayState('hello', {
+                ...baseEntry,
+                didYouMean: 'null'
+            })
+        ).toEqual({
+            displayWord: 'hello',
+            searchedWord: 'hello',
+            correctionWord: undefined,
+            isShowingCorrection: false
+        });
+    });
 });
