@@ -49,7 +49,7 @@ export function PronunciationCard({ entry }: { entry: SearchResult }) {
                 </SectionHeading>
             </CardHeader>
             <CardContent>
-                <PronunciationList entry={entry} offset={HERO_MAX_PRONUNCIATION_VARIANTS} className="sm:flex-col" />
+                <PronunciationList entry={entry} offset={HERO_MAX_PRONUNCIATION_VARIANTS} vertical />
             </CardContent>
         </Card>
     );

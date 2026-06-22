@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { SearchCheck, Sparkles } from 'lucide-react';
+import { SearchCheck, Sparkles, X } from 'lucide-react';
 
 import MeaningComponent from '@/components/molecules/Meaning';
 import PronunciationList from '@/components/molecules/PronunciationList';
@@ -62,13 +62,17 @@ const ResultHero = ({
             <div className="flex flex-wrap items-center gap-2">
                 <SourceBadge variant={isByAI ? 'ai' : 'dictionary'} />
                 {activeMode && (
-                    <Badge
-                        className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20 rounded-full text-xs font-medium uppercase tracking-wide border"
-                    >
-                        {activeMode === 'similar' && 'Compare Mode'}
-                        {activeMode === 'context' && 'Sentence Mode'}
-                        {activeMode === 'phrase' && 'Phrase Mode'}
-                    </Badge>
+                    <Link href={`/search/${encodeURIComponent(cleanDisplayWord)}`}>
+                        <Badge
+                            className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20 rounded-full text-xs font-medium uppercase tracking-wide border flex items-center gap-1 cursor-pointer pr-2 transition-colors duration-200"
+                            title="Remove mode"
+                        >
+                            {activeMode === 'similar' && 'Compare Mode'}
+                            {activeMode === 'context' && 'Sentence Mode'}
+                            {activeMode === 'phrase' && 'Phrase Mode'}
+                            <X className="size-3 hover:text-primary/70 transition-colors" />
+                        </Badge>
+                    </Link>
                 )}
                 {partOfSpeechList.map((pos) => (
                     <Badge

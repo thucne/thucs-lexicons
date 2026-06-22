@@ -8,9 +8,10 @@ type PronunciationListProps = {
     maxVariants?: number;
     offset?: number;
     className?: string;
+    vertical?: boolean;
 };
 
-const PronunciationList = ({ entry, maxVariants, offset = 0, className }: PronunciationListProps) => {
+const PronunciationList = ({ entry, maxVariants, offset = 0, className, vertical = false }: PronunciationListProps) => {
     const variants = getDisplayPhonetics(entry, { max: maxVariants, offset });
 
     if (!variants.length) {
@@ -20,7 +21,9 @@ const PronunciationList = ({ entry, maxVariants, offset = 0, className }: Pronun
     return (
         <div
             className={cn(
-                'text-muted-foreground flex flex-col gap-1 font-mono text-sm sm:flex-row sm:flex-wrap sm:items-center',
+                vertical
+                    ? 'text-muted-foreground flex flex-col gap-2 font-mono text-sm'
+                    : 'text-muted-foreground flex flex-col gap-1 font-mono text-sm sm:flex-row sm:flex-wrap sm:items-center',
                 className
             )}
         >
@@ -29,8 +32,8 @@ const PronunciationList = ({ entry, maxVariants, offset = 0, className }: Pronun
                     normalizePhoneticText(phonetic.text) || phonetic.audio?.trim() || `phonetic-${offset + index}`;
 
                 return (
-                    <div key={key} className="flex items-center gap-1 sm:contents">
-                        {index > 0 && (
+                    <div key={key} className={cn("flex items-center gap-1.5", !vertical && "sm:contents")}>
+                        {index > 0 && !vertical && (
                             <span aria-hidden className="text-muted-foreground mx-1 hidden sm:inline">
                                 ·
                             </span>
