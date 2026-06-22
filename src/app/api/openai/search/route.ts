@@ -160,25 +160,27 @@ For the core word "${coreWord}":
      - The "didYouMean" field must be a JSON null (not the string "null").
      - Under "meanings", provide standard dictionary definitions for that word, along with example sentences and synonyms/antonyms.
 
-Return the result in the following JSON format:
+CRITICAL: Do NOT use generic placeholder words or strings (like "Definition of [word]", "An example sentence using [word]", "synonym1", "antonym1"). You must generate realistic, high-quality, authentic dictionary definitions and examples for the requested word.
+
+Return the result in the following JSON format structure. This is an example for the core word 'outbid' compared with 'outprice'. For your actual response, replace 'outbid' with '${coreWord}' and 'outprice' with the word you selected to compare it with, and write real definitions/examples for those actual words:
 {
   "definitions": [
     {
       "openai": true,
-      "word": "${coreWord}",
+      "word": "outbid",
       "didYouMean": null,
-      "phonetic": "",
-      "phonetics": [],
-      "origin": "",
+      "phonetic": "/ˌaʊtˈbɪd/",
+      "phonetics": [{ "text": "/ˌaʊtˈbɪd/", "audio": null }],
+      "origin": "From out- + bid.",
       "meanings": [
         {
           "partOfSpeech": "verb",
           "definitions": [
             {
-              "definition": "Definition of ${coreWord}.",
-              "example": "An example sentence using ${coreWord}.",
-              "synonyms": ["synonym1"],
-              "antonyms": ["antonym1"]
+              "definition": "To offer a higher price than another bidder for something, especially at an auction.",
+              "example": "She was prepared to outbid anyone who wanted the painting.",
+              "synonyms": ["overbid", "outcompete", "surpass"],
+              "antonyms": ["underbid"]
             }
           ]
         }
@@ -186,20 +188,20 @@ Return the result in the following JSON format:
     },
     {
       "openai": true,
-      "word": "[compared_word]",
+      "word": "outprice",
       "didYouMean": null,
-      "phonetic": "",
-      "phonetics": [],
-      "origin": "",
+      "phonetic": "/ˌaʊtˈpraɪs/",
+      "phonetics": [{ "text": "/ˌaʊtˈpraɪs/", "audio": null }],
+      "origin": "From out- + price.",
       "meanings": [
         {
           "partOfSpeech": "verb",
           "definitions": [
             {
-              "definition": "Definition of [compared_word].",
-              "example": "An example sentence using [compared_word].",
-              "synonyms": ["synonym2"],
-              "antonyms": ["antonym2"]
+              "definition": "To set the price of a product or service higher than that of competitors, or so high as to discourage buyers.",
+              "example": "The hotel risks outpricing itself in a competitive market.",
+              "synonyms": ["overprice", "price out"],
+              "antonyms": ["underprice"]
             }
           ]
         }
@@ -222,25 +224,27 @@ For the word "${coreWord}":
      - Set "partOfSpeech" to "example".
      - Under "definitions", provide a definition explaining how the word is used in a sentence, along with a high-quality example sentence in the "example" field.
 
-Return the result in the following JSON format:
+CRITICAL: Do NOT use generic placeholder words or strings (like "Definition of [word]", "An example sentence using [word]", "synonym1", "antonym1"). You must generate realistic, high-quality, authentic dictionary definitions and examples for the requested word.
+
+Return the result in the following JSON format structure. This is an example for the core word 'resilience'. For your actual response, replace 'resilience' with '${coreWord}' and write real definitions/examples for '${coreWord}':
 {
   "definitions": [
     {
       "openai": true,
-      "word": "${coreWord}",
+      "word": "resilience",
       "didYouMean": null,
-      "phonetic": "",
-      "phonetics": [],
-      "origin": "",
+      "phonetic": "/rɪˈzɪliəns/",
+      "phonetics": [{ "text": "/rɪˈzɪliəns/", "audio": null }],
+      "origin": "From Latin resilientia, from resilire 'to rebound'.",
       "meanings": [
         {
           "partOfSpeech": "example",
           "definitions": [
             {
-              "definition": "Explanation of how to use '${coreWord}' in a sentence.",
-              "example": "A clear, natural example sentence showing how to use '${coreWord}' in context.",
-              "synonyms": ["synonym1"],
-              "antonyms": []
+              "definition": "Use 'resilience' to describe the capacity to recover quickly from difficulties, toughness, or the ability of a substance to spring back into shape.",
+              "example": "The team showed great resilience, bouncing back from a three-goal deficit to win the championship.",
+              "synonyms": ["fortitude", "toughness", "flexibility", "adaptability"],
+              "antonyms": ["fragility", "vulnerability"]
             }
           ]
         }
@@ -263,30 +267,32 @@ For the word "${coreWord}":
      - Set "partOfSpeech" to "phrase" or "idiom".
      - IMPORTANT: The "definition" field for each definition item MUST start with the phrase itself, followed by a colon and the definition. Format: "[phrase]: [definition]". For example: "to outbid someone: to offer a higher price than another bidder." or "outbid at auction: to be surpassed by another bidder in an auction setting."
 
-Return the result in the following JSON format:
+CRITICAL: Do NOT use generic placeholder words or strings (like "Definition of [word]", "An example sentence using [word]", "synonym1", "antonym1"). You must generate realistic, high-quality, authentic dictionary definitions and examples for the requested word.
+
+Return the result in the following JSON format structure. This is an example for the core word 'splendid'. For your actual response, replace 'splendid' with '${coreWord}' and write real phrases containing '${coreWord}':
 {
   "definitions": [
     {
       "openai": true,
-      "word": "${coreWord}",
+      "word": "splendid",
       "didYouMean": null,
-      "phonetic": "",
-      "phonetics": [],
-      "origin": "",
+      "phonetic": "/ˈsplendɪd/",
+      "phonetics": [{ "text": "/ˈsplendɪd/", "audio": null }],
+      "origin": "From Latin splendidus, from splendere 'to shine'.",
       "meanings": [
         {
           "partOfSpeech": "phrase",
           "definitions": [
             {
-              "definition": "phrase 1: Definition of the first phrase containing '${coreWord}'.",
-              "example": "An example sentence using that phrase.",
-              "synonyms": ["synonym1"],
+              "definition": "splendid isolation: a state of isolation in which a nation or individual feels superior to others, or simply prefers to be alone.",
+              "example": "The country maintained its policy of splendid isolation, avoiding any foreign alliances.",
+              "synonyms": ["independence", "isolationism", "detachment"],
               "antonyms": []
             },
             {
-              "definition": "phrase 2: Definition of the second phrase containing '${coreWord}'.",
-              "example": "An example sentence using that phrase.",
-              "synonyms": ["synonym2"],
+              "definition": "a splendid idea: an excellent, wonderful, or exceptionally good plan or suggestion.",
+              "example": "That's a splendid idea! We should definitely try that approach.",
+              "synonyms": ["great idea", "excellent suggestion", "brilliant plan"],
               "antonyms": []
             }
           ]
