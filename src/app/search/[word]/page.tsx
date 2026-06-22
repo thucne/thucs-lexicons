@@ -7,6 +7,7 @@ import type { Metadata } from 'next';
 
 type WordPageProps = {
     params: Promise<{ word: string }>;
+    searchParams: Promise<{ mode?: string }>;
 };
 
 export async function generateMetadata({ params }: WordPageProps): Promise<Metadata> {
@@ -41,10 +42,11 @@ export async function generateMetadata({ params }: WordPageProps): Promise<Metad
     };
 }
 
-const WordPage = async ({ params }: WordPageProps) => {
+const WordPage = async ({ params, searchParams }: WordPageProps) => {
     const { word } = await params;
+    const { mode } = await searchParams;
 
-    return <ResultPage word={word} />;
+    return <ResultPage word={word} mode={mode} />;
 };
 
 export default WordPage;

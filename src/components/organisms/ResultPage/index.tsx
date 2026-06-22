@@ -17,6 +17,7 @@ import { selectSearchResults, setSearchResults } from '@/redux/reducers/searchRe
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import { Meaning, SearchResult, SearchResults } from '@/types';
 import { HERO_MAX_PRONUNCIATION_VARIANTS } from '@/utils/phonetics';
+import { extractCoreWord } from '@/utils';
 
 import QuickMeaning from './QuickMeaning';
 import { getResultDisplayState, isSearchResults, pickSearchResults } from './result-selection';
@@ -25,6 +26,7 @@ import { ResultSidebar } from './result-sidebar';
 
 type ResultPageProps = {
     word: string;
+    mode?: string;
 };
 
 const getPartOfSpeechList = (entry: SearchResult) =>
@@ -33,14 +35,41 @@ const getPartOfSpeechList = (entry: SearchResult) =>
 const shouldUseAIFirst = (query: string) =>
     query.trim().includes(' ') || /\bvs\.?\b/i.test(query) || /\bin a sentence\b/i.test(query);
 
-const ResultHero = ({ word, entry, isByAI }: { word: string; entry: SearchResult; isByAI: boolean }) => {
+const ResultHero = ({
+    word,
+    entry,
+    isByAI,
+    mode
+}: {
+    word: string;
+    entry: SearchResult;
+    isByAI: boolean;
+    mode?: string;
+}) => {
     const partOfSpeechList = getPartOfSpeechList(entry);
     const { displayWord, searchedWord, correctionWord } = getResultDisplayState(word, entry);
+
+    const cleanDisplayWord = extractCoreWord(displayWord);
+
+    const activeMode = mode || (
+        /\bvs\s+(?:a\s+)?similar\s+word$/i.test(word) || /\bvs\b/i.test(displayWord) ? 'similar' :
+        /\bin\s+a\s+sentence$/i.test(word) || /\bin a sentence$/i.test(displayWord) ? 'context' :
+        /^common\s+phrases\s+with\b/i.test(word) || /^common phrases with\b/i.test(displayWord) ? 'phrase' : undefined
+    );
 
     return (
         <header className="space-y-4 border-b pb-5 sm:pb-6">
             <div className="flex flex-wrap items-center gap-2">
                 <SourceBadge variant={isByAI ? 'ai' : 'dictionary'} />
+                {activeMode && (
+                    <Badge
+                        className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20 rounded-full text-xs font-medium uppercase tracking-wide border"
+                    >
+                        {activeMode === 'similar' && 'Compare Mode'}
+                        {activeMode === 'context' && 'Sentence Mode'}
+                        {activeMode === 'phrase' && 'Phrase Mode'}
+                    </Badge>
+                )}
                 {partOfSpeechList.map((pos) => (
                     <Badge
                         key={pos}
@@ -54,7 +83,7 @@ const ResultHero = ({ word, entry, isByAI }: { word: string; entry: SearchResult
 
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
                 <h1 className="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl md:text-5xl">
-                    {displayWord}
+                    {cleanDisplayWord}
                 </h1>
                 <PronunciationList entry={entry} maxVariants={HERO_MAX_PRONUNCIATION_VARIANTS} />
             </div>
@@ -135,23 +164,27 @@ const ResultDefinitions = ({ entry, word }: { entry: SearchResult; word: string 
     );
 };
 
-const ResultPage = ({ word: rawWord }: ResultPageProps) => {
+const ResultPage = ({ word: rawWord, mode }: ResultPageProps) => {
     const word = decodeURIComponent(rawWord);
     const dispatch = useAppDispatch();
     const searchResultsFromStore = useAppSelector(selectSearchResults);
+    const cacheKey = mode ? `${word}?mode=${mode}` : word;
     const resultsFromStore =
-        searchResultsFromStore.word.toLowerCase() === word.toLowerCase() ? searchResultsFromStore.results : undefined;
+        searchResultsFromStore.word.toLowerCase() === cacheKey.toLowerCase() ? searchResultsFromStore.results : undefined;
 
-    const shouldFetchDictionary = !resultsFromStore?.length && !shouldUseAIFirst(word);
+    const shouldFetchDictionary = !resultsFromStore?.length && !shouldUseAIFirst(word) && !mode;
     const { data: resultsFromFetchRaw, isLoading } = useLexicon(shouldFetchDictionary ? word : undefined);
     const resultsFromFetch = isSearchResults(resultsFromFetchRaw) ? resultsFromFetchRaw : undefined;
     const shouldFetchWithAI = !resultsFromStore?.length && !isLoading && !resultsFromFetch?.length;
-    const { data: resultsFromAIRaw, isLoading: isAILoading } = useLexiconWithAI(shouldFetchWithAI ? word : undefined);
+    const { data: resultsFromAIRaw, isLoading: isAILoading } = useLexiconWithAI(
+        shouldFetchWithAI ? word : undefined,
+        mode
+    );
     const resultsFromAI = isSearchResults(resultsFromAIRaw?.definitions) ? resultsFromAIRaw.definitions : undefined;
     const results = pickSearchResults({
         store: resultsFromStore,
         storeWord: searchResultsFromStore.word,
-        query: word,
+        query: cacheKey,
         fetch: resultsFromFetch,
         ai: resultsFromAI
     });
@@ -160,9 +193,9 @@ const ResultPage = ({ word: rawWord }: ResultPageProps) => {
         const nextResults = resultsFromFetch || resultsFromAI;
 
         if (nextResults?.length) {
-            dispatch(setSearchResults({ word, results: nextResults }));
+            dispatch(setSearchResults({ word: cacheKey, results: nextResults }));
         }
-    }, [dispatch, resultsFromAI, resultsFromFetch, word]);
+    }, [dispatch, resultsFromAI, resultsFromFetch, cacheKey]);
 
     if (isLoading || isAILoading) {
         return <ResultLoadingState word={word} />;
@@ -180,7 +213,7 @@ const ResultPage = ({ word: rawWord }: ResultPageProps) => {
             <QuickMeaning />
             <div className="grid gap-7 md:grid-cols-12 md:gap-8">
                 <div className="space-y-7 md:col-span-8 md:space-y-8">
-                    <ResultHero word={word} entry={primaryEntry} isByAI={isByAI} />
+                    <ResultHero word={word} entry={primaryEntry} isByAI={isByAI} mode={mode} />
                     {results.map((result, index) => (
                         <div key={`${word}-result-${index}`}>
                             {index > 0 && (

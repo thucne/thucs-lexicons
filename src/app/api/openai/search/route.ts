@@ -306,7 +306,7 @@ const parseSearchResult = (content: string | null | undefined): AIResult => {
 
 const getLocalFallback = (input: string): AIResult | undefined => localFallbacks[input.toLowerCase()];
 
-const search = async (input: string) => {
+const search = async (input: string, mode?: string) => {
     try {
         const openAI = getOpenAIClient();
         const model = process.env.OPENAI_MODEL || 'gpt-5-nano';
@@ -320,11 +320,17 @@ const search = async (input: string) => {
         const trimmedInput = input.trim();
         const coreWord = extractCoreWord(trimmedInput);
 
-        if (/\bvs\s+(?:a\s+)?similar\s+word$/i.test(trimmedInput)) {
+        const activeMode = mode || (
+            /\bvs\s+(?:a\s+)?similar\s+word$/i.test(trimmedInput) ? 'similar' :
+            /\bin\s+a\s+sentence$/i.test(trimmedInput) ? 'context' :
+            /^common\s+phrases\s+with\b/i.test(trimmedInput) ? 'phrase' : ''
+        );
+
+        if (activeMode === 'similar') {
             promptText = comparePrompt(coreWord);
-        } else if (/\bin\s+a\s+sentence$/i.test(trimmedInput)) {
+        } else if (activeMode === 'context') {
             promptText = contextPrompt(coreWord);
-        } else if (/^common\s+phrases\s+with\b/i.test(trimmedInput)) {
+        } else if (activeMode === 'phrase') {
             promptText = phrasePrompt(coreWord);
         } else {
             promptText = prompt(trimmedInput);
@@ -492,6 +498,7 @@ const errorMessageForOpenAIError = (error: unknown) =>
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const input = (searchParams.get('input') ?? '').trim();
+    const mode = (searchParams.get('mode') ?? '').trim().toLowerCase();
 
     if (!input) {
         return new Response(JSON.stringify({ error: 'Input parameter is required.' }), {
@@ -507,13 +514,15 @@ export async function GET(request: Request) {
         });
     }
 
+    const cacheKey = mode ? `${input}?mode=${mode}` : input;
+
     const localFallback = getLocalFallback(input);
 
     if (localFallback) {
         return Response.json(localFallback);
     }
 
-    const cached = getCachedOpenAIResult(input);
+    const cached = getCachedOpenAIResult(cacheKey);
 
     if (cached) {
         return Response.json(cached);
@@ -530,9 +539,9 @@ export async function GET(request: Request) {
     }
 
     try {
-        const result = await search(input);
+        const result = await search(input, mode);
 
-        setCachedOpenAIResult(input, result);
+        setCachedOpenAIResult(cacheKey, result);
 
         return Response.json(result);
     } catch (error) {

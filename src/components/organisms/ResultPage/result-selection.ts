@@ -55,8 +55,8 @@ const isLikelyPhoneticText = (value: string) => {
 
 export function getResultDisplayState(query: string, entry: SearchResult) {
     const searchedWord = query.trim();
-    const entryWord = entry.word.trim();
-    const suggestedWord = typeof entry.didYouMean === 'string' ? entry.didYouMean.trim() : '';
+    const entryWord = entry.word && entry.word.toLowerCase() !== 'null' ? entry.word.trim() : '';
+    const suggestedWord = typeof entry.didYouMean === 'string' && entry.didYouMean.toLowerCase() !== 'null' ? entry.didYouMean.trim() : '';
     const usableSuggestion = suggestedWord && !isLikelyPhoneticText(suggestedWord) ? suggestedWord : '';
     const displayWord = usableSuggestion || entryWord || searchedWord;
     const normalizedQuery = normalizeLookupText(searchedWord);

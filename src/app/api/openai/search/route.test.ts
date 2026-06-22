@@ -174,4 +174,23 @@ describe('GET /api/openai/search', () => {
         expect(response.status).toBe(200);
         await expect(response.json()).resolves.toEqual({ definitions: [] });
     });
+
+    it('uses specialized prompt templates when mode query parameter is provided', async () => {
+        createMock.mockResolvedValue({
+            choices: [{ message: { content: JSON.stringify({ definitions: [] }) } }]
+        });
+        const { GET } = await import('./route');
+
+        // Test mode=similar
+        await GET(new Request('http://localhost/api/openai/search?input=outbid&mode=similar'));
+        expect(createMock.mock.calls[0][0].messages[1].content).toContain('You are an AI assistant specialized in comparing similar');
+
+        // Test mode=context
+        await GET(new Request('http://localhost/api/openai/search?input=outbid&mode=context'));
+        expect(createMock.mock.calls[1][0].messages[1].content).toContain('You are an AI assistant specialized in providing contextual examples');
+
+        // Test mode=phrase
+        await GET(new Request('http://localhost/api/openai/search?input=outbid&mode=phrase'));
+        expect(createMock.mock.calls[2][0].messages[1].content).toContain('You are an AI assistant specialized in explaining common phrases');
+    });
 });

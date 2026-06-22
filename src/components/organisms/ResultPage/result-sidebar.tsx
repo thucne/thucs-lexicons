@@ -61,17 +61,17 @@ export function ExploreWithAICard({ word }: { word: string }) {
         {
             icon: Lightbulb,
             label: 'Context Mode',
-            query: `${coreWord} in a sentence`
+            href: `/search/${encodeURIComponent(coreWord)}?mode=context`
         },
         {
             icon: GitCompare,
             label: 'Compare Mode',
-            query: `${coreWord} vs a similar word`
+            href: `/search/${encodeURIComponent(coreWord)}?mode=similar`
         },
         {
             icon: Sparkles,
             label: 'Phrase Mode',
-            query: `common phrases with ${coreWord}`
+            href: `/search/${encodeURIComponent(coreWord)}?mode=phrase`
         }
     ];
 
@@ -90,7 +90,7 @@ export function ExploreWithAICard({ word }: { word: string }) {
                         return (
                             <Link
                                 key={prompt.label}
-                                href={`/search/${encodeURIComponent(prompt.query)}`}
+                                href={prompt.href}
                                 className={cn(
                                     buttonVariants({ variant: 'outline', size: 'sm' }),
                                     'gap-1.5 rounded-full'

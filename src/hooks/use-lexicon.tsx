@@ -37,11 +37,11 @@ export const useLexicon = (
 
 export const useLexiconWithAI = (
     word?: string,
+    mode?: string,
     options?: SWRConfiguration
 ): SWRResponse & { data: OpenAIResults | undefined } => {
-    return useSWR<OpenAIResults>(
-        word ? `${OPENAI_MEANING_API}?input=${encodeURIComponent(word.slice(0, 100))}` : null,
-        jsonFetcher,
-        { ...lexiconSWRDefaults, ...options }
-    );
+    const query = word
+        ? `${OPENAI_MEANING_API}?input=${encodeURIComponent(word.slice(0, 100))}${mode ? `&mode=${encodeURIComponent(mode)}` : ''}`
+        : null;
+    return useSWR<OpenAIResults>(query, jsonFetcher, { ...lexiconSWRDefaults, ...options });
 };
