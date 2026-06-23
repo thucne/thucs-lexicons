@@ -32,7 +32,7 @@ const PronunciationList = ({ entry, maxVariants, offset = 0, className, vertical
                     normalizePhoneticText(phonetic.text) || phonetic.audio?.trim() || `phonetic-${offset + index}`;
 
                 return (
-                    <div key={key} className={cn("flex items-center gap-1.5", !vertical && "sm:contents")}>
+                    <div key={key} className={cn('flex items-center gap-1.5', !vertical && 'sm:contents')}>
                         {index > 0 && !vertical && (
                             <span aria-hidden className="text-muted-foreground mx-1 hidden sm:inline">
                                 ·

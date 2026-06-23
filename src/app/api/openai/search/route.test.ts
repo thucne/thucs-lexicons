@@ -183,14 +183,20 @@ describe('GET /api/openai/search', () => {
 
         // Test mode=similar
         await GET(new Request('http://localhost/api/openai/search?input=outbid&mode=similar'));
-        expect(createMock.mock.calls[0][0].messages[1].content).toContain('You are an AI assistant specialized in comparing similar');
+        expect(createMock.mock.calls[0][0].messages[1].content).toContain(
+            'You are an AI assistant specialized in comparing similar'
+        );
 
         // Test mode=context
         await GET(new Request('http://localhost/api/openai/search?input=outbid&mode=context'));
-        expect(createMock.mock.calls[1][0].messages[1].content).toContain('You are an AI assistant specialized in providing contextual examples');
+        expect(createMock.mock.calls[1][0].messages[1].content).toContain(
+            'You are an AI assistant specialized in providing contextual examples'
+        );
 
         // Test mode=phrase
         await GET(new Request('http://localhost/api/openai/search?input=outbid&mode=phrase'));
-        expect(createMock.mock.calls[2][0].messages[1].content).toContain('You are an AI assistant specialized in explaining common phrases');
+        expect(createMock.mock.calls[2][0].messages[1].content).toContain(
+            'You are an AI assistant specialized in explaining common phrases'
+        );
     });
 });

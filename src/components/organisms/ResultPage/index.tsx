@@ -51,11 +51,15 @@ const ResultHero = ({
 
     const cleanDisplayWord = extractCoreWord(displayWord);
 
-    const activeMode = mode || (
-        /\bvs\s+(?:a\s+)?similar\s+word$/i.test(word) || /\bvs\b/i.test(displayWord) ? 'similar' :
-        /\bin\s+a\s+sentence$/i.test(word) || /\bin a sentence$/i.test(displayWord) ? 'context' :
-        /^common\s+phrases\s+with\b/i.test(word) || /^common phrases with\b/i.test(displayWord) ? 'phrase' : undefined
-    );
+    const activeMode =
+        mode ||
+        (/\bvs\s+(?:a\s+)?similar\s+word$/i.test(word) || /\bvs\b/i.test(displayWord)
+            ? 'similar'
+            : /\bin\s+a\s+sentence$/i.test(word) || /\bin a sentence$/i.test(displayWord)
+              ? 'context'
+              : /^common\s+phrases\s+with\b/i.test(word) || /^common phrases with\b/i.test(displayWord)
+                ? 'phrase'
+                : undefined);
 
     return (
         <header className="space-y-4 border-b pb-5 sm:pb-6">
@@ -64,13 +68,13 @@ const ResultHero = ({
                 {activeMode && (
                     <Link href={`/search/${encodeURIComponent(cleanDisplayWord)}`}>
                         <Badge
-                            className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20 rounded-full text-xs font-medium uppercase tracking-wide border flex items-center gap-1 cursor-pointer pr-2 transition-colors duration-200"
+                            className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20 flex cursor-pointer items-center gap-1 rounded-full border pr-2 text-xs font-medium uppercase tracking-wide transition-colors duration-200"
                             title="Remove mode"
                         >
                             {activeMode === 'similar' && 'Compare Mode'}
                             {activeMode === 'context' && 'Sentence Mode'}
                             {activeMode === 'phrase' && 'Phrase Mode'}
-                            <X className="size-3 hover:text-primary/70 transition-colors" />
+                            <X className="hover:text-primary/70 size-3 transition-colors" />
                         </Badge>
                     </Link>
                 )}
@@ -168,7 +172,10 @@ const ResultDefinitions = ({ entry, word }: { entry: SearchResult; word: string 
     );
 };
 
-const mergePhonetics = (aiResults: SearchResults | undefined, dictResults: SearchResults | undefined): SearchResults | undefined => {
+const mergePhonetics = (
+    aiResults: SearchResults | undefined,
+    dictResults: SearchResults | undefined
+): SearchResults | undefined => {
     if (!aiResults?.length || !dictResults?.length) {
         return aiResults;
     }
@@ -196,7 +203,9 @@ const ResultPage = ({ word: rawWord, mode }: ResultPageProps) => {
     const searchResultsFromStore = useAppSelector(selectSearchResults);
     const cacheKey = mode ? `${word}?mode=${mode}` : word;
     const resultsFromStore =
-        searchResultsFromStore.word.toLowerCase() === cacheKey.toLowerCase() ? searchResultsFromStore.results : undefined;
+        searchResultsFromStore.word.toLowerCase() === cacheKey.toLowerCase()
+            ? searchResultsFromStore.results
+            : undefined;
 
     const shouldFetchDictionary = !resultsFromStore?.length && !shouldUseAIFirst(word) && !mode;
     const { data: resultsFromFetchRaw, isLoading } = useLexicon(shouldFetchDictionary ? word : undefined);
@@ -252,9 +261,9 @@ const ResultPage = ({ word: rawWord, mode }: ResultPageProps) => {
                             {results.slice(0, 2).map((result, index) => (
                                 <div
                                     key={`${word}-compare-${index}`}
-                                    className="border border-border/80 p-5 rounded-lg bg-card text-card-foreground shadow-xs flex flex-col gap-4"
+                                    className="border-border/80 bg-card text-card-foreground shadow-xs flex flex-col gap-4 rounded-lg border p-5"
                                 >
-                                    <h2 className="text-xl font-bold border-b pb-2 text-primary capitalize">
+                                    <h2 className="text-primary border-b pb-2 text-xl font-bold capitalize">
                                         {result.word}
                                     </h2>
                                     <ResultDefinitions entry={result} word={word} />

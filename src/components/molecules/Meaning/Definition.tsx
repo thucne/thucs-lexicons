@@ -23,9 +23,7 @@ const DefinitionComponent = ({ definition, index }: DefinitionProps) => {
         <li className="my-2">
             <div className="flex flex-col gap-2">
                 <div className="lexicon-box text-foreground text-sm leading-relaxed">
-                    {phrasePart && (
-                        <strong className="font-semibold mr-1.5 text-foreground">{phrasePart}:</strong>
-                    )}
+                    {phrasePart && <strong className="text-foreground mr-1.5 font-semibold">{phrasePart}:</strong>}
                     {definitionPart?.length
                         ? definitionPart.split(' ').map((word, defIndex) => (
                               <span key={`${index}-${defIndex}`}>

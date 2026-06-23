@@ -63,7 +63,8 @@ const isNullOrUndefinedLike = (val: unknown): boolean => {
 export function getResultDisplayState(query: string, entry: SearchResult) {
     const searchedWord = query.trim();
     const entryWord = entry.word && !isNullOrUndefinedLike(entry.word) ? entry.word.trim() : '';
-    const suggestedWord = entry.didYouMean && !isNullOrUndefinedLike(entry.didYouMean) ? String(entry.didYouMean).trim() : '';
+    const suggestedWord =
+        entry.didYouMean && !isNullOrUndefinedLike(entry.didYouMean) ? String(entry.didYouMean).trim() : '';
     const usableSuggestion = suggestedWord && !isLikelyPhoneticText(suggestedWord) ? suggestedWord : '';
     const displayWord = usableSuggestion || entryWord || searchedWord;
     const normalizedQuery = normalizeLookupText(searchedWord);

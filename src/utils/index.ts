@@ -53,4 +53,3 @@ export function extractCoreWord(query: string): string {
     } while (word !== previous);
     return word.trim();
 }
-

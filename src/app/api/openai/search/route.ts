@@ -341,11 +341,15 @@ const search = async (input: string, mode?: string) => {
         const trimmedInput = input.trim();
         const coreWord = extractCoreWord(trimmedInput);
 
-        const activeMode = mode || (
-            /\bvs\s+(?:a\s+)?similar\s+word$/i.test(trimmedInput) ? 'similar' :
-            /\bin\s+a\s+sentence$/i.test(trimmedInput) ? 'context' :
-            /^common\s+phrases\s+with\b/i.test(trimmedInput) ? 'phrase' : ''
-        );
+        const activeMode =
+            mode ||
+            (/\bvs\s+(?:a\s+)?similar\s+word$/i.test(trimmedInput)
+                ? 'similar'
+                : /\bin\s+a\s+sentence$/i.test(trimmedInput)
+                  ? 'context'
+                  : /^common\s+phrases\s+with\b/i.test(trimmedInput)
+                    ? 'phrase'
+                    : '');
 
         if (activeMode === 'similar') {
             promptText = comparePrompt(coreWord);
